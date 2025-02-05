@@ -59,8 +59,8 @@ public class ElevatorIOReal implements ElevatorIO {
         currentLimitsConfigs = new CurrentLimitsConfigs();
         currentLimitsConfigs.StatorCurrentLimitEnable = true;
         currentLimitsConfigs.SupplyCurrentLimitEnable = true;
-        currentLimitsConfigs.StatorCurrentLimit = 60.0;
-        currentLimitsConfigs.SupplyCurrentLimit = 20.0;
+        currentLimitsConfigs.StatorCurrentLimit = 80.0;
+        currentLimitsConfigs.SupplyCurrentLimit = 30.0;
 
         leaderMotorConfigs = new MotorOutputConfigs();
         leaderMotorConfigs.NeutralMode = NeutralModeValue.Brake;
@@ -153,6 +153,16 @@ public class ElevatorIOReal implements ElevatorIO {
         leader.setPosition(position);
         follower.setPosition(position);
     }
+
+    public double getLeaderCurrent(){
+        return leader.getStatorCurrent().getValueAsDouble();
+    }
+
+    public void resetPosistion(){
+        leader.setPosition(0.0);
+        follower.setPosition(0.0);
+    }
+
 
     private double getHeight() {
         return rotationsToMeters(leader.getPosition().getValueAsDouble());

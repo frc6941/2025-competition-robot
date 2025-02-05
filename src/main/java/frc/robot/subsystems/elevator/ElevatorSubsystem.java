@@ -36,4 +36,12 @@ public class ElevatorSubsystem extends SubsystemBase {
     public boolean isAtSetpoint(double setpoint) {
         return MathUtil.isNear(setpoint, inputs.positionMeters, DEADZONE_DISTANCE);
     }
+
+    public double getLeaderCurrent(){
+        return io.getLeaderCurrent();
+    }
+
+    public void resetPosition(){
+        io.resetPosition();
+    }
 }
