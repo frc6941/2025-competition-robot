@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.*;
 
 import frc.robot.auto.basics.AutoActions;
-import frc.robot.commands.RumbleCommand;
+import frc.robot.commands.*;
 import frc.robot.display.Display;
 import frc.robot.subsystems.apriltagvision.AprilTagVision;
 import frc.robot.subsystems.apriltagvision.AprilTagVisionIONorthstar;
@@ -118,6 +118,8 @@ public class RobotContainer {
                     }
                     lastResetTime = Timer.getFPGATimestamp();
                 }).ignoringDisable(true));
+
+
     }
 
     //Configure all commands for operator
@@ -131,6 +133,7 @@ public class RobotContainer {
     controller.b().onTrue(Commands.runOnce(() -> elevatorSubsystem.setPosition(0.8),elevatorSubsystem).until(() ->elevatorSubsystem.isAtSetpoint(0.8)));
     controller.x().onTrue(Commands.runOnce(() -> elevatorSubsystem.setPosition(1.1),elevatorSubsystem).until(() ->elevatorSubsystem.isAtSetpoint(1.1)));
     controller.y().onTrue(Commands.runOnce(() -> elevatorSubsystem.setPosition(1.4),elevatorSubsystem).until(() ->elevatorSubsystem.isAtSetpoint(1.4)));
+    controller.povDown().onTrue(new ElevatorZeroingCommand(elevatorSubsystem));
     }
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.
