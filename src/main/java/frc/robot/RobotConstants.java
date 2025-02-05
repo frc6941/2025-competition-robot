@@ -397,7 +397,11 @@ public final class RobotConstants {
                                 0.3);// 0.107853495
                 public static final TunableNumber L4_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/L4",
                                 0.4);
-                }
+                public static final TunableNumber ELEVATOR_ZEROING_CURRENT = new TunableNumber("Elevator zeroing current",
+                        30);
+
+        }
+
 
                 /**
                  * Constants for the elevator motor gains.
