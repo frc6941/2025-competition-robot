@@ -24,6 +24,13 @@ import frc.robot.subsystems.elevator.ElevatorIOReal;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.endeffector.EndEffectorIOReal;
 import frc.robot.subsystems.endeffector.EndEffectorSubsystem;
+import frc.robot.subsystems.intake.IntakePivotIO;
+import frc.robot.subsystems.intake.IntakePivotIOReal;
+import frc.robot.subsystems.intake.IntakePivotSubsystem;
+import frc.robot.subsystems.roller.RollerIOReal;
+import frc.robot.subsystems.roller.RollerSubsystem;
+import frc.robot.subsystems.statemachine.StateMachine;
+import frc.robot.subsystems.statemachine.StateMachine.RobotState;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.utils.AllianceFlipUtil;
 import lombok.Getter;
@@ -47,7 +54,6 @@ public class RobotContainer {
     CommandXboxController driverController = new CommandXboxController(0);
     CommandXboxController operatorController = new CommandXboxController(1);
     CommandXboxController testerController = new CommandXboxController(2);
-
     @Getter
     private final UpdateManager updateManager;
     double L1, L2, L3, L4;
@@ -61,8 +67,25 @@ public class RobotContainer {
     Swerve swerve = Swerve.getInstance();
     Display display = Display.getInstance();
     ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOReal());
+    IntakePivotSubsystem intakePivotSubsystem = new IntakePivotSubsystem(new IntakePivotIOReal());
     EndEffectorSubsystem endEffectorSubsystem = new EndEffectorSubsystem(new EndEffectorIOReal(), new BeambreakIOReal(ENDEFFECTOR_INTAKE_BEAMBREAK_ID), new BeambreakIOReal(ENDEFFECTOR_SHOOT_BEAMBREAK_ID));
-
+    StateMachine stateMachine = new StateMachine(elevatorSubsystem, endEffectorSubsystem, intakePivotSubsystem, swerve);
+    Command TRY_IDLE = Commands.deferredProxy(
+      () -> stateMachine.tryState(RobotState.IDLE));
+    Command TRY_PREP_CORAL_L1 = Commands.deferredProxy(
+        () -> stateMachine.tryState(RobotState.PREP_CORAL_L1));
+      
+    Command TRY_PREP_CORAL_L2 = Commands.deferredProxy(
+        () -> stateMachine.tryState(RobotState.PREP_CORAL_L2));
+      
+    Command TRY_PREP_CORAL_L3 = Commands.deferredProxy(
+        () -> stateMachine.tryState(RobotState.PREP_CORAL_L3));
+      
+    Command TRY_PREP_CORAL_L4 = Commands.deferredProxy(
+        () -> stateMachine.tryState(RobotState.PREP_CORAL_L4));
+      
+    Command TRY_HAS_CORAL = Commands.deferredProxy(
+        () -> stateMachine.tryState(RobotState.HAS_CORAL));
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
@@ -127,10 +150,11 @@ public class RobotContainer {
 
     //Configure all commands for testing
     private void configureTesterBindings(CommandXboxController controller) {
-    controller.a().onTrue(Commands.runOnce(() -> elevatorSubsystem.setPosition(0.5),elevatorSubsystem).until(() ->elevatorSubsystem.isAtSetpoint(0.5)));
-    controller.b().onTrue(Commands.runOnce(() -> elevatorSubsystem.setPosition(0.8),elevatorSubsystem).until(() ->elevatorSubsystem.isAtSetpoint(0.8)));
-    controller.x().onTrue(Commands.runOnce(() -> elevatorSubsystem.setPosition(1.1),elevatorSubsystem).until(() ->elevatorSubsystem.isAtSetpoint(1.1)));
-    controller.y().onTrue(Commands.runOnce(() -> elevatorSubsystem.setPosition(1.4),elevatorSubsystem).until(() ->elevatorSubsystem.isAtSetpoint(1.4)));
+        controller.a().onTrue(TRY_PREP_CORAL_L1).onFalse(TRY_IDLE);
+        controller.b().onTrue(TRY_PREP_CORAL_L2).onFalse(TRY_IDLE);
+        controller.x().onTrue(TRY_PREP_CORAL_L3).onFalse(TRY_IDLE);
+        controller.y().onTrue(TRY_PREP_CORAL_L4).onFalse(TRY_IDLE);
+        System.out.println(stateMachine.getRobotState());
     }
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.

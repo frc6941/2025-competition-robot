@@ -390,13 +390,13 @@ public final class RobotConstants {
                 public static final TunableNumber IDLE_EXTENSION_METERS = new TunableNumber(
                                 "ELEVATOR GOALS/idle", 0);
                 public static final TunableNumber L1_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/L1",
-                                0.1);
+                                0.5);
                 public static final TunableNumber L2_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/L2",
-                                0.2);
+                                0.8);
                 public static final TunableNumber L3_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/L3",
-                                0.3);// 0.107853495
+                                1);// 0.107853495
                 public static final TunableNumber L4_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/L4",
-                                0.4);
+                                1.3);
                 }
 
                 /**
