@@ -15,12 +15,10 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.*;
 
 import frc.robot.auto.basics.AutoActions;
-import frc.robot.commands.IndexCommand;
 import frc.robot.commands.RumbleCommand;
 import frc.robot.display.Display;
 import frc.robot.subsystems.apriltagvision.AprilTagVision;
 import frc.robot.subsystems.apriltagvision.AprilTagVisionIONorthstar;
-import frc.robot.subsystems.beambreak.BeambreakIO;
 import frc.robot.subsystems.beambreak.BeambreakIOReal;
 import frc.robot.subsystems.elevator.ElevatorIOReal;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
@@ -46,21 +44,24 @@ import java.util.function.*;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
+    CommandXboxController driverController = new CommandXboxController(0);
+    CommandXboxController operatorController = new CommandXboxController(1);
+    CommandXboxController testerController = new CommandXboxController(2);
+
     @Getter
     private final UpdateManager updateManager;
+    double L1, L2, L3, L4;
+    double lastResetTime = 0.0;
+
+    // The robot's subsystems and commands are defined here...
     AprilTagVision aprilTagVision = new AprilTagVision(
             this::getAprilTagLayoutType,
             new AprilTagVisionIONorthstar(this::getAprilTagLayoutType, 0),
             new AprilTagVisionIONorthstar(this::getAprilTagLayoutType, 1));
     Swerve swerve = Swerve.getInstance();
     Display display = Display.getInstance();
-    //ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOReal());
+    ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOReal());
     EndEffectorSubsystem endEffectorSubsystem = new EndEffectorSubsystem(new EndEffectorIOReal(), new BeambreakIOReal(ENDEFFECTOR_INTAKE_BEAMBREAK_ID), new BeambreakIOReal(ENDEFFECTOR_SHOOT_BEAMBREAK_ID));
-    double lastResetTime = 0.0;
-    CommandXboxController driverController = new CommandXboxController(0);
-    CommandXboxController operatorController = new CommandXboxController(1);
-
-    // The robot's subsystems and commands are defined here...
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -70,7 +71,9 @@ public class RobotContainer {
                 display);
         updateManager.registerAll();
 
-        configureBindings();
+        configureDriverBindings(driverController);
+        configureOperatorBindings(operatorController);
+        configureTesterBindings(testerController);
     }
 
     /**
@@ -82,7 +85,9 @@ public class RobotContainer {
      * PS4} controllers or {@link CommandJoystick Flight
      * joysticks}.
      */
-    private void configureBindings() {
+
+    //Configure all commands for driver
+    private void configureDriverBindings(CommandXboxController driverController) {
         swerve.setDefaultCommand(Commands
                 .runOnce(() -> swerve.drive(
                                 new Translation2d(
@@ -113,10 +118,20 @@ public class RobotContainer {
                     }
                     lastResetTime = Timer.getFPGATimestamp();
                 }).ignoringDisable(true));
-        
-        operatorController.a().onTrue(indexCommand());        
     }
 
+    //Configure all commands for operator
+    private void configureOperatorBindings(CommandXboxController operatorController) {
+
+    }
+
+    //Configure all commands for testing
+    private void configureTesterBindings(CommandXboxController controller) {
+    controller.a().onTrue(Commands.runOnce(() -> elevatorSubsystem.setPosition(0.5),elevatorSubsystem).until(() ->elevatorSubsystem.isAtSetpoint(0.5)));
+    controller.b().onTrue(Commands.runOnce(() -> elevatorSubsystem.setPosition(0.8),elevatorSubsystem).until(() ->elevatorSubsystem.isAtSetpoint(0.8)));
+    controller.x().onTrue(Commands.runOnce(() -> elevatorSubsystem.setPosition(1.1),elevatorSubsystem).until(() ->elevatorSubsystem.isAtSetpoint(1.1)));
+    controller.y().onTrue(Commands.runOnce(() -> elevatorSubsystem.setPosition(1.4),elevatorSubsystem).until(() ->elevatorSubsystem.isAtSetpoint(1.4)));
+    }
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.
      *
@@ -137,10 +152,6 @@ public class RobotContainer {
             return new RumbleCommand(Seconds.of(seconds), driverController.getHID());
     }
 
-    private Command indexCommand() {
-            return new IndexCommand(endEffectorSubsystem);
-    }
-
     public FieldConstants.AprilTagLayoutType getAprilTagLayoutType() {
 //        if (aprilTagsSpeakerOnly.getAsBoolean()) {
 //            return FieldConstants.AprilTagLayoutType.SPEAKERS_ONLY;
@@ -150,5 +161,4 @@ public class RobotContainer {
         return FieldConstants.defaultAprilTagType;
 //        }
     }
-
 }

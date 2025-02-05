@@ -45,9 +45,7 @@ public class EndEffectorSubsystem extends RollerSubsystem {
 
         endEffectorIO.updateConfigs(kp, ki, kd, ka, kv, ks);
         intakeBBIO.updateInputs(intakeBBInputs);
-        System.out.println("intakeBBin: " + intakeBBInputs.isBeambreakOn);
         shootBBIO.updateInputs(shootBBInputs);
-        System.out.println("shootBBin: " + shootBBInputs.isBeambreakOn);
 
         Logger.processInputs(NAME + "/Intake Beambreak", intakeBBInputs);
         Logger.processInputs(NAME + "/Shoot Beambreak", shootBBInputs);

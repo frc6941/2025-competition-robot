@@ -16,9 +16,9 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.units.measure.*;
 import frc.robot.RobotConstants;
 
-import static frc.robot.RobotConstants.CAN_BUS_NAME;
+import static frc.robot.RobotConstants.*;
 import static frc.robot.RobotConstants.ElevatorConstants.*;
-import static frc.robot.RobotConstants.ElevatorConstants.ElevatorGainsClass.*;
+import static frc.robot.RobotConstants.ElevatorGainsClass.*;
 
 public class ElevatorIOReal implements ElevatorIO {
     /* Hardware */
@@ -36,7 +36,7 @@ public class ElevatorIOReal implements ElevatorIO {
     private final Slot0Configs slot0Configs;
     private final MotionMagicConfigs motionMagicConfigs;
 
-    private final MotionMagicVoltage positionVoltage = new MotionMagicVoltage(0.0).withEnableFOC(true);
+    private final MotionMagicVoltage motionRequest = new MotionMagicVoltage(0.0).withEnableFOC(true);
     private final VoltageOut voltageOut = new VoltageOut(0.0).withEnableFOC(true);
 
     private final StatusSignal<Voltage> voltageLeft;
@@ -50,8 +50,8 @@ public class ElevatorIOReal implements ElevatorIO {
     private final StatusSignal<Double> closedLoopReferenceSlope;
 
     public ElevatorIOReal() {
-        this.leader = new TalonFX(LEFT_ELEVATOR_MOTOR_ID, CAN_BUS_NAME);
-        this.follower = new TalonFX(RIGHT_ELEVATOR_MOTOR_ID, CAN_BUS_NAME);
+        this.leader = new TalonFX(LEFT_ELEVATOR_MOTOR_ID, CANIVORE_CAN_BUS_NAME);
+        this.follower = new TalonFX(RIGHT_ELEVATOR_MOTOR_ID, CANIVORE_CAN_BUS_NAME);
 
         this.leaderConfigurator = leader.getConfigurator();
         this.followerConfigurator = follower.getConfigurator();
@@ -129,6 +129,7 @@ public class ElevatorIOReal implements ElevatorIO {
 
             motionMagicConfigs.MotionMagicAcceleration = motionAcceleration.get();
             motionMagicConfigs.MotionMagicCruiseVelocity = motionCruiseVelocity.get();
+            motionMagicConfigs.MotionMagicJerk = motionJerk.get();
 
             leaderConfigurator.apply(slot0Configs);
             followerConfigurator.apply(slot0Configs);
@@ -138,8 +139,8 @@ public class ElevatorIOReal implements ElevatorIO {
     }
 
     @Override
-    public void setTarget(double heightMeters) {
-        leader.setControl(positionVoltage.withPosition(metersToRotations(heightMeters)));
+    public void setPosition(double heightMeters) {
+        leader.setControl(motionRequest.withPosition(metersToRotations(heightMeters)));
     }
 
     @Override

@@ -375,9 +375,9 @@ public final class RobotConstants {
                 public static final int LEFT_ELEVATOR_MOTOR_ID = 50;
                 public static final int RIGHT_ELEVATOR_MOTOR_ID = 51;
 
-                public static final double ELEVATOR_SPOOL_DIAMETER = 1.0;
-                public static final double ELEVATOR_GEAR_RATIO = 1.0;
-                public static final boolean leftMotorClockwise = true;
+                public static final double ELEVATOR_SPOOL_DIAMETER = 0.04 + 0.003; //0.04m for spool diameter, 0.003 for rope diameter
+                public static final double ELEVATOR_GEAR_RATIO = 3.0;
+                public static final double DEADZONE_DISTANCE = 0.02;
 
                 public static final TunableNumber motionAcceleration = new TunableNumber("Elevator/MotionAcceleration",
                                 20.0);
@@ -385,22 +385,18 @@ public final class RobotConstants {
                                 "Elevator/MotionCruiseVelocity", 20.0);
                 public static final TunableNumber motionJerk = new TunableNumber("Elevator/MotionJerk", 0.0);
 
-                /**
-                 * Constants for the elevator goals.
-                 */
-                public static class ElevatorGoalsClass {
-                        public static final TunableNumber MAX_EXTENSION_METERS = new TunableNumber("ELEVATOR GOALS/max",
-                                        100.0);
-                        public static final TunableNumber IDLE_EXTENSION_METERS = new TunableNumber(
-                                        "ELEVATOR GOALS/idle", 30.0);
-                        public static final TunableNumber L1_EXTENSION_METERS = new TunableNumber("ELEVATOR GOALS/L1",
-                                        50.0);
-                        public static final TunableNumber L2_EXTENSION_METERS = new TunableNumber("ELEVATOR GOALS/L2",
-                                        60.0);
-                        public static final TunableNumber L3_EXTENSION_METERS = new TunableNumber("ELEVATOR GOALS/L3",
-                                        70.0);// 0.107853495
-                        public static final TunableNumber L4_EXTENSION_METERS = new TunableNumber("ELEVATOR GOALS/L4",
-                                        80.0);
+                public static final TunableNumber MAX_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/max",
+                                2);
+                public static final TunableNumber IDLE_EXTENSION_METERS = new TunableNumber(
+                                "ELEVATOR GOALS/idle", 0);
+                public static final TunableNumber L1_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/L1",
+                                0.1);
+                public static final TunableNumber L2_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/L2",
+                                0.2);
+                public static final TunableNumber L3_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/L3",
+                                0.3);// 0.107853495
+                public static final TunableNumber L4_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/L4",
+                                0.4);
                 }
 
                 /**
@@ -417,4 +413,3 @@ public final class RobotConstants {
                                         0.28475008);
                 }
         }
-}

@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.endeffector.EndEffectorSubsystem;
 
-import static frc.robot.RobotConstants.ElevatorConstants.ElevatorGoalsClass.*;
+
 
 /*
 public class Superstructure {

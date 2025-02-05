@@ -14,14 +14,14 @@ public interface ElevatorIO {
         public double[] statorCurrentAmps = new double[] {}; // {leader, follower}
         public double[] supplyCurrentAmps = new double[] {}; // {leader, follower}
         public double[] tempCelcius = new double[] {}; // {leader, follower}
-        // public double acceleration = 0.0;
+        // public double acceleration = 0.0; may add later
     }
 
     public default void updateInputs(ElevatorIOInputs inputs) {}
 
     public default void setVoltage(double voltage) {}
 
-    public default void setTarget(double meters) {}
+    public default void setPosition(double meters) {}
 
     public default void stop() {
         setVoltage(0.0);
