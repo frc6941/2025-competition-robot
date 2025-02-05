@@ -58,6 +58,10 @@ dependencies {
     implementation wpi.java.deps.wpilib()
     implementation wpi.java.vendor.java()
 
+    // AdvantageKit vendordep
+    def akitJson = new groovy.json.JsonSlurper().parseText(new File(projectDir.getAbsolutePath() + "/vendordeps/AdvantageKit.json").text)
+    annotationProcessor "org.littletonrobotics.akit:akit-autolog:$akitJson.version"
+
     implementation group: 'gov.nist.math', name: 'jama', version: '1.0.3'
 
     compileOnly 'org.projectlombok:lombok:1.18.28'
