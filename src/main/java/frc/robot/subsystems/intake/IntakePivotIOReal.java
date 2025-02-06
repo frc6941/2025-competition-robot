@@ -22,7 +22,7 @@ import frc.robot.RobotConstants;
 public class IntakePivotIOReal implements IntakePivotIO {
     private final TalonFX motor = new TalonFX(RobotConstants.intakeConstants.INTAKER_PIVOT_MOTOR_ID,
             RobotConstants.CAN_BUS_NAME);
-
+    private final Slot0Configs slot0Configs = new Slot0Configs();
     private final StatusSignal<AngularVelocity> velocityRotationsPerSec = motor.getVelocity();
     private final StatusSignal<Voltage> appliedVolts = motor.getSupplyVoltage();
     private final StatusSignal<Current> statorCurrentAmps = motor.getStatorCurrent();
@@ -85,6 +85,17 @@ public class IntakePivotIOReal implements IntakePivotIO {
     @Override
     public void setMotorVoltage(double voltage) {
         motor.setControl(voltageOut.withOutput(voltage));
+    }
+
+    @Override
+    public void updateConfigs(double kp, double ki, double kd, double ka, double kv, double ks) {
+        slot0Configs.withKP(kp);
+        slot0Configs.withKI(ki);
+        slot0Configs.withKD(kd);
+        slot0Configs.withKA(ka);
+        slot0Configs.withKV(kv);
+        slot0Configs.withKS(ks);
+        motor.getConfigurator().apply(slot0Configs);
     }
 
     @Override
