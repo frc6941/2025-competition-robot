@@ -8,7 +8,6 @@ import org.littletonrobotics.junction.Logger;
 
 public class Superstructure extends SubsystemBase {
     private EndEffectorSubsystem endEffector;
-
     public enum WantedSuperState {
         STOPPED,
         INTAKE_CORAL_FUNNEL,

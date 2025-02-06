@@ -29,6 +29,9 @@ public interface IntakePivotIO {
     public default void setMotorVoltage(double voltage) {
     }
 
+    public default void updateConfigs(double kp, double ki, double kd, double ka, double kv, double ks) {
+    }
+
     public default void setMotorPosition(Rotation2d targetPosition) {
     }
 }
