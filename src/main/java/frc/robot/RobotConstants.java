@@ -298,10 +298,11 @@ public final class RobotConstants {
                 public static final boolean IS_INVERT = false;
                 public static final double REDUCTION = 1;
 
-                public static final TunableNumber INDEX_RPS = new TunableNumber("EndEffector/indexRPS", 3.0);
-                public static final TunableNumber HOLD_RPS = new TunableNumber("EndEffector/holdRPS", 0.0);
-                public static final TunableNumber SHOOT_RPS = new TunableNumber("EndEffector/shootRPS", 3.0);
-                public static final TunableNumber SPIT_RPS = new TunableNumber("EndEffector/spitRPS", 5.0);
+                public static final LoggedTunableNumber INDEX_RPS = new LoggedTunableNumber("EndEffector/indexRPS", 300);
+                public static final LoggedTunableNumber TRANSFER_RPS = new LoggedTunableNumber("EndEffector/transferRPS", 200);
+                public static final LoggedTunableNumber HOLD_RPS = new LoggedTunableNumber("EndEffector/holdRPS", 0.0);
+                public static final LoggedTunableNumber SHOOT_RPS = new LoggedTunableNumber("EndEffector/shootRPS", -400);
+                public static final LoggedTunableNumber IDLE_RPS = new LoggedTunableNumber("EndEffector/spitRPS", 50);
 
                 /**
                  * Constants for the endeffector motor gains.

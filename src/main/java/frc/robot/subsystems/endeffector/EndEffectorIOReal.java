@@ -7,7 +7,7 @@ import static frc.robot.RobotConstants.EndEffectorConstants.*;
 
 public class EndEffectorIOReal extends RollerIOReal implements EndEffectorIO {
     private static final int id = ENDEFFECTOR_MOTOR_ID;
-    private static String canbus = CAN_BUS_NAME;
+    private static final String canbus = CAN_BUS_NAME;
     private static final int statorCurrentLimitAmps = STATOR_CURRENT_LIMIT_AMPS;
     private static final int supplyCurrentLimitAmps = SUPPLY_CURRENT_LIMIT_AMPS;
     private static final boolean invert = IS_INVERT;

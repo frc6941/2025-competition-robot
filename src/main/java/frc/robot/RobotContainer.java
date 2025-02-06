@@ -17,6 +17,9 @@ import edu.wpi.first.wpilibj2.command.button.*;
 import frc.robot.auto.basics.AutoActions;
 import frc.robot.commands.*;
 import frc.robot.display.Display;
+import frc.robot.subsystems.Superstructure;
+import frc.robot.subsystems.apriltagvision.AprilTagVision;
+import frc.robot.subsystems.apriltagvision.AprilTagVisionIONorthstar;
 import frc.robot.subsystems.beambreak.BeambreakIOReal;
 import frc.robot.subsystems.endeffector.EndEffectorIOReal;
 import frc.robot.subsystems.endeffector.EndEffectorSubsystem;
@@ -53,6 +56,8 @@ public class RobotContainer {
     Display display = Display.getInstance();
     EndEffectorSubsystem endEffectorSubsystem = new EndEffectorSubsystem(new EndEffectorIOReal(), new BeambreakIOReal(ENDEFFECTOR_INTAKE_BEAMBREAK_ID), new BeambreakIOReal(ENDEFFECTOR_SHOOT_BEAMBREAK_ID));
 
+    private final Superstructure superstructure;
+
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
@@ -64,6 +69,8 @@ public class RobotContainer {
         configureDriverBindings(driverController);
         configureOperatorBindings(operatorController);
         configureTesterBindings(testerController);
+
+        superstructure = new Superstructure(endEffectorSubsystem);
     }
 
     /**
@@ -119,8 +126,12 @@ public class RobotContainer {
 
     //Configure all commands for testing
     private void configureTesterBindings(CommandXboxController controller) {
-
+        new Trigger(controller.leftBumper())
+                .onTrue(superstructure.setWantedSuperStateCommand(Superstructure.WantedSuperState.INTAKE_CORAL_FUNNEL));
+        new Trigger(controller.rightBumper())
+                .onTrue(superstructure.setWantedSuperStateCommand(Superstructure.WantedSuperState.SHOOT_CORAL));
     }
+
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.
      *
