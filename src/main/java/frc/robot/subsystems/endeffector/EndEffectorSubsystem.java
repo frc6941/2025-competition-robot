@@ -2,8 +2,6 @@ package frc.robot.subsystems.endeffector;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import org.littletonrobotics.junction.Logger;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.RobotConstants;
 import frc.robot.subsystems.beambreak.BeambreakIO;
 import frc.robot.subsystems.beambreak.BeambreakIOInputsAutoLogged;
@@ -34,14 +32,14 @@ public class EndEffectorSubsystem extends RollerSubsystem {
     public double ks = ENDEFFECTOR_KS.get();
 
     private static double idleRPS = IDLE_RPS.get();
-    private static double indexRPS = INDEX_RPS.get();
+    private static double intakeRPS = INTAKE_RPS.get();
     private static double transferRPS = TRANSFER_RPS.get();
     private static double holdRPS = HOLD_RPS.get();
     private static double shootRPS = SHOOT_RPS.get();
 
     public enum WantedState {
         IDLE,
-        FUNNEL_INDEX,
+        FUNNEL_INTAKE,
         FUNNEL_TRANSFER,
         HOLD,
         SHOOT,
@@ -50,7 +48,7 @@ public class EndEffectorSubsystem extends RollerSubsystem {
 
     public enum SystemState {
         IDLING,
-        FUNNEL_INDEXING,
+        FUNNEL_INTAKING,
         FUNNEL_TRANSFERRING,
         HOLDING,
         SHOOTING,
@@ -72,12 +70,14 @@ public class EndEffectorSubsystem extends RollerSubsystem {
         middleBBIO.updateInputs(middleBBInputs);
         edgeBBIO.updateInputs(edgeBBInputs);
 
+        SystemState newState = handleStateTransition();
+
         Logger.processInputs(NAME + "/Middle Beambreak", middleBBInputs);
         Logger.processInputs(NAME + "/Edge Beambreak", edgeBBInputs);
+        Logger.recordOutput("EndEffector/SystemState", newState.toString());
 
-        SystemState newState = handleStateTransition();
+
         if (newState != systemState) {
-            Logger.recordOutput("Intaker/SystemState", newState.toString());
             systemState = newState;
         }
 
@@ -89,11 +89,11 @@ public class EndEffectorSubsystem extends RollerSubsystem {
             case IDLING:
                 io.setVelocity(idleRPS);
                 break;
-            case FUNNEL_INDEXING:
-                io.setVelocity(-indexRPS);
+            case FUNNEL_INTAKING:
+                io.setVelocity(intakeRPS);
                 break;
             case FUNNEL_TRANSFERRING:
-                io.setVelocity(-transferRPS);
+                io.setVelocity(transferRPS);
                 break;
             case HOLDING:
                 io.setVelocity(holdRPS);
@@ -108,7 +108,7 @@ public class EndEffectorSubsystem extends RollerSubsystem {
         }
 
         if (RobotConstants.TUNING) {
-            indexRPS = INDEX_RPS.get();
+            intakeRPS = INTAKE_RPS.get();
             holdRPS = HOLD_RPS.get();
             transferRPS = TRANSFER_RPS.get();
             shootRPS = SHOOT_RPS.get();
@@ -125,12 +125,12 @@ public class EndEffectorSubsystem extends RollerSubsystem {
     private SystemState handleStateTransition() {
         return switch (wantedState) {
             case IDLE -> SystemState.IDLING;
-            case FUNNEL_INDEX -> {
+            case FUNNEL_INTAKE -> {
                 if (middleBBInputs.isBeambreakOn) {
                     hasTransitionedToTransfer = true;
                     yield SystemState.FUNNEL_TRANSFERRING;
                 }
-                yield SystemState.FUNNEL_INDEXING;
+                yield SystemState.FUNNEL_INTAKING;
             }
             case FUNNEL_TRANSFER -> {
                 if (edgeBBInputs.isBeambreakOn && !middleBBInputs.isBeambreakOn) {
@@ -140,7 +140,9 @@ public class EndEffectorSubsystem extends RollerSubsystem {
             }
             case HOLD -> SystemState.HOLDING;
             case SHOOT -> {
-                hasTransitionedToTransfer = false;
+                if (isShootFinished()){
+                    yield SystemState.IDLING;
+                }
                 yield SystemState.SHOOTING;
             }
             case OFF -> SystemState.OFF;
@@ -148,7 +150,11 @@ public class EndEffectorSubsystem extends RollerSubsystem {
         };
     }
 
-    public boolean isFunnelIndexFinished () {
+    public boolean isShootFinished () {
+        return hasTransitionedToTransfer && !edgeBBInputs.isBeambreakOn;
+    }
+
+    public boolean isFunnelIntakeFinished () {
         return hasTransitionedToTransfer;
     }
 

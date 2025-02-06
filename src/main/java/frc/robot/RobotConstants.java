@@ -17,6 +17,8 @@ import edu.wpi.first.units.*;
 import edu.wpi.first.wpilibj.SerialPort;
 import frc.robot.utils.TunableNumber;
 import org.frcteam6941.swerve.SwerveSetpointGenerator.KinematicLimits;
+import org.littletonrobotics.LoggedTunableNumber;
+
 import static edu.wpi.first.units.Units.*;
 
 /**
@@ -281,8 +283,8 @@ public final class RobotConstants {
          * Constants related to the beambreak subsystem.
          */
         public static class BeamBreakConstants {
-                public static final int ENDEFFECTOR_INTAKE_BEAMBREAK_ID = 1;
-                public static final int ENDEFFECTOR_SHOOT_BEAMBREAK_ID = 3;
+                public static final int ENDEFFECTOR_MIDDLE_BEAMBREAK_ID = 1;
+                public static final int ENDEFFECTOR_EDGE_BEAMBREAK_ID = 3;
                 public static final int INTAKER_BEAMBREAK_ID = 0;
         }
 
@@ -298,11 +300,11 @@ public final class RobotConstants {
                 public static final boolean IS_INVERT = false;
                 public static final double REDUCTION = 1;
 
-                public static final LoggedTunableNumber INDEX_RPS = new LoggedTunableNumber("EndEffector/indexRPS", 300);
-                public static final LoggedTunableNumber TRANSFER_RPS = new LoggedTunableNumber("EndEffector/transferRPS", 200);
+                public static final LoggedTunableNumber INTAKE_RPS = new LoggedTunableNumber("EndEffector/indexRPS", -40);
+                public static final LoggedTunableNumber TRANSFER_RPS = new LoggedTunableNumber("EndEffector/transferRPS", -25);
                 public static final LoggedTunableNumber HOLD_RPS = new LoggedTunableNumber("EndEffector/holdRPS", 0.0);
-                public static final LoggedTunableNumber SHOOT_RPS = new LoggedTunableNumber("EndEffector/shootRPS", -400);
-                public static final LoggedTunableNumber IDLE_RPS = new LoggedTunableNumber("EndEffector/spitRPS", 50);
+                public static final LoggedTunableNumber SHOOT_RPS = new LoggedTunableNumber("EndEffector/shootRPS", -80);
+                public static final LoggedTunableNumber IDLE_RPS = new LoggedTunableNumber("EndEffector/idleRPS", -0);
 
                 /**
                  * Constants for the endeffector motor gains.
