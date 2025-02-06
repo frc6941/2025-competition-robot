@@ -80,10 +80,10 @@ public class Superstructure extends SubsystemBase {
     }
 
     private void intakeCoralFunnel() {
-        if (endEffector.isFunnelIndexFinished()) {
+        if (endEffector.isFunnelIntakeFinished()) {
             endEffector.setWantedState(EndEffectorSubsystem.WantedState.FUNNEL_TRANSFER);
         } else {
-            endEffector.setWantedState(EndEffectorSubsystem.WantedState.FUNNEL_INDEX);
+            endEffector.setWantedState(EndEffectorSubsystem.WantedState.FUNNEL_INTAKE);
         }
     }
 

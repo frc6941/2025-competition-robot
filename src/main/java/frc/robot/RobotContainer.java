@@ -54,9 +54,9 @@ public class RobotContainer {
     // The robot's subsystems and commands are defined here...
     Swerve swerve = Swerve.getInstance();
     Display display = Display.getInstance();
-    EndEffectorSubsystem endEffectorSubsystem = new EndEffectorSubsystem(new EndEffectorIOReal(), new BeambreakIOReal(ENDEFFECTOR_INTAKE_BEAMBREAK_ID), new BeambreakIOReal(ENDEFFECTOR_SHOOT_BEAMBREAK_ID));
+    EndEffectorSubsystem endEffectorSubsystem = new EndEffectorSubsystem(new EndEffectorIOReal(), new BeambreakIOReal(ENDEFFECTOR_MIDDLE_BEAMBREAK_ID), new BeambreakIOReal(ENDEFFECTOR_EDGE_BEAMBREAK_ID));
 
-    private final Superstructure superstructure;
+    Superstructure superstructure =  new Superstructure(endEffectorSubsystem);
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -70,7 +70,7 @@ public class RobotContainer {
         configureOperatorBindings(operatorController);
         configureTesterBindings(testerController);
 
-        superstructure = new Superstructure(endEffectorSubsystem);
+
     }
 
     /**
@@ -130,6 +130,9 @@ public class RobotContainer {
                 .onTrue(superstructure.setWantedSuperStateCommand(Superstructure.WantedSuperState.INTAKE_CORAL_FUNNEL));
         new Trigger(controller.rightBumper())
                 .onTrue(superstructure.setWantedSuperStateCommand(Superstructure.WantedSuperState.SHOOT_CORAL));
+        new Trigger(controller.start())
+                .onTrue(superstructure.setWantedSuperStateCommand(Superstructure.WantedSuperState.STOPPED));
+
     }
 
     /**
