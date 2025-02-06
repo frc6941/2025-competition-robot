@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveModule.ClosedLoopOutputType;
 import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveModuleConstants;
@@ -392,14 +391,16 @@ public final class RobotConstants {
                         public static final TunableNumber ELEVATOR_KS = new TunableNumber("ELEVATOR PID/ks", 0.28475008);
                 }
 
-                // Constants for elevator level positions relative to starting position. Todo: tune all constants below
-                public static final double[] Position = new double[]{
-                        0.0,   //lowest
-                        0.0,   //L1
-                        0.8-0.105,   //L2
-                        1.22-0.105,  //L3
-                        1.80-0.105,  //L4
-                        1.80   //highest
-                };
+                // Constants for elevator level positions relative to starting position.
+                //Todo: tune all constants below
+                public static final double BOTTOM_HEIGHT = 0.0;
+                public static final double INTAKE_INTAKING_HEIGHT = 0.0;
+                public static final double INTAKE_AVOIDING_HEIGHT = 0.0;
+                public static final double FUNNEL_INTAKING_HEIGHT = 0.0;
+                public static final double L1_HEIGHT = 0.0;
+                public static final double L2_HEIGHT = 0.8-0.105;
+                public static final double L3_HEIGHT = 1.22-0.105;
+                public static final double L4_HEIGHT = 1.80-0.105;
+                public static final double APEX_HEIGHT = 1.80;
         }
 }

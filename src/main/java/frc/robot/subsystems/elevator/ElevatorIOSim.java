@@ -1,10 +1,12 @@
 package frc.robot.subsystems.elevator;
 
+import com.ctre.phoenix6.controls.VoltageOut;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.units.AngularVelocityUnit;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.VoltageUnit;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
+import frc.robot.RobotConstants;
 
 import static edu.wpi.first.units.Units.*;
 
@@ -51,6 +53,10 @@ public class ElevatorIOSim implements ElevatorIO {
 
     @Override
     public void resetElevatorPosition(){
+    }
+
+    @Override
+    public void zeroingElevator(){
     }
 
     @Override
