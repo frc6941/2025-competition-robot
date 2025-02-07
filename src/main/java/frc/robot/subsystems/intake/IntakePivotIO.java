@@ -31,4 +31,8 @@ public interface IntakePivotIO {
 
     public default void setMotorPosition(Rotation2d targetPosition) {
     }
+
+    public default void updateConfigs(double kp, double ki, double kd, double ka, double kv, double ks) {
+    }
+
 }

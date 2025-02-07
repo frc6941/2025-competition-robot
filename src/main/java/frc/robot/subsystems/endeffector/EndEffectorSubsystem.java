@@ -1,6 +1,8 @@
 package frc.robot.subsystems.endeffector;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -25,6 +27,7 @@ public class EndEffectorSubsystem extends RollerSubsystem {
     private SystemState systemState = SystemState.IDLING;
 
     private boolean hasTransitionedToTransfer = false;
+    private boolean hasTransitionedToHold = false;
 
     public double kp = ENDEFFECTOR_KP.get();
     public double ki = ENDEFFECTOR_KI.get();
@@ -44,6 +47,7 @@ public class EndEffectorSubsystem extends RollerSubsystem {
         FUNNEL_INTAKE,
         FUNNEL_TRANSFER,
         HOLD,
+        GROUND_INTAKE,
         SHOOT,
         OFF
     }
@@ -52,6 +56,7 @@ public class EndEffectorSubsystem extends RollerSubsystem {
         IDLING,
         FUNNEL_INTAKING,
         FUNNEL_TRANSFERRING,
+        GROUND_INTAKING,
         HOLDING,
         SHOOTING,
         OFF
@@ -91,11 +96,28 @@ public class EndEffectorSubsystem extends RollerSubsystem {
                 io.setVelocity(idleRPS);
                 break;
             case FUNNEL_INTAKING:
-                io.setVelocity(intakeRPS);
+                if(edgeBBInputs.isBeambreakOn&& !middleBBInputs.isBeambreakOn){
+                    hasTransitionedToTransfer = false;
+                    hasTransitionedToHold = true;
+                    systemState = SystemState.HOLDING;
+                    break;
+                }else{
+                    io.setVelocity(intakeRPS);
+                    break;
+                }
+            case GROUND_INTAKING:
+                io.setVelocity(-intakeRPS);
                 break;
             case FUNNEL_TRANSFERRING:
-                io.setVelocity(transferRPS);
-                break;
+                if(edgeBBInputs.isBeambreakOn&& !middleBBInputs.isBeambreakOn){
+                    hasTransitionedToTransfer = false;
+                    hasTransitionedToHold = true;
+                    systemState = SystemState.HOLDING;
+                    break;
+                }else{
+                    io.setVelocity(transferRPS);
+                    break;
+            }
             case HOLDING:
                 io.setVelocity(holdRPS);
                 break;
@@ -127,24 +149,48 @@ public class EndEffectorSubsystem extends RollerSubsystem {
         return switch (wantedState) {
             case IDLE -> SystemState.IDLING;
             case FUNNEL_INTAKE -> {
-                if (middleBBInputs.isBeambreakOn) {
-                    hasTransitionedToTransfer = true;
-                    yield SystemState.FUNNEL_TRANSFERRING;
+                if(edgeBBInputs.isBeambreakOn&& !middleBBInputs.isBeambreakOn){
+                    hasTransitionedToTransfer = false;
+                    hasTransitionedToHold = true;
+                    yield SystemState.HOLDING;
                 }
                 yield SystemState.FUNNEL_INTAKING;
             }
             case FUNNEL_TRANSFER -> {
                 if (edgeBBInputs.isBeambreakOn && !middleBBInputs.isBeambreakOn) {
+                    hasTransitionedToTransfer = false;
+                    hasTransitionedToHold = true;
                     yield SystemState.HOLDING;
                 }
                 yield SystemState.FUNNEL_TRANSFERRING;
             }
-            case HOLD -> SystemState.HOLDING;
+            case HOLD -> {
+                hasTransitionedToHold = true;
+                yield SystemState.HOLDING;
+            }
             case SHOOT -> {
+                if(isEndEffectorIntaking()){
+                    yield systemState;
+                }
                 if (isShootFinished()) {
+                    hasTransitionedToHold = false;
+                    hasTransitionedToTransfer = false;
                     yield SystemState.IDLING;
                 }
-                yield SystemState.SHOOTING;
+                if(systemState == SystemState.HOLDING){
+                    yield SystemState.SHOOTING;
+                }
+                yield systemState;
+            }
+            case GROUND_INTAKE -> {
+                if (middleBBInputs.isBeambreakOn) {
+                    hasTransitionedToTransfer = true;
+                    yield SystemState.FUNNEL_TRANSFERRING;
+                }
+                if(systemState==SystemState.HOLDING){
+                    yield SystemState.HOLDING;
+                }
+                yield SystemState.GROUND_INTAKING;
             }
             case OFF -> SystemState.OFF;
             default -> SystemState.IDLING;
@@ -152,11 +198,15 @@ public class EndEffectorSubsystem extends RollerSubsystem {
     }
 
     public boolean isShootFinished () {
-        return hasTransitionedToTransfer && !edgeBBInputs.isBeambreakOn;
+        return !hasTransitionedToTransfer && !edgeBBInputs.isBeambreakOn;
     }
 
     public boolean isFunnelIntakeFinished () {
         return hasTransitionedToTransfer;
+    }
+
+    public boolean isEndEffectorIntaking (){
+        return systemState == SystemState.FUNNEL_INTAKING || systemState == SystemState.FUNNEL_TRANSFERRING || systemState == SystemState.GROUND_INTAKING;
     }
 
     public void setWantedState(WantedState wantedState) {this.wantedState = wantedState;}

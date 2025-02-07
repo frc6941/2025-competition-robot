@@ -25,6 +25,9 @@ import frc.robot.subsystems.elevator.ElevatorIOReal;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.endeffector.EndEffectorIOReal;
 import frc.robot.subsystems.endeffector.EndEffectorSubsystem;
+import frc.robot.subsystems.intake.IntakePivotIOReal;
+// import frc.robot.subsystems.intake.IntakerRollerIOReal;
+// import frc.robot.subsystems.intake.IntakerSubsystem;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.utils.AllianceFlipUtil;
 import lombok.Getter;
@@ -62,8 +65,8 @@ public class RobotContainer {
     Display display = Display.getInstance();
     ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOReal());
     EndEffectorSubsystem endEffectorSubsystem = new EndEffectorSubsystem(new EndEffectorIOReal(), new BeambreakIOReal(ENDEFFECTOR_MIDDLE_BEAMBREAK_ID), new BeambreakIOReal(ENDEFFECTOR_EDGE_BEAMBREAK_ID));
-
-    Superstructure superstructure =  new Superstructure(endEffectorSubsystem);
+//     IntakerSubsystem intakerSubsystem = new IntakerSubsystem(new IntakePivotIOReal(), new IntakerRollerIOReal(), new BeambreakIOReal(INTAKER_BEAMBREAK_ID));
+    Superstructure superstructure =  new Superstructure(endEffectorSubsystem,/*intakerSubsystem,*/elevatorSubsystem);
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -129,6 +132,8 @@ public class RobotContainer {
 
     //Configure all commands for testing
     private void configureTesterBindings(CommandXboxController controller) {
+        new Trigger(controller.povLeft())
+                .onTrue(Commands.runOnce(() -> elevatorSubsystem.resetPosition(),elevatorSubsystem));
         //test of endeffector state machine
         new Trigger(controller.leftBumper())
                 .onTrue(superstructure.setWantedSuperStateCommand(Superstructure.WantedSuperState.INTAKE_CORAL_FUNNEL));
@@ -136,12 +141,18 @@ public class RobotContainer {
                 .onTrue(superstructure.setWantedSuperStateCommand(Superstructure.WantedSuperState.SHOOT_CORAL));
         new Trigger(controller.start())
                 .onTrue(superstructure.setWantedSuperStateCommand(Superstructure.WantedSuperState.STOPPED));
-        //test of elevator heights
-        controller.a().onTrue(Commands.runOnce(() -> elevatorSubsystem.setPosition(0.5),elevatorSubsystem).until(() ->elevatorSubsystem.isAtSetpoint(0.5)));
-        controller.b().onTrue(Commands.runOnce(() -> elevatorSubsystem.setPosition(0.6),elevatorSubsystem).until(() ->elevatorSubsystem.isAtSetpoint(0.6)));
-        controller.x().onTrue(Commands.runOnce(() -> elevatorSubsystem.setPosition(0.7),elevatorSubsystem).until(() ->elevatorSubsystem.isAtSetpoint(0.7)));
-        controller.y().onTrue(Commands.runOnce(() -> elevatorSubsystem.setPosition(0.47),elevatorSubsystem).until(() ->elevatorSubsystem.isAtSetpoint(0.47)));
-        controller.povDown().onTrue(new ElevatorZeroingCommand(elevatorSubsystem));
+        new Trigger(controller.rightTrigger())
+                .onTrue(superstructure.setWantedSuperStateCommand(Superstructure.WantedSuperState.GROUND_INTAKE));
+        new Trigger(controller.leftTrigger())
+                .onTrue(superstructure.setWantedSuperStateCommand(Superstructure.WantedSuperState.OUTTAKE));
+        new Trigger(controller.a())
+                .onTrue(superstructure.setWantedSuperStateCommand(Superstructure.WantedSuperState.L1));
+        new Trigger(controller.b())
+                .onTrue(superstructure.setWantedSuperStateCommand(Superstructure.WantedSuperState.L2));
+        new Trigger(controller.x())
+                .onTrue(superstructure.setWantedSuperStateCommand(Superstructure.WantedSuperState.L3));
+        new Trigger(controller.y())
+                .onTrue(superstructure.setWantedSuperStateCommand(Superstructure.WantedSuperState.L4));
     }
 
     /**

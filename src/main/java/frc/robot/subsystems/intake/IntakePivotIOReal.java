@@ -30,6 +30,8 @@ public class IntakePivotIOReal implements IntakePivotIO {
     private final StatusSignal<Temperature> tempCelsius = motor.getDeviceTemp();
     private final StatusSignal<Angle> motorPositionRotations = motor.getPosition();
 
+    private final Slot0Configs slot0Configs = new Slot0Configs();
+
     private final VoltageOut voltageOut = new VoltageOut(0.0).withEnableFOC(true);
     private final MotionMagicVoltage motionMagic = new MotionMagicVoltage(0.0).withEnableFOC(true);
 
@@ -85,6 +87,17 @@ public class IntakePivotIOReal implements IntakePivotIO {
     @Override
     public void setMotorVoltage(double voltage) {
         motor.setControl(voltageOut.withOutput(voltage));
+    }
+
+    @Override
+    public void updateConfigs(double kp, double ki, double kd, double ka, double kv, double ks) {
+        slot0Configs.withKP(kp);
+        slot0Configs.withKI(ki);
+        slot0Configs.withKD(kd);
+        slot0Configs.withKA(ka);
+        slot0Configs.withKV(kv);
+        slot0Configs.withKS(ks);
+        motor.getConfigurator().apply(slot0Configs);
     }
 
     @Override
