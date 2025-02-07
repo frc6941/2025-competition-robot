@@ -324,7 +324,39 @@ public final class RobotConstants {
                                         0.28475008);
                 }
         }
+        public static class ClimberConstants {
+                public static final int CLIMBER_MOTOR_ID = 0;
 
+                public static final int STATOR_CURRENT_LIMIT_AMPS = 60;
+                public static final int SUPPLY_CURRENT_LIMIT_AMPS = 20;
+                public static final boolean IS_BRAKE = true;
+                public static final boolean IS_INVERT = false;
+                public static final double REDUCTION = 1;
+                public static double CLIMBER_RATIO = 1;
+                public static Rotation2d MAX_ANGLE = Rotation2d.fromDegrees(60);
+                public static Rotation2d MIN_ANGLE = Rotation2d.fromDegrees(0);
+
+                public static final TunableNumber CLIMB_RPS = new TunableNumber("Climber/climbRPS", 30);
+                public static final TunableNumber DOWN_RPS = new TunableNumber("Climber/climbRPS", -30);
+                public static final TunableNumber HOLD_RPS = new TunableNumber("Climber/holdRPS", 0.0);
+                public static final TunableNumber IDLE_RPS = new TunableNumber("Climber/idleRPS", -0);
+
+                /**
+                 * Constants for the Climber motor gains.
+                 */
+                public static class ClimberGainsClass {
+                        public static final TunableNumber CLIMBER_KP = new TunableNumber("Climber PID/kp", 0.2);
+                        public static final TunableNumber CLIMBER_KI = new TunableNumber("Climber PID/ki", 0);
+                        public static final TunableNumber CLIMBER_KD = new TunableNumber("Climber PID/kd",
+                                        0.001);
+                        public static final TunableNumber CLIMBER_KA = new TunableNumber("Climber PID/ka",
+                                        0.0037512677);
+                        public static final TunableNumber CLIMBER_KV = new TunableNumber("Climber PID/kv",
+                                        0.113);// 0.107853495
+                        public static final TunableNumber CLIMBER_KS = new TunableNumber("Climber PID/ks",
+                                        0.28475008);
+                }
+        }
         /**
          * Constants related to the robot's intake subsystem.
          */
