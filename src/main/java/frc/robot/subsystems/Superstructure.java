@@ -113,8 +113,8 @@ public class Superstructure extends SubsystemBase {
                 currentSuperState = CurrentSuperState.L4;
                 break;
             case ELEVATOR_ZERO:
-                if(elevatorSubsystem.getLeaderCurrent() > RobotConstants.ElevatorConstants.ELEVATOR_ZEROING_CURRENT.get()){
-                    currentSuperState = CurrentSuperState.STOPPED;
+                if(Math.abs(elevatorSubsystem.getLeaderCurrent()) > RobotConstants.ElevatorConstants.ELEVATOR_ZEROING_CURRENT.get()){
+                    wantedSuperState = WantedSuperState.STOPPED;
                 }
                 currentSuperState = CurrentSuperState.ELEVATOR_ZERO;
                 break;

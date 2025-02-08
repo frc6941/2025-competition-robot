@@ -1,6 +1,7 @@
 package frc.robot.subsystems.elevator;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -17,6 +18,9 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     private WantedState wantedState = WantedState.BOTTOM;
     private SystemState systemState = SystemState.AT_BOTTOM;
+
+    public double currentFilterValue = 0.0; 
+    private final LinearFilter currentFilter = LinearFilter.movingAverage(5);
 
     private double l1ExtensionMeters = L1_EXTENSION_METERS.get();
     private double l2ExtensionMeters = L2_EXTENSION_METERS.get();
@@ -37,6 +41,9 @@ public class ElevatorSubsystem extends SubsystemBase {
         Logger.processInputs("Elevator", inputs);
         
         SystemState newState = handleStateTransition();
+        
+        currentFilterValue = currentFilter.calculate(inputs.statorCurrentAmps[0]);
+        Logger.recordOutput("Elevator/CurrentFilter", currentFilterValue);
 
         Logger.recordOutput("Elevator/SystemState", newState.toString());
 
@@ -81,7 +88,7 @@ public class ElevatorSubsystem extends SubsystemBase {
                 io.setPosition(l4ExtensionMeters);
                 break;
             case ZEROING:
-                    io.setVoltage(-1);
+                    io.setVoltage(-0.5);        
                     break;
             case SETTING_VOLTAGE:
                 io.setVoltage(Setted_Voltage);
@@ -100,13 +107,7 @@ public class ElevatorSubsystem extends SubsystemBase {
             case L2 -> SystemState.AT_L2;
             case L3 -> SystemState.AT_L3;
             case L4 -> SystemState.AT_L4;
-            case ZERO -> {
-                if (io.getLeaderCurrent() > RobotConstants.ElevatorConstants.ELEVATOR_ZEROING_CURRENT.get()){
-                    wantedState = WantedState.BOTTOM;
-                    yield SystemState.AT_BOTTOM;
-                }
-                yield SystemState.ZEROING;
-            }
+            case ZERO ->  SystemState.ZEROING;
             case SET_VOLTAGE -> SystemState.SETTING_VOLTAGE;
             default -> SystemState.AT_BOTTOM;
         };
