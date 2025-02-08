@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotConstants;
 // import frc.robot.subsystems.climber.ClimberSubsystem;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.endeffector.EndEffectorSubsystem;
@@ -14,7 +15,7 @@ import java.util.logging.Handler;
 import org.littletonrobotics.junction.Logger;
 
 public class Superstructure extends SubsystemBase {
-    private EndEffectorSubsystem endEffector;
+    // private EndEffectorSubsystem endEffector;
     // private IntakerSubsystem intakerSubsystem;
     private ElevatorSubsystem elevatorSubsystem;
     // private ClimberSubsystem climberSubsystem;
@@ -29,9 +30,11 @@ public class Superstructure extends SubsystemBase {
         L2,
         L3,
         L4,
+        ELEVATOR_ZERO,
         CLIMB,
         HOLD_POSITION,
-        GO_DOWN
+        GO_DOWN,
+        ELEVATOR_SET_VOLTAGE
     }
 
     public enum CurrentSuperState {
@@ -44,9 +47,11 @@ public class Superstructure extends SubsystemBase {
         L2,
         L3,
         L4,
+        ELEVATOR_ZERO,
         CLIMB,
         HOLD_POSITION,
-        GO_DOWN
+        GO_DOWN,
+        ELEVATOR_SET_VOLTAGE
     }
 
     WantedSuperState wantedSuperState = WantedSuperState.STOPPED;
@@ -55,8 +60,8 @@ public class Superstructure extends SubsystemBase {
     CurrentSuperState previousSuperState;
 
     public Superstructure(
-            EndEffectorSubsystem endEffector, /*IntakerSubsystem intakerSubsystem, */ElevatorSubsystem elevatorSubsystem/*ClimberSubsystem climberSubsystem*/) {
-        this.endEffector = endEffector;
+            /*EndEffectorSubsystem endEffector,*/ /*IntakerSubsystem intakerSubsystem, */ElevatorSubsystem elevatorSubsystem/*ClimberSubsystem climberSubsystem*/) {
+        // this.endEffector = endEffector;
         // this.intakerSubsystem = intakerSubsystem;
         this.elevatorSubsystem = elevatorSubsystem;
         // this.climberSubsystem = climberSubsystem;
@@ -82,13 +87,13 @@ public class Superstructure extends SubsystemBase {
             case INTAKE_CORAL_FUNNEL:
                 currentSuperState = CurrentSuperState.INTAKE_CORAL_FUNNEL;
                 break;
-            case SHOOT_CORAL:
-                if(endEffector.isEndEffectorIntaking()){
-                    wantedSuperState = previosWantedSuperState;
-                    break;
-                }
-                currentSuperState = CurrentSuperState.SHOOT_CORAL;
-                break;
+            // case SHOOT_CORAL:
+            //     if(endEffector.isEndEffectorIntaking()){
+            //         wantedSuperState = previosWantedSuperState;
+            //         break;
+            //     }
+                // currentSuperState = CurrentSuperState.SHOOT_CORAL;
+                // break;
             case GROUND_INTAKE:
                 currentSuperState = CurrentSuperState.GROUND_INTAKE;
                 break;
@@ -106,6 +111,15 @@ public class Superstructure extends SubsystemBase {
                 break;
             case L4:
                 currentSuperState = CurrentSuperState.L4;
+                break;
+            case ELEVATOR_ZERO:
+                if(elevatorSubsystem.getLeaderCurrent() > RobotConstants.ElevatorConstants.ELEVATOR_ZEROING_CURRENT.get()){
+                    currentSuperState = CurrentSuperState.STOPPED;
+                }
+                currentSuperState = CurrentSuperState.ELEVATOR_ZERO;
+                break;
+            case ELEVATOR_SET_VOLTAGE:
+                currentSuperState = CurrentSuperState.ELEVATOR_SET_VOLTAGE;
                 break;
             // case CLIMB:
             //     currentSuperState = CurrentSuperState.CLIMB;
@@ -131,9 +145,9 @@ public class Superstructure extends SubsystemBase {
             case INTAKE_CORAL_FUNNEL:
                 intakeCoralFunnel();
                 break;
-            case SHOOT_CORAL:
-                shootCoral();
-                break;
+            // case SHOOT_CORAL:
+            //     shootCoral();
+            //     break;
             case GROUND_INTAKE:
                 groundIntake();
                 break;
@@ -151,6 +165,12 @@ public class Superstructure extends SubsystemBase {
                 break;
             case L4:
                 l4();
+                break;
+            case ELEVATOR_ZERO:
+                zeroElevator();
+                break;
+            case ELEVATOR_SET_VOLTAGE:
+                setElevatorVoltage();
                 break;
             // case CLIMB:
             //     climb();
@@ -181,16 +201,16 @@ public class Superstructure extends SubsystemBase {
 
     private void intakeCoralFunnel() {
         elevatorSubsystem.setWantedState(ElevatorSubsystem.WantedState.FUNNEL_INTAKE);
-        if (endEffector.isFunnelIntakeFinished()) {
-            endEffector.setWantedState(EndEffectorSubsystem.WantedState.FUNNEL_TRANSFER);
-        } else {
-            endEffector.setWantedState(EndEffectorSubsystem.WantedState.FUNNEL_INTAKE);
-        }
+        // if (endEffector.isFunnelIntakeFinished()) {
+        //     endEffector.setWantedState(EndEffectorSubsystem.WantedState.FUNNEL_TRANSFER);
+        // } else {
+        //     endEffector.setWantedState(EndEffectorSubsystem.WantedState.FUNNEL_INTAKE);
+        // }
     }
 
-    private void shootCoral() {
-        endEffector.setWantedState(EndEffectorSubsystem.WantedState.SHOOT);
-    }
+    // private void shootCoral() {
+    //     endEffector.setWantedState(EndEffectorSubsystem.WantedState.SHOOT);
+    // }
     private void l1() {
         elevatorSubsystem.setWantedState(ElevatorSubsystem.WantedState.L1);
     }
@@ -203,6 +223,9 @@ public class Superstructure extends SubsystemBase {
     private void l4() {
         elevatorSubsystem.setWantedState(ElevatorSubsystem.WantedState.L4);
     }
+    private void setElevatorVoltage() {
+        elevatorSubsystem.setWantedState(ElevatorSubsystem.WantedState.SET_VOLTAGE);
+    }
     // private void climb() {
     //     climberSubsystem.setWantedState(ClimberSubsystem.WantedState.CLIMB);
     // }
@@ -212,6 +235,9 @@ public class Superstructure extends SubsystemBase {
     // private void goDown() {
     //     climberSubsystem.setWantedState(ClimberSubsystem.WantedState.GO_DOWN);
     // }
+    private void zeroElevator() {
+        elevatorSubsystem.setWantedState(ElevatorSubsystem.WantedState.ZERO);
+    }
 
     private void outtake(){
         // intakerSubsystem.setWantedState(IntakerSubsystem.WantedState.OUTTAKE);
@@ -221,16 +247,16 @@ public class Superstructure extends SubsystemBase {
     private void groundIntake() {
         elevatorSubsystem.setWantedState(ElevatorSubsystem.WantedState.GROUND_INTAKE);
         // intakerSubsystem.setWantedState(IntakerSubsystem.WantedState.INTAKE);
-        if (endEffector.isFunnelIntakeFinished()) {
-            endEffector.setWantedState(EndEffectorSubsystem.WantedState.FUNNEL_TRANSFER);
-        } else {
-            endEffector.setWantedState(EndEffectorSubsystem.WantedState.GROUND_INTAKE);
-        }
+        // if (endEffector.isFunnelIntakeFinished()) {
+        //     endEffector.setWantedState(EndEffectorSubsystem.WantedState.FUNNEL_TRANSFER);
+        // } else {
+        //     endEffector.setWantedState(EndEffectorSubsystem.WantedState.GROUND_INTAKE);
+        // }
     }
 
     private void handleStopped() {
         // intakerSubsystem.setWantedState(IntakerSubsystem.WantedState.IDLE);
-        endEffector.setWantedState(EndEffectorSubsystem.WantedState.IDLE);
+        // endEffector.setWantedState(EndEffectorSubsystem.WantedState.IDLE);
         elevatorSubsystem.setWantedState(ElevatorSubsystem.WantedState.BOTTOM);
         // climberSubsystem.setWantedState(ClimberSubsystem.WantedState.IDLE);
     }

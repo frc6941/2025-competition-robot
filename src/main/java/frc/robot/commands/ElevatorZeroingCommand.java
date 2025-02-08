@@ -35,6 +35,4 @@ public class ElevatorZeroingCommand extends Command {
         elevator.resetPosition();
         elevator.setVoltage(0);
     }
-
-
 }

@@ -419,29 +419,30 @@ public final class RobotConstants {
                 public static final double DEADZONE_DISTANCE = 0.02;
 
                 public static final TunableNumber motionAcceleration = new TunableNumber("Elevator/MotionAcceleration",
-                                20.0);
+                                200.0);
                 public static final TunableNumber motionCruiseVelocity = new TunableNumber(
-                                "Elevator/MotionCruiseVelocity", 20.0);
+                                "Elevator/MotionCruiseVelocity", 100.0);
                 public static final TunableNumber motionJerk = new TunableNumber("Elevator/MotionJerk", 0.0);
 
                 public static final TunableNumber MAX_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/max",
-                                2);
+                                1.57);
                 public static final TunableNumber IDLE_EXTENSION_METERS = new TunableNumber(
                                 "ELEVATOR GOALS/idle", 0);
                 public static final TunableNumber L1_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/L1",
-                                0.5);
+                                0.45);
                 public static final TunableNumber L2_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/L2",
-                                0.8);
+                                0.53);
                 public static final TunableNumber L3_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/L3",
-                                1.1);// 0.107853495
+                                0.95);// 0.107853495
                 public static final TunableNumber L4_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/L4",
-                                1.4);
+                                1.55);
                 public static final TunableNumber ELEVATOR_ZEROING_CURRENT = new TunableNumber("Elevator zeroing current",
                         15);
                 public static final TunableNumber FUNNEL_INTAKE_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/FUNNEL_INTAKE",
                         0.47);
                 public static final TunableNumber GROUND_INTAKE_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/GROUND_INTAKE",
                         0.1);
+                public static final TunableNumber ELEVATOR_VOLTAGE = new TunableNumber("ELEVATOR_VOLTAGE",2);
 
         }
 
@@ -450,13 +451,15 @@ public final class RobotConstants {
                  * Constants for the elevator motor gains.
                  */
                 public static class ElevatorGainsClass {
-                        public static final TunableNumber ELEVATOR_KP = new TunableNumber("ELEVATOR PID/kp", 0.2);
+                        public static final TunableNumber ELEVATOR_KP = new TunableNumber("ELEVATOR PID/kp", 15);
                         public static final TunableNumber ELEVATOR_KI = new TunableNumber("ELEVATOR PID/ki", 0);
-                        public static final TunableNumber ELEVATOR_KD = new TunableNumber("ELEVATOR PID/kd", 0.001);
+                        public static final TunableNumber ELEVATOR_KD = new TunableNumber("ELEVATOR PID/kd", 0);
                         public static final TunableNumber ELEVATOR_KA = new TunableNumber("ELEVATOR PID/ka",
-                                        0.0037512677);
-                        public static final TunableNumber ELEVATOR_KV = new TunableNumber("ELEVATOR PID/kv", 0.113);// 0.107853495
+                                        0);
+                        public static final TunableNumber ELEVATOR_KV = new TunableNumber("ELEVATOR PID/kv", 0);// 0.107853495
                         public static final TunableNumber ELEVATOR_KS = new TunableNumber("ELEVATOR PID/ks",
-                                        0.28475008);
+                                        0);
+                        public static final TunableNumber ELEVATOR_KG = new TunableNumber("ELEVATOR PID/kg",
+                                        0);
                 }
         }

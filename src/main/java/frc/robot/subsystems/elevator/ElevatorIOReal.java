@@ -80,6 +80,7 @@ public class ElevatorIOReal implements ElevatorIO {
         slot0Configs.kP = ELEVATOR_KP.get();
         slot0Configs.kI = ELEVATOR_KI.get();
         slot0Configs.kD = ELEVATOR_KD.get();
+        slot0Configs.kG = ELEVATOR_KG.get();
 
         leader.setPosition(0.0);
         follower.setPosition(0.0);
@@ -126,6 +127,7 @@ public class ElevatorIOReal implements ElevatorIO {
             slot0Configs.kP = ELEVATOR_KP.get();
             slot0Configs.kI = ELEVATOR_KI.get();
             slot0Configs.kD = ELEVATOR_KD.get();
+            slot0Configs.kG = ELEVATOR_KG.get();
 
             motionMagicConfigs.MotionMagicAcceleration = motionAcceleration.get();
             motionMagicConfigs.MotionMagicCruiseVelocity = motionCruiseVelocity.get();

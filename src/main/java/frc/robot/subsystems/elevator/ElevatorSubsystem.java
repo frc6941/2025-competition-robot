@@ -2,7 +2,11 @@ package frc.robot.subsystems.elevator;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotConstants;
+import frc.robot.commands.ElevatorZeroingCommand;
+
 import org.littletonrobotics.junction.Logger;
 
 import static frc.robot.RobotConstants.ElevatorConstants.*;
@@ -14,6 +18,14 @@ public class ElevatorSubsystem extends SubsystemBase {
     private WantedState wantedState = WantedState.BOTTOM;
     private SystemState systemState = SystemState.AT_BOTTOM;
 
+    private double l1ExtensionMeters = L1_EXTENSION_METERS.get();
+    private double l2ExtensionMeters = L2_EXTENSION_METERS.get();
+    private double l3ExtensionMeters = L3_EXTENSION_METERS.get();
+    private double l4ExtensionMeters = L4_EXTENSION_METERS.get();
+    private double groundIntakeExtensionMeters = GROUND_INTAKE_EXTENSION_METERS.get();
+    private double funnelIntakeMeters = FUNNEL_INTAKE_EXTENSION_METERS.get();
+    private double Setted_Voltage = ELEVATOR_VOLTAGE.get();
+    
 
     public ElevatorSubsystem(ElevatorIO io) {
         this.io = io;
@@ -35,30 +47,44 @@ public class ElevatorSubsystem extends SubsystemBase {
         if (DriverStation.isDisabled()) {
             systemState = SystemState.AT_BOTTOM;
         }
+        if(RobotConstants.TUNING){
+            l1ExtensionMeters = L1_EXTENSION_METERS.get();
+            l2ExtensionMeters = L2_EXTENSION_METERS.get();
+            l3ExtensionMeters = L3_EXTENSION_METERS.get();
+            l4ExtensionMeters = L4_EXTENSION_METERS.get();
+            groundIntakeExtensionMeters = GROUND_INTAKE_EXTENSION_METERS.get();
+            funnelIntakeMeters = FUNNEL_INTAKE_EXTENSION_METERS.get();
+            Setted_Voltage = ELEVATOR_VOLTAGE.get();
+        }
+
 
         switch (systemState) {
             case AT_BOTTOM:
                 io.setPosition(0.0);
                 break;
             case GROUND_INTAKING:
-                io.setPosition(GROUND_INTAKE_EXTENSION_METERS.get());
+                io.setPosition(groundIntakeExtensionMeters);
                 break;
             case FUNNEL_INTAKING:
-                io.setPosition(FUNNEL_INTAKE_EXTENSION_METERS.get());
+                io.setPosition(funnelIntakeMeters);
                 break;
             case AT_L1:
-                io.setPosition(L1_EXTENSION_METERS.get());
+                io.setPosition(l1ExtensionMeters);
                 break;
             case AT_L2:
-                io.setPosition(L2_EXTENSION_METERS.get());
+                io.setPosition(l2ExtensionMeters);
                 break;
             case AT_L3:
-                io.setPosition(L3_EXTENSION_METERS.get());
+                io.setPosition(l3ExtensionMeters);
                 break;
             case AT_L4:
-                io.setPosition(L4_EXTENSION_METERS.get());
+                io.setPosition(l4ExtensionMeters);
                 break;
             case ZEROING:
+                    io.setVoltage(-1);
+                    break;
+            case SETTING_VOLTAGE:
+                io.setVoltage(Setted_Voltage);
                 break;
             default:
                 break;
@@ -74,7 +100,14 @@ public class ElevatorSubsystem extends SubsystemBase {
             case L2 -> SystemState.AT_L2;
             case L3 -> SystemState.AT_L3;
             case L4 -> SystemState.AT_L4;
-            case ZERO -> SystemState.ZEROING;
+            case ZERO -> {
+                if (io.getLeaderCurrent() > RobotConstants.ElevatorConstants.ELEVATOR_ZEROING_CURRENT.get()){
+                    wantedState = WantedState.BOTTOM;
+                    yield SystemState.AT_BOTTOM;
+                }
+                yield SystemState.ZEROING;
+            }
+            case SET_VOLTAGE -> SystemState.SETTING_VOLTAGE;
             default -> SystemState.AT_BOTTOM;
         };
     }
@@ -91,7 +124,6 @@ public class ElevatorSubsystem extends SubsystemBase {
     public double getPositionMeters() {
         return inputs.positionMeters;
     }
-
     public boolean isAtSetpoint(double setpoint) {
         return MathUtil.isNear(setpoint, inputs.positionMeters, DEADZONE_DISTANCE);
     }
@@ -114,7 +146,8 @@ public class ElevatorSubsystem extends SubsystemBase {
         L2,
         L3,
         L4,
-        ZERO
+        ZERO,
+        SET_VOLTAGE
     }
     public enum SystemState{
         AT_BOTTOM,
@@ -124,6 +157,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         AT_L2,
         AT_L3,
         AT_L4,
-        ZEROING
+        ZEROING,
+        SETTING_VOLTAGE
     }
 }

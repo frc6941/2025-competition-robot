@@ -39,6 +39,7 @@ import org.json.simple.parser.ParseException;
 
 import static edu.wpi.first.units.Units.Seconds;
 import static frc.robot.RobotConstants.BeamBreakConstants.*;
+import static frc.robot.RobotConstants.ElevatorConstants.ELEVATOR_VOLTAGE;
 
 import java.io.IOException;
 import java.util.function.*;
@@ -67,9 +68,9 @@ public class RobotContainer {
     Display display = Display.getInstance();
 //     ClimberSubsystem climberSubsystem = new ClimberSubsystem(new ClimberIOReal());
     ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOReal());
-    EndEffectorSubsystem endEffectorSubsystem = new EndEffectorSubsystem(new EndEffectorIOReal(), new BeambreakIOReal(ENDEFFECTOR_MIDDLE_BEAMBREAK_ID), new BeambreakIOReal(ENDEFFECTOR_EDGE_BEAMBREAK_ID));
+//     EndEffectorSubsystem endEffectorSubsystem = new EndEffectorSubsystem(new EndEffectorIOReal(), new BeambreakIOReal(ENDEFFECTOR_MIDDLE_BEAMBREAK_ID), new BeambreakIOReal(ENDEFFECTOR_EDGE_BEAMBREAK_ID));
 //     IntakerSubsystem intakerSubsystem = new IntakerSubsystem(new IntakePivotIOReal(), new IntakerRollerIOReal(), new BeambreakIOReal(INTAKER_BEAMBREAK_ID));
-    Superstructure superstructure =  new Superstructure(endEffectorSubsystem,/*intakerSubsystem,*/elevatorSubsystem/* ,climberSubsystem*/);
+    Superstructure superstructure =  new Superstructure(/*endEffectorSubsystem,*//*intakerSubsystem,*/elevatorSubsystem/* ,climberSubsystem*/);
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -138,10 +139,11 @@ public class RobotContainer {
 
         new Trigger(controller.leftBumper())
                 .onTrue(superstructure.setWantedSuperStateCommand(Superstructure.WantedSuperState.INTAKE_CORAL_FUNNEL));
-        new Trigger(controller.rightBumper())
-                .onTrue(superstructure.setWantedSuperStateCommand(Superstructure.WantedSuperState.SHOOT_CORAL));
+        // new Trigger(controller.rightBumper())
+        //         .onTrue(superstructure.setWantedSuperStateCommand(Superstructure.WantedSuperState.SHOOT_CORAL));
         new Trigger(controller.start())
                 .onTrue(superstructure.setWantedSuperStateCommand(Superstructure.WantedSuperState.STOPPED));
+        
         new Trigger(controller.rightTrigger())
                 .onTrue(superstructure.setWantedSuperStateCommand(Superstructure.WantedSuperState.GROUND_INTAKE));
         new Trigger(controller.leftTrigger())
@@ -154,6 +156,10 @@ public class RobotContainer {
                 .onTrue(superstructure.setWantedSuperStateCommand(Superstructure.WantedSuperState.L3));
         new Trigger(controller.y())
                 .onTrue(superstructure.setWantedSuperStateCommand(Superstructure.WantedSuperState.L4));
+        controller.povLeft()
+                .whileTrue(superstructure.setWantedSuperStateCommand(Superstructure.WantedSuperState.ELEVATOR_SET_VOLTAGE));
+        controller.povRight()
+                .onTrue(superstructure.setWantedSuperStateCommand(Superstructure.WantedSuperState.ELEVATOR_ZERO));
         // new Trigger(controller.povUp())
         //         .onTrue(superstructure.setWantedSuperStateCommand(Superstructure.WantedSuperState.CLIMB));
         // new Trigger(controller.povDown())
