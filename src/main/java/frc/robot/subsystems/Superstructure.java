@@ -1,33 +1,56 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.endeffector.EndEffectorSubsystem;
+// import frc.robot.subsystems.intake.IntakerSubsystem;
+
+import java.util.logging.Handler;
+
 import org.littletonrobotics.junction.Logger;
 
 public class Superstructure extends SubsystemBase {
     private EndEffectorSubsystem endEffector;
+    // private IntakerSubsystem intakerSubsystem;
+    private ElevatorSubsystem elevatorSubsystem;
 
     public enum WantedSuperState {
         STOPPED,
         INTAKE_CORAL_FUNNEL,
-        SHOOT_CORAL
+        GROUND_INTAKE,
+        SHOOT_CORAL,
+        OUTTAKE,
+        L1,
+        L2,
+        L3,
+        L4
     }
 
     public enum CurrentSuperState {
         STOPPED,
         INTAKE_CORAL_FUNNEL,
-        SHOOT_CORAL
+        GROUND_INTAKE,
+        SHOOT_CORAL,
+        OUTTAKE,
+        L1,
+        L2,
+        L3,
+        L4
     }
 
     WantedSuperState wantedSuperState = WantedSuperState.STOPPED;
+    WantedSuperState previosWantedSuperState;
     CurrentSuperState currentSuperState = CurrentSuperState.STOPPED;
     CurrentSuperState previousSuperState;
 
     public Superstructure(
-            EndEffectorSubsystem endEffector) {
+            EndEffectorSubsystem endEffector, /*IntakerSubsystem intakerSubsystem, */ElevatorSubsystem elevatorSubsystem) {
         this.endEffector = endEffector;
+        // this.intakerSubsystem = intakerSubsystem;
+        this.elevatorSubsystem = elevatorSubsystem;
     }
 
     @Override
@@ -37,6 +60,11 @@ public class Superstructure extends SubsystemBase {
 
         Logger.recordOutput("DesiredSuperstate", wantedSuperState);
         Logger.recordOutput("CurrentSuperstate", currentSuperState);
+        Logger.recordOutput("previosWantedSuperState",previosWantedSuperState);
+
+        if (DriverStation.isDisabled()) {
+            wantedSuperState = WantedSuperState.STOPPED;
+        }
     }
 
     private CurrentSuperState handleStateTransition() {
@@ -46,9 +74,33 @@ public class Superstructure extends SubsystemBase {
                 currentSuperState = CurrentSuperState.INTAKE_CORAL_FUNNEL;
                 break;
             case SHOOT_CORAL:
+                if(endEffector.isEndEffectorIntaking()){
+                    wantedSuperState = previosWantedSuperState;
+                    break;
+                }
                 currentSuperState = CurrentSuperState.SHOOT_CORAL;
                 break;
+            case GROUND_INTAKE:
+                currentSuperState = CurrentSuperState.GROUND_INTAKE;
+                break;
+            case OUTTAKE:
+                currentSuperState = CurrentSuperState.OUTTAKE;
+                break;
+            case L1:
+                currentSuperState = CurrentSuperState.L1;
+                break;
+            case L2:
+                currentSuperState = CurrentSuperState.L2;
+                break;
+            case L3:
+                currentSuperState = CurrentSuperState.L3;
+                break;
+            case L4:
+                currentSuperState = CurrentSuperState.L4;
+                break;
             case STOPPED:
+                currentSuperState = CurrentSuperState.STOPPED;
+                break;
             default:
                 currentSuperState = CurrentSuperState.STOPPED;
                 break;
@@ -64,7 +116,27 @@ public class Superstructure extends SubsystemBase {
             case SHOOT_CORAL:
                 shootCoral();
                 break;
+            case GROUND_INTAKE:
+                groundIntake();
+                break;
+            case OUTTAKE:
+                outtake();
+                break;
+            case L1:
+                l1();
+                break;
+            case L2:
+                l2();
+                break;
+            case L3:
+                l3();
+                break;
+            case L4:
+                l4();
+                break;
             case STOPPED:
+                handleStopped();
+                break;
             default:
                 handleStopped();
                 break;
@@ -72,6 +144,7 @@ public class Superstructure extends SubsystemBase {
     }
 
     public void setWantedSuperState(WantedSuperState wantedSuperState) {
+        previosWantedSuperState = this.wantedSuperState;
         this.wantedSuperState = wantedSuperState;
     }
 
@@ -80,6 +153,7 @@ public class Superstructure extends SubsystemBase {
     }
 
     private void intakeCoralFunnel() {
+        elevatorSubsystem.setWantedState(ElevatorSubsystem.WantedState.FUNNEL_INTAKE);
         if (endEffector.isFunnelIntakeFinished()) {
             endEffector.setWantedState(EndEffectorSubsystem.WantedState.FUNNEL_TRANSFER);
         } else {
@@ -90,9 +164,38 @@ public class Superstructure extends SubsystemBase {
     private void shootCoral() {
         endEffector.setWantedState(EndEffectorSubsystem.WantedState.SHOOT);
     }
+    private void l1() {
+        elevatorSubsystem.setWantedState(ElevatorSubsystem.WantedState.L1);
+    }
+    private void l2() {
+        elevatorSubsystem.setWantedState(ElevatorSubsystem.WantedState.L2);
+    }
+    private void l3() {
+        elevatorSubsystem.setWantedState(ElevatorSubsystem.WantedState.L3);
+    }
+    private void l4() {
+        elevatorSubsystem.setWantedState(ElevatorSubsystem.WantedState.L4);
+    }
+
+    private void outtake(){
+        // intakerSubsystem.setWantedState(IntakerSubsystem.WantedState.OUTTAKE);
+        elevatorSubsystem.setWantedState(ElevatorSubsystem.WantedState.GROUND_INTAKE);
+    }
+
+    private void groundIntake() {
+        elevatorSubsystem.setWantedState(ElevatorSubsystem.WantedState.GROUND_INTAKE);
+        // intakerSubsystem.setWantedState(IntakerSubsystem.WantedState.INTAKE);
+        if (endEffector.isFunnelIntakeFinished()) {
+            endEffector.setWantedState(EndEffectorSubsystem.WantedState.FUNNEL_TRANSFER);
+        } else {
+            endEffector.setWantedState(EndEffectorSubsystem.WantedState.GROUND_INTAKE);
+        }
+    }
 
     private void handleStopped() {
+        // intakerSubsystem.setWantedState(IntakerSubsystem.WantedState.IDLE);
         endEffector.setWantedState(EndEffectorSubsystem.WantedState.IDLE);
+        elevatorSubsystem.setWantedState(ElevatorSubsystem.WantedState.BOTTOM);
     }
 
 }
