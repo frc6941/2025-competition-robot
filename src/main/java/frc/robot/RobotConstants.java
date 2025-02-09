@@ -367,7 +367,32 @@ public final class RobotConstants {
                         public static final TunableNumber INTAKE_KS = new TunableNumber("INTAKE PID/ks", 0.045);
                 }
         }
+        public static class ClimberConstants {
+                public static final int CLIMBER_MOTOR_ID = 0;
+                public static double CLIMBER_RATIO = 1;
+                public static Rotation2d RETRACTED_ANGLE = Rotation2d.fromDegrees(30);
+                public static Rotation2d MAX_ANGLE = Rotation2d.fromDegrees(60);
+                public static Rotation2d MIN_ANGLE = Rotation2d.fromDegrees(0);
 
+                public static final TunableNumber CLIMBER_VELOCITY = new TunableNumber("CLIMBER/ClimberVelocity", 600);
+                public static final TunableNumber CLIMBER_VOLTAGE = new TunableNumber("CLIMBER/ClimberVoltage", 3.0);
+
+                /**
+                 * Constants for the CLIMBER pivot motor gains in the CLIMBER subsystem.
+                 */
+                public static class ClimberGainsClass {
+                        public static final TunableNumber CLIMBER_KP = new TunableNumber("CLIMBER PID/kp",
+                                        0.03);
+                        public static final TunableNumber CLIMBER_KI = new TunableNumber("CLIMBER PID/ki", 0);
+                        public static final TunableNumber CLIMBER_KD = new TunableNumber("CLIMBER PID/kd",
+                                        0.0001);
+                        public static final TunableNumber CLIMBER_KA = new TunableNumber("CLIMBER PID/ka", 0);
+                        public static final TunableNumber CLIMBER_KV = new TunableNumber("CLIMBER PID/kv",
+                                        0.12);
+                        public static final TunableNumber CLIMBER_KS = new TunableNumber("CLIMBER PID/ks",
+                                        0.045);
+                }
+        }
         /**
          * Constants related to the elevator subsystem.
          */
