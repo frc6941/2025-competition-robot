@@ -1,18 +1,13 @@
 package frc.robot.subsystems.climber;
 
-import edu.wpi.first.math.filter.LinearFilter;
 import frc.robot.utils.TunableNumber;
 import org.littletonrobotics.junction.Logger;
-
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ClimberSubsystem extends SubsystemBase{
     private ClimberIO io;
     private ClimberIOInputsAutoLogged inputs = new ClimberIOInputsAutoLogged();
-
-    private LinearFilter currentFilter = LinearFilter.movingAverage(5);
-    public double currentFilterValue = 0.0;
 
     private WantedState wantedState = WantedState.DEPLOY;
     private SystemState systemState = SystemState.DEPLOYING;
@@ -24,20 +19,13 @@ public class ClimberSubsystem extends SubsystemBase{
         this.io = io;
     }
 
-    private static TunableNumber zeroingCurrent = new TunableNumber("Climber/zeroCurrent", 40);
-
     @Override
     public void periodic() {
         io.updateInputs(inputs);
-        Logger.processInputs("Climber/inputs", inputs);
-
-        Logger.recordOutput("Climber/CurrentFilter", currentFilterValue);
-
         SystemState newState = handleStateTransition();
 
+        Logger.processInputs("Climber/inputs", inputs);
         Logger.recordOutput("Climber/SystemState", newState.toString());
-
-        currentFilterValue = currentFilter.calculate(inputs.statorCurrentAmps);
 
         if (newState != systemState) {
             systemState = newState;
@@ -45,6 +33,7 @@ public class ClimberSubsystem extends SubsystemBase{
 
         if (DriverStation.isDisabled()) {
             systemState = SystemState.DEPLOYING;
+            io.resetPosition();
         }
 
         switch (systemState) {
@@ -61,7 +50,6 @@ public class ClimberSubsystem extends SubsystemBase{
         return switch(wantedState){
             case DEPLOY -> SystemState.DEPLOYING;
             case CLIMB -> SystemState.CLIMBING;
-            default -> SystemState.DEPLOYING;
         };
     }
 
@@ -74,10 +62,6 @@ public class ClimberSubsystem extends SubsystemBase{
     public enum SystemState{
         DEPLOYING,
         CLIMBING
-    }
-
-    public boolean isClimbFinished() {
-        return (Math.abs(currentFilterValue) > zeroingCurrent.get());
     }
 
     public void resetPosition() {
