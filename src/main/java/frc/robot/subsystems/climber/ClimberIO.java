@@ -2,10 +2,7 @@ package frc.robot.subsystems.climber;
 
 import org.littletonrobotics.junction.AutoLog;
 
-import edu.wpi.first.math.geometry.Rotation2d;
-import frc.robot.RobotConstants.ClimberConstants;
 import frc.robot.RobotConstants.ClimberConstants.ClimberGainsClass;
-import frc.robot.subsystems.intake.IntakePivotIO.IntakePivotIOInputs;
 
 public interface ClimberIO {
     @AutoLog
@@ -26,23 +23,9 @@ public interface ClimberIO {
         public double ClimberKS = ClimberGainsClass.CLIMBER_KS.get();
     }
 
-    public default void updateInputs(ClimberIOInputs inputs) {
-    }
-
-    public default void setMotorVoltage(double voltage) {
-    }
-
-    public default void setMotorVelocity(double velocity) {
-    }
+    default void updateInputs(ClimberIOInputs inputs) {}
 
     default void setTargetPosition(double targetPositionDeg) {}
 
-    public default void setCoast() {}
-
     default void resetPosition() {}
-
-    public default void setBrake() {}
-
-    public default void updateConfigs(double kp, double ki, double kd, double ka, double kv, double ks) {
-    }
 }

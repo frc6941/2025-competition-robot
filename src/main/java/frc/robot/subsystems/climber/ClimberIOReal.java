@@ -5,16 +5,10 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.CoastOut;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
-import com.ctre.phoenix6.controls.VelocityVoltage;
-import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -36,14 +30,10 @@ public class ClimberIOReal implements ClimberIO {
     private final StatusSignal<Current> supplyCurrentAmps = motor.getSupplyCurrent();
     private final StatusSignal<Temperature> tempCelsius = motor.getDeviceTemp();
 
-    private final Slot0Configs slot0Configs = new Slot0Configs();
-
     private double CLIMBER_RATIO = RobotConstants.ClimberConstants.CLIMBER_RATIO;
     private double targetPositionDeg = 0.0;
 
     private final MotionMagicConfigs motionMagicConfigs;
-    private final VoltageOut voltageOut = new VoltageOut(0.0).withEnableFOC(true);
-    private final VelocityVoltage velocityVoltage = new VelocityVoltage(0.0).withEnableFOC(true);
     private final MotionMagicVoltage positionRequest = new MotionMagicVoltage(0.0).withEnableFOC(true);
 
     public ClimberIOReal() {
@@ -55,13 +45,11 @@ public class ClimberIOReal implements ClimberIO {
         config.CurrentLimits.StatorCurrentLimit = 80.0;
         config.CurrentLimits.StatorCurrentLimitEnable = true;
 
-
         motionMagicConfigs = new MotionMagicConfigs();
         motionMagicConfigs.MotionMagicCruiseVelocity = ClimberConstants.CLIMBER_CRUISE_VELOCITY.get();
         motionMagicConfigs.MotionMagicAcceleration = ClimberConstants.CLIMBER_ACCELERATION.get();
         motionMagicConfigs.MotionMagicJerk = ClimberConstants.CLIMBER_JERK.get();
         config.withMotionMagic(motionMagicConfigs);
-
 
         motor.getConfigurator().apply(config);
         motor.optimizeBusUtilization();
@@ -106,52 +94,17 @@ public class ClimberIOReal implements ClimberIO {
             motionMagicConfigs.MotionMagicAcceleration = ClimberConstants.CLIMBER_ACCELERATION.get();
             motionMagicConfigs.MotionMagicJerk = ClimberConstants.CLIMBER_JERK.get();
             motor.getConfigurator().apply(motionMagicConfigs);
-
         }
-
-
-
-        
-    }
-    @Override
-    public void setMotorVoltage(double voltage) {
-        motor.setControl(voltageOut.withOutput(voltage));
-    }
-
-    @Override
-    public void updateConfigs(double kp, double ki, double kd, double ka, double kv, double ks) {
-        slot0Configs.withKP(kp);
-        slot0Configs.withKI(ki);
-        slot0Configs.withKD(kd);
-        slot0Configs.withKA(ka);
-        slot0Configs.withKV(kv);
-        slot0Configs.withKS(ks);
-        motor.getConfigurator().apply(slot0Configs);
-    }
-
-    @Override
-    public void setMotorVelocity(double velocity) {
-        motor.setControl(velocityVoltage.withVelocity(velocity));
     }
 
     @Override
     public void setTargetPosition(double targetPositionDeg) {
-        motor.setControl(positionRequest.withPosition(targetPositionDeg*CLIMBER_RATIO/360));
+        motor.setControl(positionRequest.withPosition(targetPositionDeg * CLIMBER_RATIO / 360));
         this.targetPositionDeg = targetPositionDeg;
-    }
-
-    @Override
-    public void setCoast() {
-        motor.setNeutralMode(NeutralModeValue.Coast);
     }
 
     @Override
     public void resetPosition() {
         motor.setPosition(0.0);
-    }
-
-    @Override
-    public void setBrake() {
-        motor.setNeutralMode(NeutralModeValue.Brake);
     }
 }
