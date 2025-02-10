@@ -372,8 +372,8 @@ public final class RobotConstants {
                 public static double CLIMBER_RATIO = 60;
 
                 public static final TunableNumber CLIMBER_CRUISE_VELOCITY = new TunableNumber("CLIMBER/ClimberCruiseVelocity", 60);
-                public static final TunableNumber CLIMBER_ACCELERATION = new TunableNumber("CLIMBER/ClimberCruiseVelocity", 200);
-                public static final TunableNumber CLIMBER_JERK = new TunableNumber("CLIMBER/ClimberCruiseVelocity", 0);
+                public static final TunableNumber CLIMBER_ACCELERATION = new TunableNumber("CLIMBER/ClimberAcceleration", 200);
+                public static final TunableNumber CLIMBER_JERK = new TunableNumber("CLIMBER/ClimberJerk", 0);
 
                 public static final TunableNumber CLIMBER_VOLTAGE = new TunableNumber("CLIMBER/ClimberVoltage", 3.0);
 

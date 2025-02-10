@@ -17,8 +17,8 @@ public class ClimberSubsystem extends SubsystemBase{
     private WantedState wantedState = WantedState.DEPLOY;
     private SystemState systemState = SystemState.DEPLOYING;
 
-    private TunableNumber deployAngle = new TunableNumber("Climber/deployAngle", -15);
-    private TunableNumber climbAngle = new TunableNumber("Climber/climbAngle", 40);
+    private TunableNumber deployAngle = new TunableNumber("CLIMBER/deployAngle", 0);
+    private TunableNumber climbAngle = new TunableNumber("CLIMBER/climbAngle", -420);
 
     public ClimberSubsystem(ClimberIOReal io){
         this.io = io;
