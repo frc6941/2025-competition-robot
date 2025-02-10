@@ -10,7 +10,8 @@ import frc.robot.subsystems.intake.IntakePivotIO.IntakePivotIOInputs;
 public interface ClimberIO {
     @AutoLog
     class ClimberIOInputs {
-        public Rotation2d position = new Rotation2d();
+        public double currentPositionDeg = 0.0;
+        public double targetPositionDeg = 0.0;
         public double velocityRotationsPerSec = 0.0;
         public double appliedVolts = 0.0;
         public double statorCurrentAmps = 0.0;
@@ -31,8 +32,16 @@ public interface ClimberIO {
     public default void setMotorVoltage(double voltage) {
     }
 
-    public default void setMotorPosition(Rotation2d targetPosition) {
+    public default void setMotorVelocity(double velocity) {
     }
+
+    default void setTargetPosition(double targetPositionDeg) {}
+
+    public default void setCoast() {}
+
+    default void resetPosition() {}
+
+    public default void setBrake() {}
 
     public default void updateConfigs(double kp, double ki, double kd, double ka, double kv, double ks) {
     }

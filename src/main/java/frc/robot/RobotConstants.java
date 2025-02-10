@@ -368,13 +368,13 @@ public final class RobotConstants {
                 }
         }
         public static class ClimberConstants {
-                public static final int CLIMBER_MOTOR_ID = 0;
-                public static double CLIMBER_RATIO = 1;
-                public static Rotation2d RETRACTED_ANGLE = Rotation2d.fromDegrees(30);
-                public static Rotation2d MAX_ANGLE = Rotation2d.fromDegrees(60);
-                public static Rotation2d MIN_ANGLE = Rotation2d.fromDegrees(0);
+                public static final int CLIMBER_MOTOR_ID = 52;
+                public static double CLIMBER_RATIO = 60;
 
-                public static final TunableNumber CLIMBER_VELOCITY = new TunableNumber("CLIMBER/ClimberVelocity", 600);
+                public static final TunableNumber CLIMBER_CRUISE_VELOCITY = new TunableNumber("CLIMBER/ClimberCruiseVelocity", 60);
+                public static final TunableNumber CLIMBER_ACCELERATION = new TunableNumber("CLIMBER/ClimberCruiseVelocity", 200);
+                public static final TunableNumber CLIMBER_JERK = new TunableNumber("CLIMBER/ClimberCruiseVelocity", 0);
+
                 public static final TunableNumber CLIMBER_VOLTAGE = new TunableNumber("CLIMBER/ClimberVoltage", 3.0);
 
                 /**
