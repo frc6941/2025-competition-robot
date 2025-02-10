@@ -86,7 +86,7 @@ public class ClimberIOReal implements ClimberIO {
                 supplyCurrentAmps,
                 statorCurrentAmps);
 
-        inputs.currentPositionDeg = Math.toDegrees(currentPositionRot.getValueAsDouble());
+        inputs.currentPositionDeg = currentPositionRot.getValueAsDouble() * 360 / 60;
         inputs.velocityRotationsPerSec = velocityRotPerSec.getValueAsDouble();
         inputs.tempCelsius = tempCelsius.getValue().in(Units.Celsius);
         inputs.appliedVolts = appliedVolts.getValueAsDouble();
@@ -136,7 +136,7 @@ public class ClimberIOReal implements ClimberIO {
 
     @Override
     public void setTargetPosition(double targetPositionDeg) {
-        motor.setControl(positionRequest.withPosition(targetPositionDeg*CLIMBER_RATIO));
+        motor.setControl(positionRequest.withPosition(targetPositionDeg*CLIMBER_RATIO/360));
         this.targetPositionDeg = targetPositionDeg;
     }
 
