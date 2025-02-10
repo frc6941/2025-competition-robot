@@ -16,7 +16,6 @@ import frc.robot.auto.basics.AutoActions;
 import frc.robot.commands.ElevatorZeroingCommand;
 import frc.robot.commands.RumbleCommand;
 import frc.robot.display.Display;
-import frc.robot.subsystems.Superstructure;
 import frc.robot.subsystems.apriltagvision.AprilTagVision;
 import frc.robot.subsystems.apriltagvision.AprilTagVisionIONorthstar;
 import frc.robot.subsystems.beambreak.BeambreakIOReal;
@@ -65,7 +64,6 @@ public class RobotContainer {
     ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOReal());
     EndEffectorSubsystem endEffectorSubsystem = new EndEffectorSubsystem(new EndEffectorIOReal(), new BeambreakIOReal(ENDEFFECTOR_MIDDLE_BEAMBREAK_ID), new BeambreakIOReal(ENDEFFECTOR_EDGE_BEAMBREAK_ID));
     ClimberSubsystem  climberSubsystem = new ClimberSubsystem(new ClimberIOReal());
-    Superstructure superstructure = new Superstructure(climberSubsystem);
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -139,20 +137,16 @@ public class RobotContainer {
         //         .onTrue(superstructure.setWantedSuperStateCommand(Superstructure.WantedSuperState.SHOOT_CORAL));
         // new Trigger(controller.start())
         //         .onTrue(superstructure.setWantedSuperStateCommand(Superstructure.WantedSuperState.STOPPED));
-        new Trigger(controller.start())
-                .onTrue(superstructure.setWantedSuperStateCommand(Superstructure.WantedSuperState.STOPPED));
-        new Trigger(controller.povLeft())
-                .onTrue(superstructure.setWantedSuperStateCommand(Superstructure.WantedSuperState.HOLD));
-        new Trigger(controller.povRight())
-                .onTrue(superstructure.setWantedSuperStateCommand(Superstructure.WantedSuperState.CLIMB));
-        new Trigger(controller.povUp())
-                .onTrue(superstructure.setWantedSuperStateCommand(Superstructure.WantedSuperState.GO_DOWN));
         //test of elevator heights
         controller.a().onTrue(Commands.runOnce(() -> elevatorSubsystem.setPosition(L1_EXTENSION_METERS.get()), elevatorSubsystem).until(() -> elevatorSubsystem.isAtSetpoint(L1_EXTENSION_METERS.get())));
         controller.b().onTrue(Commands.runOnce(() -> elevatorSubsystem.setPosition(L2_EXTENSION_METERS.get()), elevatorSubsystem).until(() -> elevatorSubsystem.isAtSetpoint(L2_EXTENSION_METERS.get())));
         controller.x().onTrue(Commands.runOnce(() -> elevatorSubsystem.setPosition(L3_EXTENSION_METERS.get()), elevatorSubsystem).until(() -> elevatorSubsystem.isAtSetpoint(L3_EXTENSION_METERS.get())));
         controller.y().onTrue(Commands.runOnce(() -> elevatorSubsystem.setPosition(L4_EXTENSION_METERS.get()), elevatorSubsystem).until(() -> elevatorSubsystem.isAtSetpoint(L4_EXTENSION_METERS.get())));
         controller.povDown().onTrue(new ElevatorZeroingCommand(elevatorSubsystem));
+
+        controller.start().onTrue(Commands.runOnce(() -> climberSubsystem.resetPosition()));
+        controller.leftBumper().onTrue(Commands.runOnce(() -> climberSubsystem.setWantedState(ClimberSubsystem.WantedState.CLIMB)));
+        controller.rightBumper().onTrue(Commands.runOnce(() -> climberSubsystem.setWantedState(ClimberSubsystem.WantedState.DEPLOY)));
     }
 
     //Configure all commands for Stream Deck
