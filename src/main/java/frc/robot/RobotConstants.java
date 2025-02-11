@@ -380,15 +380,15 @@ public final class RobotConstants {
                  */
                 public static class ClimberGainsClass {
                         public static final TunableNumber CLIMBER_KP = new TunableNumber("CLIMBER PID/kp",
-                                        2);
+                                        2.001);
                         public static final TunableNumber CLIMBER_KI = new TunableNumber("CLIMBER PID/ki", 0);
                         public static final TunableNumber CLIMBER_KD = new TunableNumber("CLIMBER PID/kd",
-                                        0);
-                        public static final TunableNumber CLIMBER_KA = new TunableNumber("CLIMBER PID/ka", 0.002);
+                                        0.01);
+                        public static final TunableNumber CLIMBER_KA = new TunableNumber("CLIMBER PID/ka", 0);
                         public static final TunableNumber CLIMBER_KV = new TunableNumber("CLIMBER PID/kv",
-                                        0.002);
+                                        0);
                         public static final TunableNumber CLIMBER_KS = new TunableNumber("CLIMBER PID/ks",
-                                        0.0003);
+                                        0);
                 }
         }
         /**
