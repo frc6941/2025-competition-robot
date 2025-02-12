@@ -12,10 +12,10 @@ import static edu.wpi.first.units.Units.*;
 
 public class ElevatorIOSim implements ElevatorIO {
     private static final double LOOP_PERIOD_SECS = 0.02;
-    private final DCMotorSim leftElevatorTalonSim = new DCMotorSim(edu.wpi.first.math.system.plant.LinearSystemId.createDCMotorSystem(DCMotor.getFalcon500(1),
-            0.025, 6.75), DCMotor.getFalcon500(1), null);
-    private final DCMotorSim rightElevatorTalonSim = new DCMotorSim(edu.wpi.first.math.system.plant.LinearSystemId.createDCMotorSystem(DCMotor.getFalcon500(1),
-            0.025, 6.75), DCMotor.getFalcon500(1) , null);
+    private final DCMotorSim leftElevatorTalonSim = new DCMotorSim(edu.wpi.first.math.system.plant.LinearSystemId.createDCMotorSystem(DCMotor.getKrakenX60(1),
+            0.025, 6.75), DCMotor.getKrakenX60(1), null);
+    private final DCMotorSim rightElevatorTalonSim = new DCMotorSim(edu.wpi.first.math.system.plant.LinearSystemId.createDCMotorSystem(DCMotor.getKrakenX60(1),
+            0.025, 6.75), DCMotor.getKrakenX60(1) , null);
 
     private Measure<VoltageUnit> leftElevatorAppliedVoltage = Volts.zero();
     private Measure<VoltageUnit> rightElevatorAppliedVoltage = Volts.zero();
