@@ -8,6 +8,7 @@ import com.pathplanner.lib.util.FileVersionException;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -23,6 +24,8 @@ import frc.robot.display.Display;
 import frc.robot.subsystems.apriltagvision.AprilTagVision;
 import frc.robot.subsystems.apriltagvision.AprilTagVisionIONorthstar;
 import frc.robot.subsystems.beambreak.BeambreakIOReal;
+import frc.robot.subsystems.climber.ClimberIOReal;
+import frc.robot.subsystems.climber.ClimberSubsystem;
 import frc.robot.subsystems.elevator.ElevatorIOReal;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.endeffector.EndEffectorIOReal;
@@ -57,7 +60,9 @@ public class RobotContainer {
         L4,
         GROUND_INTAKE,
         FUNNEL_INTAKE,
-        SHOOT_CORAL
+        SHOOT_CORAL,
+        CLIMB,
+        DEPLOY
     }
     CommandXboxController driverController = new CommandXboxController(0);
     CommandXboxController operatorController = new CommandXboxController(1);
@@ -75,12 +80,18 @@ public class RobotContainer {
     Swerve swerve = Swerve.getInstance();
     Display display = Display.getInstance();
     ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOReal());
-    EndEffectorSubsystem endEffectorSubsystem = new EndEffectorSubsystem(new EndEffectorIOReal(), new BeambreakIOReal(ENDEFFECTOR_MIDDLE_BEAMBREAK_ID), new BeambreakIOReal(ENDEFFECTOR_EDGE_BEAMBREAK_ID));
+    EndEffectorSubsystem endEffectorSubsystem = new EndEffectorSubsystem(
+        new EndEffectorIOReal(),
+        new BeambreakIOReal(ENDEFFECTOR_MIDDLE_BEAMBREAK_ID), 
+        new BeambreakIOReal(ENDEFFECTOR_EDGE_BEAMBREAK_ID));
+    ClimberSubsystem  climberSubsystem = new ClimberSubsystem(new ClimberIOReal());
+
     private Command TRY_STOPPED(){
         return 
                 Commands.parallel(
                         elevatorSubsystem.setElevatorStateCommand(ElevatorSubsystem.WantedState.ZERO),
-                        endEffectorSubsystem.setWantedStateCommand(WantedState.IDLE)
+                        endEffectorSubsystem.setWantedStateCommand(WantedState.IDLE),
+                        Commands.runOnce(()->climberSubsystem.resetPosition())
                 )
                 
         ;
@@ -148,6 +159,13 @@ public class RobotContainer {
                         endEffectorSubsystem.setWantedStateCommand(WantedState.SHOOT)
         );
     }
+    private Command TRY_CLIMB(){
+        return Commands.run(() -> climberSubsystem.setWantedState(ClimberSubsystem.WantedState.CLIMB));
+    }
+    private Command TRY_DEPLOY(){
+        return Commands.run(() -> climberSubsystem.setWantedState(ClimberSubsystem.WantedState.DEPLOY));
+    }
+        
     private Command setSuperState(superState state){
         return switch (state) {
                 case STOPPED -> TRY_STOPPED();
@@ -157,6 +175,9 @@ public class RobotContainer {
                 case L4 -> TRY_L4();
                 case GROUND_INTAKE -> TRY_GROUND_INTAKE();
                 case FUNNEL_INTAKE -> TRY_FUNNEL_INTAKE();
+                case SHOOT_CORAL -> TRY_SHOOT_CORAL();
+                case CLIMB -> TRY_CLIMB();
+                case DEPLOY -> TRY_DEPLOY();
                 default -> TRY_STOPPED(); // or some other default value that makes sense in your context
         };
         }
@@ -171,6 +192,8 @@ public class RobotContainer {
         configureDriverBindings(driverController);
         configureOperatorBindings(operatorController);
         configureTesterBindings(testerController);
+
+        new Trigger(RobotController::getUserButton).onTrue(new ClimberInitiateCommand(climberSubsystem).until(() -> !RobotController.getUserButton()));
     }
 
     /**
@@ -232,7 +255,16 @@ public class RobotContainer {
                 .onTrue(setSuperState(superState.L3));
         new Trigger(controller.y())
                 .onTrue(setSuperState(superState.L4));
-        
+        new Trigger(controller.rightTrigger())
+                .onTrue(setSuperState(superState.SHOOT_CORAL));
+        new Trigger(controller.leftBumper())
+                .onTrue(setSuperState(superState.GROUND_INTAKE));
+        new Trigger(controller.rightBumper())
+                .onTrue(setSuperState(superState.FUNNEL_INTAKE));
+        new Trigger(controller.povUp())
+                .onTrue(setSuperState(superState.DEPLOY));
+        new Trigger(controller.povDown())
+                .onTrue(setSuperState(superState.CLIMB));
         new Trigger(controller.leftTrigger())
                 .onTrue(setSuperState(superState.STOPPED));
 

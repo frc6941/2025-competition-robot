@@ -20,7 +20,7 @@ public class CharacterizationDriveCommand extends Command {
     private final Timer timer = new Timer();
     private final ArrayList<Double> yVoltages = new ArrayList<>();
     private final ArrayList<Double> xVelocities = new ArrayList<>();
-    private final ArrayList<Double> xFalconVelocities = new ArrayList<>();
+    private final ArrayList<Double> xKrakenVelocities = new ArrayList<>();
     private Swerve drivetrain;
     private double startVoltage;
     private double deltaVoltage;
@@ -53,18 +53,18 @@ public class CharacterizationDriveCommand extends Command {
  
         SwerveModuleState[] moduleStates = drivetrain.getModuleStates();
         double averageVelocity = 0.0;
-        double averageFalconVelocity = 0.0;
+        double averageKrakenVelocity = 0.0;
         for (SwerveModuleState state : moduleStates) {
             averageVelocity += Math.abs(state.speedMetersPerSecond);
-            averageFalconVelocity += Math.abs(
+            averageKrakenVelocity += Math.abs(
                     (state.speedMetersPerSecond * 60)
                             / RobotConstants.SwerveConstants.wheelCircumferenceMeters.magnitude()
                             * RobotConstants.SwerveConstants.DRIVE_GEAR_RATIO * (2048.0 / 600.0));
         }
         averageVelocity /= moduleStates.length;
-        averageFalconVelocity /= moduleStates.length;
+        averageKrakenVelocity /= moduleStates.length;
         xVelocities.add(averageVelocity);
-        xFalconVelocities.add(averageFalconVelocity);
+        xKrakenVelocities.add(averageKrakenVelocity);
  
     };
     private final Notifier n = new Notifier(r);
@@ -101,7 +101,7 @@ public class CharacterizationDriveCommand extends Command {
         prepTimer.reset();
         timer.stop();
  
-        if (xVelocities.isEmpty() || yVoltages.isEmpty() || xFalconVelocities.isEmpty()) return;
+        if (xVelocities.isEmpty() || yVoltages.isEmpty() || xKrakenVelocities.isEmpty()) return;
  
         PolynomialRegression regression = new PolynomialRegression(
                 xVelocities.stream().mapToDouble(Math::abs).toArray(),
@@ -116,12 +116,12 @@ public class CharacterizationDriveCommand extends Command {
                         * RobotConstants.SwerveConstants.wheelCircumferenceMeters.magnitude()
                         + " V / rps");
  
-        PolynomialRegression regressionFalcon = new PolynomialRegression(
-                xFalconVelocities.stream().mapToDouble(Math::abs).toArray(),
+        PolynomialRegression regressionKraken = new PolynomialRegression(
+                xKrakenVelocities.stream().mapToDouble(Math::abs).toArray(),
                 yVoltages.stream().mapToDouble(Math::abs).toArray(), 1);
         System.out.println(
-                "Converted Module kV in Falcon Units:"
-                        + 1024.0 * regressionFalcon.beta(0) + "Falcon Output Units / Falcon Encoder Units / 100ms");
+                "Converted Module kV in Kraken Units:"
+                        + 1024.0 * regressionKraken.beta(0) + "Kraken Output Units / Kraken Encoder Units / 100ms");
         double travelTicks = 0;
         System.out.println(
                 "Travelled Ticks: " + travelTicks
