@@ -74,7 +74,7 @@ public class IntakePivotIOReal implements IntakePivotIO {
         inputs.appliedVolts = appliedVolts.getValueAsDouble();
         inputs.supplyCurrentAmps = supplyCurrentAmps.getValueAsDouble();
         inputs.statorCurrentAmps = statorCurrentAmps.getValueAsDouble();
-        inputs.currentPositionDeg = Math.toDegrees(currentPositionRot.getValueAsDouble());
+        inputs.currentPositionDeg = currentPositionRot.getValueAsDouble()* 360 / PIVOT_RATIO;
         inputs.targetPositionDeg = targetPositionDeg;
 
         motor.getConfigurator().apply(new Slot0Configs()
@@ -94,6 +94,11 @@ public class IntakePivotIOReal implements IntakePivotIO {
     @Override
     public void setMotorPosition(double targetPositionDeg) {
         this.targetPositionDeg = targetPositionDeg;
-        motor.setControl(motionMagic.withPosition(Math.toRadians(targetPositionDeg*PIVOT_RATIO)));
+        motor.setControl(motionMagic.withPosition(targetPositionDeg * PIVOT_RATIO / 360));
+    }
+
+    @Override
+    public void resetPosition() {
+        motor.setPosition(0.0);
     }
 }
