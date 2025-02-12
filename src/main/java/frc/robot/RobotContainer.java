@@ -4,16 +4,29 @@
 
 package frc.robot;
 
+import com.google.flatbuffers.Constants;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.config.ModuleConfig;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PathFollowingController;
 import com.pathplanner.lib.util.FileVersionException;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.units.MassUnit;
+import edu.wpi.first.units.Measure;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.*;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 
 import frc.robot.auto.basics.AutoActions;
 import frc.robot.commands.*;
@@ -33,6 +46,7 @@ import lombok.Getter;
 
 import org.frcteam6941.looper.UpdateManager;
 import org.json.simple.parser.ParseException;
+import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 import static edu.wpi.first.units.Units.Seconds;
 import static frc.robot.RobotConstants.BeamBreakConstants.*;
@@ -40,6 +54,8 @@ import static frc.robot.RobotConstants.ElevatorConstants.*;
 
 import java.io.IOException;
 import java.util.function.*;
+
+import javax.print.attribute.standard.Destination;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -75,6 +91,8 @@ public class RobotContainer {
     Display display = Display.getInstance();
     ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOReal());
     EndEffectorSubsystem endEffectorSubsystem = new EndEffectorSubsystem(new EndEffectorIOReal(), new BeambreakIOReal(ENDEFFECTOR_MIDDLE_BEAMBREAK_ID), new BeambreakIOReal(ENDEFFECTOR_EDGE_BEAMBREAK_ID));
+    @Getter
+    private LoggedDashboardChooser<Command> autoChooser;
     private Command TRY_STOPPED(){
         return Commands.parallel(
                         elevatorSubsystem.setElevatorStateCommand(ElevatorSubsystem.WantedState.ZERO),
@@ -112,8 +130,9 @@ public class RobotContainer {
     private Command TRY_GROUND_INTAKE() {
         if (endEffectorSubsystem.isIntakeFinished()) {
                 return Commands.parallel(
-                        elevatorSubsystem.setElevatorPositionCommand(L1_EXTENSION_METERS.get()).withTimeout(2)
+                        elevatorSubsystem.setElevatorPositionCommand(L1_EXTENSION_METERS.get())
                         .andThen(new WaitUntilCommand(() -> elevatorSubsystem.getIo().isNearExtension(L1_EXTENSION_METERS.get())))
+                        .andThen(new WaitCommand(2))
                         .andThen(elevatorSubsystem.setElevatorPositionCommand(INTAKER_INTAKE_METERS.get()))
                         .andThen(endEffectorSubsystem.setWantedStateCommand(WantedState.GROUND_INTAKE)),
                         endEffectorSubsystem.setWantedStateCommand(EndEffectorSubsystem.WantedState.TRANSFER));
@@ -121,6 +140,7 @@ public class RobotContainer {
                 return Commands.parallel(
                         elevatorSubsystem.setElevatorPositionCommand(L1_EXTENSION_METERS.get()).withTimeout(2)
                         .andThen(new WaitUntilCommand(() -> elevatorSubsystem.getIo().isNearExtension(L1_EXTENSION_METERS.get())))
+                        .andThen(new WaitCommand(2))
                         .andThen(elevatorSubsystem.setElevatorPositionCommand(INTAKER_INTAKE_METERS.get())),
                         // .andThen(endEffectorSubsystem.setWantedStateCommand(WantedState.GROUND_INTAKE)),
                         endEffectorSubsystem.setWantedStateCommand(EndEffectorSubsystem.WantedState.GROUND_INTAKE));
@@ -164,7 +184,7 @@ public class RobotContainer {
         updateManager = new UpdateManager(swerve,
                 display);
         updateManager.registerAll();
-
+        configureAuto();
         configureDriverBindings(driverController);
         configureOperatorBindings(operatorController);
         configureTesterBindings(testerController);
@@ -179,7 +199,13 @@ public class RobotContainer {
      * PS4} controllers or {@link CommandJoystick Flight
      * joysticks}.
      */
+    public Command getAutonomousCommand() {
+        return autoChooser.get();
+    }
 
+    private void configureSubsystems(){
+        
+    }
     //Configure all commands for driver
     private void configureDriverBindings(CommandXboxController driverController) {
         swerve.setDefaultCommand(Commands
@@ -271,20 +297,44 @@ public class RobotContainer {
         // //Elevator Home
     }
 
-    /**
-     * Use this to pass the autonomous command to the main {@link Robot} class.
-     *
-     * @return the command to run in autonomous
-     * @throws ParseException
-     * @throws IOException
-     * @throws FileVersionException
-     */
-    public Command getAutonomousCommand() throws FileVersionException, IOException, ParseException {
-        // An example command will be run in autonomous
-        return new SequentialCommandGroup(
-                AutoActions.waitFor(0.000001),
-                AutoActions.followTrajectory(AutoActions.getTrajectory("T_4"), true, true)
+    private void configureAuto() {
+        NamedCommands.registerCommand("AutoShoot", TRY_FUNNEL_INTAKE().withTimeout(3.0));
+        NamedCommands.registerCommand("AutoGroundIntake", TRY_GROUND_INTAKE().withTimeout(3.0));
+        NamedCommands.registerCommand("AutoFunnelIntake", TRY_FUNNEL_INTAKE().withTimeout(3.0));
+        NamedCommands.registerCommand("AutoL1", TRY_L1().withTimeout(3.0));
+        NamedCommands.registerCommand("AutoL2", TRY_L2().withTimeout(3.0));
+        NamedCommands.registerCommand("AutoL3", TRY_L3().withTimeout(3.0));
+        NamedCommands.registerCommand("AutoL4", TRY_L4().withTimeout(3.0));
+        NamedCommands.registerCommand("AutoStop", TRY_STOPPED().withTimeout(3.0));
+
+        //TODO:change values to match actual robot dimensions
+        AutoBuilder.configure(
+                () -> Swerve.getInstance().getLocalizer().getCoarseFieldPose(0),
+                (Pose2d pose2d) -> Swerve.getInstance().resetPose(pose2d),
+                () -> Swerve.getInstance().getChassisSpeeds(),
+                (ChassisSpeeds chassisSpeeds) -> Swerve.getInstance().driveSpeed(chassisSpeeds),
+                null,
+                new RobotConfig(60, 1/20, new ModuleConfig(
+                        0.55, 
+                        RobotConstants.SwerveConstants.maxSpeed.magnitude(), 
+                        0.5, 
+                        new DCMotor(
+                                5, 
+                                10, 
+                                40, 
+                                80, 
+                                90,
+                                8), 
+                        80,
+                        8),
+                          new Translation2d(0, 0)),
+                AllianceFlipUtil::shouldFlip,
+                swerve
         );
+
+        autoChooser = new LoggedDashboardChooser<>("Chooser", AutoBuilder.buildAutoChooser());
+
+        // dashboard.registerAutoSelector(autoChooser.getSendableChooser());
     }
 
     private Command rumbleDriver(double seconds) {

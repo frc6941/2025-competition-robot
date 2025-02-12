@@ -67,6 +67,7 @@ public class Swerve implements Updatable, Subsystem {
             new PIDController(3.5, 0.0, 0.0), new PIDController(3.5, 0.0, 0.0),
             this.headingController, RobotConstants.SwerveConstants.DRIVETRAIN_FEEDFORWARD);
     private boolean isLockHeading;
+    private HolonomicDriveSignal autoDriveSignal = new HolonomicDriveSignal(new Translation2d(), 0.0, false, false);
     // Lock heading target for the swerve drive.
     @Getter
     private double headingTarget = 0.0;
@@ -188,6 +189,21 @@ public class Swerve implements Updatable, Subsystem {
             instance = new Swerve();
         }
         return instance;
+    }
+    public void autoDrive(Translation2d translationalVelocity, double rotationalVelocity,
+        boolean isFieldOriented, boolean isOpenLoop) {
+        autoDriveSignal = new HolonomicDriveSignal(translationalVelocity, rotationalVelocity, isFieldOriented,
+        isOpenLoop);
+    }
+ 
+    // Reset the swerve drive odometry to the given pose.
+
+    public void driveSpeed(ChassisSpeeds speeds) {
+        autoDrive(new Translation2d(
+                speeds.vxMetersPerSecond,
+                speeds.vyMetersPerSecond), speeds.omegaRadiansPerSecond, false, false);
+//        System.out.println(speeds.toString());
+        // TODO: fix it
     }
  
     // Convert module states to chassis speeds.

@@ -4,6 +4,8 @@ import com.pathplanner.lib.util.FileVersionException;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.swerve.Swerve;
+
 import org.json.simple.parser.ParseException;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
@@ -13,6 +15,7 @@ import java.io.IOException;
 
 // FIXME: Too many things here!
 public class Robot extends LoggedRobot {
+    Swerve swerve = Swerve.getInstance();
     private Command m_autonomousCommand;
     private RobotContainer robotContainer;
 
@@ -52,24 +55,13 @@ public class Robot extends LoggedRobot {
     // Initializes the robot in autonomous mode
     @Override
     public void autonomousInit() {
-        try {
-            m_autonomousCommand = robotContainer.getAutonomousCommand();
-        } catch (FileVersionException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (ParseException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
+        m_autonomousCommand = robotContainer.getAutonomousCommand();
+        robotContainer.getUpdateManager().runEnableSingle();
         if (m_autonomousCommand != null) {
             m_autonomousCommand.schedule();
         }
         robotContainer.getUpdateManager().invokeStart();
-        // swerve.auto();
+        swerve.auto();
     }
 
     // Runs periodically during autonomous mode
@@ -81,8 +73,8 @@ public class Robot extends LoggedRobot {
     @Override
     public void autonomousExit() {
         robotContainer.getUpdateManager().invokeStop();
-        // swerve.normal();
-        // swerve.cancelFollow();
+        swerve.normal();
+        swerve.cancelFollow();
     }
 
     // Initializes the robot in teleoperated mode
@@ -91,7 +83,7 @@ public class Robot extends LoggedRobot {
         if (m_autonomousCommand != null) {
             m_autonomousCommand.cancel();
         }
-        // swerve.normal();
+        swerve.normal();
         robotContainer.getUpdateManager().invokeStart();
 
     }
