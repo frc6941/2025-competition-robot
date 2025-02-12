@@ -1,7 +1,6 @@
 package frc.robot.subsystems.intake;
 
 import org.littletonrobotics.junction.AutoLog;
-import edu.wpi.first.math.geometry.Rotation2d;
 
 import static frc.robot.RobotConstants.intakeConstants.intakePivotGainsClass.*;
 
@@ -15,6 +14,7 @@ public interface IntakePivotIO {
         public double statorCurrentAmps = 0.0;
         public double supplyCurrentAmps = 0.0;
         public double tempCelsius = 0.0;
+        public double currentPositionRot = 0.0;
 
         public double intakePivotKP = INTAKE_PIVOT_KP.get();
         public double intakePivotKI = INTAKE_PIVOT_KI.get();
@@ -29,4 +29,6 @@ public interface IntakePivotIO {
     default void setMotorVoltage(double voltage) {}
 
     default void setMotorPosition(double targetPositionDeg) {}
+
+    default void resetPosition(double position) {}
 }

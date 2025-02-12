@@ -2,6 +2,7 @@ package frc.robot.subsystems.intake;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
@@ -18,6 +19,8 @@ import edu.wpi.first.units.measure.Temperature;
 import edu.wpi.first.units.measure.Voltage;
 import frc.robot.RobotConstants;
 
+import static frc.robot.RobotConstants.intakeConstants.*;
+
 public class IntakePivotIOReal implements IntakePivotIO {
     private final TalonFX motor = new TalonFX(RobotConstants.intakeConstants.INTAKE_PIVOT_MOTOR_ID,
             RobotConstants.CAN_BUS_NAME);
@@ -31,6 +34,7 @@ public class IntakePivotIOReal implements IntakePivotIO {
 
     private final VoltageOut voltageOut = new VoltageOut(0.0).withEnableFOC(true);
     private final MotionMagicVoltage motionMagic = new MotionMagicVoltage(0.0).withEnableFOC(true);
+    private final MotionMagicConfigs motionMagicConfigs;
 
     double targetPositionDeg = 0.0;
     double PIVOT_RATIO = RobotConstants.intakeConstants.PIVOT_RATIO;
@@ -44,7 +48,12 @@ public class IntakePivotIOReal implements IntakePivotIO {
         config.CurrentLimits.SupplyCurrentLimitEnable = true;
         config.CurrentLimits.StatorCurrentLimit = 40.0;
         config.CurrentLimits.StatorCurrentLimitEnable = true;
-        config.Feedback.SensorToMechanismRatio = PIVOT_RATIO;
+
+        motionMagicConfigs = new MotionMagicConfigs();
+        motionMagicConfigs.MotionMagicCruiseVelocity = INTAKE_PIVOT_CRUISE_VELOCITY.get();
+        motionMagicConfigs.MotionMagicAcceleration = INTAKE_PIVOT_ACCELERATION.get();
+        motionMagicConfigs.MotionMagicJerk = INTAKE_PIVOT_JERK.get();
+        config.withMotionMagic(motionMagicConfigs);
 
         motor.getConfigurator().apply(config);
         motor.optimizeBusUtilization();
@@ -74,8 +83,16 @@ public class IntakePivotIOReal implements IntakePivotIO {
         inputs.appliedVolts = appliedVolts.getValueAsDouble();
         inputs.supplyCurrentAmps = supplyCurrentAmps.getValueAsDouble();
         inputs.statorCurrentAmps = statorCurrentAmps.getValueAsDouble();
-        inputs.currentPositionDeg = Math.toDegrees(currentPositionRot.getValueAsDouble());
+        inputs.currentPositionDeg = currentPositionRot.getValueAsDouble() * 360 / PIVOT_RATIO;
         inputs.targetPositionDeg = targetPositionDeg;
+        inputs.currentPositionRot = currentPositionRot.getValueAsDouble();
+
+        inputs.intakePivotKP= intakePivotGainsClass.INTAKE_PIVOT_KP.get();
+        inputs.intakePivotKI= intakePivotGainsClass.INTAKE_PIVOT_KI.get();
+        inputs.intakePivotKD= intakePivotGainsClass.INTAKE_PIVOT_KD.get();
+        inputs.intakePivotKA= intakePivotGainsClass.INTAKE_PIVOT_KA.get();
+        inputs.intakePivotKV= intakePivotGainsClass.INTAKE_PIVOT_KV.get();
+        inputs.intakePivotKS= intakePivotGainsClass.INTAKE_PIVOT_KS.get();
 
         motor.getConfigurator().apply(new Slot0Configs()
                 .withKP(inputs.intakePivotKP)
@@ -84,6 +101,10 @@ public class IntakePivotIOReal implements IntakePivotIO {
                 .withKA(inputs.intakePivotKA)
                 .withKV(inputs.intakePivotKV)
                 .withKS(inputs.intakePivotKS));
+        motionMagicConfigs.MotionMagicCruiseVelocity = INTAKE_PIVOT_CRUISE_VELOCITY.get();
+        motionMagicConfigs.MotionMagicAcceleration = INTAKE_PIVOT_ACCELERATION.get();
+        motionMagicConfigs.MotionMagicJerk = INTAKE_PIVOT_JERK.get();
+        motor.getConfigurator().apply(motionMagicConfigs);
     }
 
     @Override
@@ -94,6 +115,11 @@ public class IntakePivotIOReal implements IntakePivotIO {
     @Override
     public void setMotorPosition(double targetPositionDeg) {
         this.targetPositionDeg = targetPositionDeg;
-        motor.setControl(motionMagic.withPosition(Math.toRadians(targetPositionDeg*PIVOT_RATIO)));
+        motor.setControl(motionMagic.withPosition(targetPositionDeg * PIVOT_RATIO / 360));
+    }
+
+    @Override
+    public void resetPosition(double position) {
+        motor.setPosition(position * PIVOT_RATIO / 360);
     }
 }
