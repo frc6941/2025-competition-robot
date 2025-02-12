@@ -17,6 +17,7 @@ import edu.wpi.first.units.measure.Temperature;
 import edu.wpi.first.units.measure.Voltage;
 import frc.robot.RobotConstants;
 import frc.robot.RobotConstants.ClimberConstants;
+import frc.robot.RobotConstants.ClimberConstants.ClimberGainsClass;
 
 
 public class ClimberIOReal implements ClimberIO {
@@ -81,6 +82,12 @@ public class ClimberIOReal implements ClimberIO {
         inputs.supplyCurrentAmps = supplyCurrentAmps.getValueAsDouble();
         inputs.statorCurrentAmps = statorCurrentAmps.getValueAsDouble();
         inputs.targetPositionDeg = targetPositionDeg;
+        inputs.ClimberKP = ClimberGainsClass.CLIMBER_KP.get();
+        inputs.ClimberKI = ClimberGainsClass.CLIMBER_KI.get();
+        inputs.ClimberKD = ClimberGainsClass.CLIMBER_KD.get();
+        inputs.ClimberKA = ClimberGainsClass.CLIMBER_KA.get();
+        inputs.ClimberKV = ClimberGainsClass.CLIMBER_KV.get();
+        inputs.ClimberKS = ClimberGainsClass.CLIMBER_KS.get();
 
         if(RobotConstants.TUNING){
             motor.getConfigurator().apply(new Slot0Configs()
