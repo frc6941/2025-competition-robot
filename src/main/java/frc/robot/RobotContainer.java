@@ -10,6 +10,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PathFollowingController;
+import com.pathplanner.lib.trajectory.PathPlannerTrajectoryState;
 import com.pathplanner.lib.util.FileVersionException;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -313,7 +314,28 @@ public class RobotContainer {
                 (Pose2d pose2d) -> Swerve.getInstance().resetPose(pose2d),
                 () -> Swerve.getInstance().getChassisSpeeds(),
                 (ChassisSpeeds chassisSpeeds) -> Swerve.getInstance().driveSpeed(chassisSpeeds),
-                null,
+                new PathFollowingController() {
+
+                        @Override
+                        public ChassisSpeeds calculateRobotRelativeSpeeds(Pose2d currentPose,
+                                        PathPlannerTrajectoryState targetState) {
+                                // TODO Auto-generated method stub
+                                throw new UnsupportedOperationException("Unimplemented method 'calculateRobotRelativeSpeeds'");
+                        }
+
+                        @Override
+                        public void reset(Pose2d currentPose, ChassisSpeeds currentSpeeds) {
+                                // TODO Auto-generated method stub
+                                throw new UnsupportedOperationException("Unimplemented method 'reset'");
+                        }
+
+                        @Override
+                        public boolean isHolonomic() {
+                                // TODO Auto-generated method stub
+                                throw new UnsupportedOperationException("Unimplemented method 'isHolonomic'");
+                        }
+                        
+                },
                 new RobotConfig(60, 1/20, new ModuleConfig(
                         0.55, 
                         RobotConstants.SwerveConstants.maxSpeed.magnitude(), 
