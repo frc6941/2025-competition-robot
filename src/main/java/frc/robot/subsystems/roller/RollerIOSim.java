@@ -1,5 +1,7 @@
 package frc.robot.subsystems.roller;
 
+import static frc.robot.RobotConstants.LOOPER_DT;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -11,25 +13,19 @@ import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 public class RollerIOSim implements RollerIO {
     private final DCMotorSim motorSim;
 
-    private final SimpleMotorFeedforward feedforward;
-    private final PIDController pid;
 
     public RollerIOSim(
             double jKgMetersSquared,
-            double gearRatio,
-            SimpleMotorFeedforward feedforward,
-            PIDController pid) {
+            double gearRatio) {
         this.motorSim = new DCMotorSim(
                 LinearSystemId.createDCMotorSystem(
                         DCMotor.getKrakenX60Foc(1), jKgMetersSquared, gearRatio),
                 DCMotor.getKrakenX60Foc(1));
-        this.feedforward = feedforward;
-        this.pid = pid;
     }
 
     @Override
     public void updateInputs(RollerIOInputs inputs) {
-        motorSim.update(0.02);
+        motorSim.update(LOOPER_DT);
         inputs.velocityRotPerSec = motorSim.getAngularVelocityRPM() / 60;
         inputs.appliedVolts = motorSim.getInputVoltage();
         inputs.statorCurrentAmps = motorSim.getCurrentDrawAmps();
@@ -39,14 +35,12 @@ public class RollerIOSim implements RollerIO {
 
     @Override
     public void setVoltage(double voltage) {
-        motorSim.setInputVoltage(MathUtil.clamp(voltage, -12, 12));
+        motorSim.setInputVoltage(voltage);
     }
 
     @Override
-    public void setVelocity(double velocityRPS) {
-        setVoltage(
-                feedforward.calculate(velocityRPS)
-                        + pid.calculate(motorSim.getAngularVelocityRPM() / 60, velocityRPS));
+    public void setVelocity(double rads) {
+        motorSim.setAngularVelocity(rads);
     }
 
 }
