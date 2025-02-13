@@ -332,7 +332,7 @@ public final class RobotConstants {
                 public static final int INTAKE_MOTOR_ID = 15;
                 public static final int INTAKE_PIVOT_MOTOR_ID = 16;
                 //Constants for intake pivot
-                public static double PIVOT_RATIO = 60*50/11;
+                public static double PIVOT_RATIO = 36*50/11;
                 //Constants for intake roller
                 public static final int STATOR_CURRENT_LIMIT_AMPS = 60;
                 public static final int SUPPLY_CURRENT_LIMIT_AMPS = 20;
@@ -341,39 +341,31 @@ public final class RobotConstants {
                 public static final double REDUCTION = 1;
                 public static final double moi = 0;//inertia for simulation
                 public static final double ROLLER_RATIO = 1;
-
-                public static final TunableNumber GROUND_ANGLE = new TunableNumber("Intake/groundAngle", 30);
-                public static final TunableNumber RETRACTED_ANGLE = new TunableNumber("Intake/retractedAngle", 50);
-                public static final TunableNumber INTAKE_RPS = new TunableNumber("Intake/intakeRPS", 40);
-                public static final TunableNumber IDLE_RPS = new TunableNumber("Intake/idleRPS", 0);
+                //Motion constants for intake pivot
+                public static final TunableNumber INTAKE_PIVOT_CRUISE_VELOCITY = new TunableNumber("INTAKE_PIVOT/cruiseVelocity", 100);
+                public static final TunableNumber INTAKE_PIVOT_ACCELERATION = new TunableNumber("INTAKE_PIVOT/acceleration", 200);
+                public static final TunableNumber INTAKE_PIVOT_JERK = new TunableNumber("INTAKE_PIVOT/jerk", 1200);
+                public static final TunableNumber DEPLOY_ANGLE = new TunableNumber("INTAKE_PIVOT/deployAngle", 113);
+                public static final TunableNumber HOME_ANGLE = new TunableNumber("INTAKE_PIVOT/homeAngle", 5);
+                public static final TunableNumber FUNNEL_AVOID_ANGLE = new TunableNumber("INTAKE_PIVOT/funnelAvoidAngle", 50);
+                //Motion constants for intake roller
+                public static final TunableNumber INTAKE_VOLTAGE = new TunableNumber("INTAKE_ROLLER/intakeVoltage", 8.0);
                 /**
                  * Constants for the intake pivot motor gains in the intake subsystem.
                  */
                 public static class intakePivotGainsClass {
                         public static final TunableNumber INTAKE_PIVOT_KP = new TunableNumber("INTAKE_PIVOT PID/kp",
-                                        0.03);
+                                        40);
                         public static final TunableNumber INTAKE_PIVOT_KI = new TunableNumber("INTAKE_PIVOT PID/ki", 0);
                         public static final TunableNumber INTAKE_PIVOT_KD = new TunableNumber("INTAKE_PIVOT PID/kd",
-                                        0.0001);
+                                        0.25);
                         public static final TunableNumber INTAKE_PIVOT_KA = new TunableNumber("INTAKE_PIVOT PID/ka", 0);
                         public static final TunableNumber INTAKE_PIVOT_KV = new TunableNumber("INTAKE_PIVOT PID/kv",
-                                        0.12);
+                                        0);
                         public static final TunableNumber INTAKE_PIVOT_KS = new TunableNumber("INTAKE_PIVOT PID/ks",
-                                        0.045);
+                                        0);
                         public static final TunableNumber INTAKE_PIVOT_KG = new TunableNumber("INTAKE_PIVOT PID/kg",
-                                0.045);
-                }
-
-                /**
-                 * Constants for the intake motor gains in the intake subsystem.
-                 */
-                public static class intakeGainsClass {
-                        public static final TunableNumber INTAKE_KP = new TunableNumber("INTAKE PID/kp", 0.03);
-                        public static final TunableNumber INTAKE_KI = new TunableNumber("INTAKE PID/ki", 0);
-                        public static final TunableNumber INTAKE_KD = new TunableNumber("INTAKE PID/kd", 0.0001);
-                        public static final TunableNumber INTAKE_KA = new TunableNumber("INTAKE PID/ka", 0);
-                        public static final TunableNumber INTAKE_KV = new TunableNumber("INTAKE PID/kv", 0.12);
-                        public static final TunableNumber INTAKE_KS = new TunableNumber("INTAKE PID/ks", 0.045);
+                                0);
                 }
         }
 

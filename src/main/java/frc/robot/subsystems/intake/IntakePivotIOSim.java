@@ -17,8 +17,8 @@ public class IntakePivotIOSim implements IntakePivotIO {
             RobotConstants.intakeConstants.PIVOT_RATIO,
             0.07,
             0.4,
-            Math.toRadians(RobotConstants.intakeConstants.GROUND_ANGLE.get()),
-            Math.toRadians(RobotConstants.intakeConstants.RETRACTED_ANGLE.get()),
+            Math.toRadians(0),
+            Math.toRadians(1),
             true,
             0.0);
 

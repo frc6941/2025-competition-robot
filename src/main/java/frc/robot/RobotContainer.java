@@ -13,18 +13,13 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.*;
 import frc.robot.auto.basics.AutoActions;
-import frc.robot.commands.ElevatorZeroingCommand;
 import frc.robot.commands.RumbleCommand;
 import frc.robot.display.Display;
 import frc.robot.subsystems.intake.IntakeRollerIOReal;
 import frc.robot.subsystems.intake.IntakePivotIOReal;
 import frc.robot.subsystems.intake.IntakeSubsystem;
-import frc.robot.subsystems.Superstructure;
 import frc.robot.subsystems.apriltagvision.AprilTagVision;
 import frc.robot.subsystems.apriltagvision.AprilTagVisionIONorthstar;
-import frc.robot.subsystems.beambreak.BeambreakIOReal;
-import frc.robot.subsystems.elevator.ElevatorIOReal;
-import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.utils.AllianceFlipUtil;
 import lombok.Getter;
@@ -35,8 +30,6 @@ import java.io.IOException;
 import java.util.function.BooleanSupplier;
 
 import static edu.wpi.first.units.Units.Seconds;
-import static frc.robot.RobotConstants.BeamBreakConstants.INTAKER_BEAMBREAK_ID;
-import static frc.robot.RobotConstants.ElevatorConstants.*;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -60,10 +53,9 @@ public class RobotContainer {
             new AprilTagVisionIONorthstar(this::getAprilTagLayoutType, 1));
     Swerve swerve = Swerve.getInstance();
     Display display = Display.getInstance();
-    ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOReal());
-//     EndEffectorSubsystem endEffectorSubsystem = new EndEffectorSubsystem(new EndEffectorIOReal(), new BeambreakIOReal(ENDEFFECTOR_MIDDLE_BEAMBREAK_ID), new BeambreakIOReal(ENDEFFECTOR_EDGE_BEAMBREAK_ID));
-    IntakeSubsystem intakerSubsystem = new IntakeSubsystem(new IntakePivotIOReal(),new IntakeRollerIOReal(), new BeambreakIOReal(INTAKER_BEAMBREAK_ID));
-    Superstructure superstructure = new Superstructure(intakerSubsystem);
+    //ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOReal());
+    //EndEffectorSubsystem endEffectorSubsystem = new EndEffectorSubsystem(new EndEffectorIOReal(), new BeambreakIOReal(ENDEFFECTOR_MIDDLE_BEAMBREAK_ID), new BeambreakIOReal(ENDEFFECTOR_EDGE_BEAMBREAK_ID));
+    IntakeSubsystem intakeSubsystem = new IntakeSubsystem(new IntakePivotIOReal(),new IntakeRollerIOReal());
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -135,18 +127,24 @@ public class RobotContainer {
         //         .onTrue(superstructure.setWantedSuperStateCommand(Superstructure.WantedSuperState.INTAKE_CORAL_FUNNEL));
         // new Trigger(controller.rightBumper())
         //         .onTrue(superstructure.setWantedSuperStateCommand(Superstructure.WantedSuperState.SHOOT_CORAL));
-        new Trigger(controller.start())
-                .onTrue(superstructure.setWantedSuperStateCommand(Superstructure.WantedSuperState.STOPPED));
-        new Trigger(controller.leftTrigger())
-                .onTrue(superstructure.setWantedSuperStateCommand(Superstructure.WantedSuperState.INTAKE_CORAL_FUNNEL));
-        new Trigger(controller.rightTrigger())
-                .onTrue(superstructure.setWantedSuperStateCommand(Superstructure.WantedSuperState.OUTTAKE));
+
         //test of elevator heights
+        /*
         controller.a().onTrue(Commands.runOnce(() -> elevatorSubsystem.setPosition(L1_EXTENSION_METERS.get()), elevatorSubsystem).until(() -> elevatorSubsystem.isAtSetpoint(L1_EXTENSION_METERS.get())));
         controller.b().onTrue(Commands.runOnce(() -> elevatorSubsystem.setPosition(L2_EXTENSION_METERS.get()), elevatorSubsystem).until(() -> elevatorSubsystem.isAtSetpoint(L2_EXTENSION_METERS.get())));
         controller.x().onTrue(Commands.runOnce(() -> elevatorSubsystem.setPosition(L3_EXTENSION_METERS.get()), elevatorSubsystem).until(() -> elevatorSubsystem.isAtSetpoint(L3_EXTENSION_METERS.get())));
         controller.y().onTrue(Commands.runOnce(() -> elevatorSubsystem.setPosition(L4_EXTENSION_METERS.get()), elevatorSubsystem).until(() -> elevatorSubsystem.isAtSetpoint(L4_EXTENSION_METERS.get())));
-        controller.povDown().onTrue(new ElevatorZeroingCommand(elevatorSubsystem));
+        controller.povDown().onTrue(new ElevatorZeroingCommand(elevatorSubsystem));*/
+
+        //test of intake states
+        /*
+        controller.a().onTrue((Commands.runOnce(() -> intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.DEPLOY_INTAKE))));
+        controller.rightBumper().onTrue((Commands.runOnce(() -> intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.GROUNDZERO))));
+        controller.b().onTrue((Commands.runOnce(() -> intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.FUNNEL_AVOID))));
+        controller.x().onTrue((Commands.runOnce(() -> intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.HOME))));
+        controller.y().onTrue((Commands.runOnce(() -> intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.TREMBLE_INTAKE))));
+        controller.leftBumper().onTrue((Commands.runOnce(() -> intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.OUTTAKE))));
+        */
     }
 
     //Configure all commands for Stream Deck
