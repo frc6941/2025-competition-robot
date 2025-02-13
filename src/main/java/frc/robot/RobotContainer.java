@@ -5,21 +5,18 @@
 package frc.robot;
 
 import com.pathplanner.lib.util.FileVersionException;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.button.*;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
-
+import edu.wpi.first.wpilibj2.command.button.*;
 import frc.robot.auto.basics.AutoActions;
-import frc.robot.commands.*;
+import frc.robot.commands.RumbleCommand;
+import frc.robot.commands.factory.ElevatorCommandFactory;
 import frc.robot.display.Display;
-//import frc.robot.subsystems.Superstructure;
 import frc.robot.subsystems.apriltagvision.AprilTagVision;
 import frc.robot.subsystems.apriltagvision.AprilTagVisionIONorthstar;
 import frc.robot.subsystems.beambreak.BeambreakIOReal;
@@ -31,16 +28,16 @@ import frc.robot.subsystems.endeffector.EndEffectorSubsystem.WantedState;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.utils.AllianceFlipUtil;
 import lombok.Getter;
-
 import org.frcteam6941.looper.UpdateManager;
 import org.json.simple.parser.ParseException;
 
-import static edu.wpi.first.units.Units.Seconds;
-import static frc.robot.RobotConstants.BeamBreakConstants.*;
-import static frc.robot.RobotConstants.ElevatorConstants.*;
-
 import java.io.IOException;
-import java.util.function.*;
+import java.util.function.BooleanSupplier;
+
+import static edu.wpi.first.units.Units.Seconds;
+import static frc.robot.RobotConstants.BeamBreakConstants.ENDEFFECTOR_EDGE_BEAMBREAK_ID;
+import static frc.robot.RobotConstants.BeamBreakConstants.ENDEFFECTOR_MIDDLE_BEAMBREAK_ID;
+import static frc.robot.RobotConstants.ElevatorConstants.*;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -49,24 +46,12 @@ import java.util.function.*;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-    private enum superState{
-        STOPPED,
-        L1,
-        L2,
-        L3,
-        L4,
-        GROUND_INTAKE,
-        FUNNEL_INTAKE,
-        SHOOT_CORAL
-    }
+    @Getter
+    private final UpdateManager updateManager;
     CommandXboxController driverController = new CommandXboxController(0);
     CommandXboxController operatorController = new CommandXboxController(1);
     CommandXboxController testerController = new CommandXboxController(2);
-
-    @Getter
-    private final UpdateManager updateManager;
     double lastResetTime = 0.0;
-
     // The robot's subsystems and commands are defined here...
     AprilTagVision aprilTagVision = new AprilTagVision(
             this::getAprilTagLayoutType,
@@ -76,90 +61,7 @@ public class RobotContainer {
     Display display = Display.getInstance();
     ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOReal());
     EndEffectorSubsystem endEffectorSubsystem = new EndEffectorSubsystem(new EndEffectorIOReal(), new BeambreakIOReal(ENDEFFECTOR_MIDDLE_BEAMBREAK_ID), new BeambreakIOReal(ENDEFFECTOR_EDGE_BEAMBREAK_ID));
-    private Command TRY_STOPPED(){
-        return 
-                Commands.parallel(
-                        elevatorSubsystem.setElevatorStateCommand(ElevatorSubsystem.WantedState.ZERO),
-                        endEffectorSubsystem.setWantedStateCommand(WantedState.IDLE)
-                )
-                
-        ;
-    }
-    private Command TRY_L1(){
-        return Commands.parallel(
-                        elevatorSubsystem.setElevatorPositionCommand(L1_EXTENSION_METERS.get()),
-                        endEffectorSubsystem.setWantedStateCommand(WantedState.IDLE)
-                )
-        ;
-    }
-    private Command TRY_L2(){
-        return Commands.parallel(
-                        elevatorSubsystem.setElevatorPositionCommand(L2_EXTENSION_METERS.get()),
-                        endEffectorSubsystem.setWantedStateCommand(WantedState.IDLE)
-                )
-        ;
-    }
-    private Command TRY_L3(){
-        return Commands.parallel(
-                        elevatorSubsystem.setElevatorPositionCommand(L3_EXTENSION_METERS.get()),
-                        endEffectorSubsystem.setWantedStateCommand(WantedState.IDLE)
-                )
-        ;
-    }private Command TRY_L4(){
-        return Commands.parallel(
-                        elevatorSubsystem.setElevatorPositionCommand(L4_EXTENSION_METERS.get()),
-                        endEffectorSubsystem.setWantedStateCommand(WantedState.IDLE)
-                )
-        ;
-    }
-    private Command TRY_GROUND_INTAKE() {
-        if (endEffectorSubsystem.isIntakeFinished()) {
-                return Commands.parallel(
-                        elevatorSubsystem.setElevatorPositionCommand(L1_EXTENSION_METERS.get()).withTimeout(2)
-                        .andThen(new WaitUntilCommand(() -> elevatorSubsystem.getIo().isNearExtension(L1_EXTENSION_METERS.get())))
-                        .andThen(elevatorSubsystem.setElevatorPositionCommand(INTAKER_INTAKE_METERS.get()))
-                        .andThen(endEffectorSubsystem.setWantedStateCommand(WantedState.GROUND_INTAKE)),
-                        endEffectorSubsystem.setWantedStateCommand(EndEffectorSubsystem.WantedState.TRANSFER));
-        }else {
-                return Commands.parallel(
-                        elevatorSubsystem.setElevatorPositionCommand(L1_EXTENSION_METERS.get()).withTimeout(2)
-                        .andThen(new WaitUntilCommand(() -> elevatorSubsystem.getIo().isNearExtension(L1_EXTENSION_METERS.get())))
-                        .andThen(elevatorSubsystem.setElevatorPositionCommand(INTAKER_INTAKE_METERS.get())),
-                        // .andThen(endEffectorSubsystem.setWantedStateCommand(WantedState.GROUND_INTAKE)),
-                        endEffectorSubsystem.setWantedStateCommand(EndEffectorSubsystem.WantedState.GROUND_INTAKE));
-        }
-        }
-    private Command TRY_FUNNEL_INTAKE(){
-        if (endEffectorSubsystem.isIntakeFinished()) {
-                return Commands.parallel(
-                        elevatorSubsystem.setElevatorPositionCommand(L1_EXTENSION_METERS.get()).withTimeout(2)
-                        .andThen(new WaitUntilCommand(() -> elevatorSubsystem.getIo().isNearExtension(L1_EXTENSION_METERS.get())))
-                        .andThen(elevatorSubsystem.setElevatorPositionCommand(INTAKER_INTAKE_METERS.get())),
-                        // .andThen(endEffectorSubsystem.setWantedStateCommand(WantedState.GROUND_INTAKE)),
-                        endEffectorSubsystem.setWantedStateCommand(EndEffectorSubsystem.WantedState.TRANSFER));
-        }else {
-                return Commands.parallel(
-                        elevatorSubsystem.setElevatorPositionCommand(FUNNEL_INTAKE_METERS.get()),                        // .andThen(endEffectorSubsystem.setWantedStateCommand(WantedState.GROUND_INTAKE)),
-                        endEffectorSubsystem.setWantedStateCommand(EndEffectorSubsystem.WantedState.FUNNEL_INTAKE));
-        }
-    }
-    private Command TRY_SHOOT_CORAL(){
-        return new WaitUntilCommand(()->endEffectorSubsystem.isCoralReady()).andThen(
-                        endEffectorSubsystem.setWantedStateCommand(WantedState.SHOOT)
-        );
-    }
-    private Command setSuperState(superState state){
-        return switch (state) {
-                case STOPPED -> TRY_STOPPED();
-                case L1 -> TRY_L1();
-                case L2 -> TRY_L2();
-                case L3 -> TRY_L3();
-                case L4 -> TRY_L4();
-                case GROUND_INTAKE -> TRY_GROUND_INTAKE();
-                case FUNNEL_INTAKE -> TRY_FUNNEL_INTAKE();
-                default -> TRY_STOPPED(); // or some other default value that makes sense in your context
-        };
-        }
+
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
@@ -171,6 +73,99 @@ public class RobotContainer {
         configureDriverBindings(driverController);
         configureOperatorBindings(operatorController);
         configureTesterBindings(testerController);
+    }
+
+    private Command TRY_STOPPED() {
+        return
+                Commands.parallel(
+                        ElevatorCommandFactory.setElevatorStateCommand(elevatorSubsystem, ElevatorSubsystem.WantedState.ZERO),
+                        endEffectorSubsystem.setWantedStateCommand(WantedState.IDLE)
+                );
+
+    }
+
+    private Command TRY_L1() {
+        return Commands.parallel(
+                ElevatorCommandFactory.setElevatorPositionCommand(elevatorSubsystem, L1_EXTENSION_METERS.get()),
+                endEffectorSubsystem.setWantedStateCommand(WantedState.IDLE)
+        );
+
+    }
+
+    private Command TRY_L2() {
+        return Commands.parallel(
+                ElevatorCommandFactory.setElevatorPositionCommand(elevatorSubsystem, L2_EXTENSION_METERS.get()),
+                endEffectorSubsystem.setWantedStateCommand(WantedState.IDLE)
+        );
+
+    }
+
+    private Command TRY_L3() {
+        return Commands.parallel(
+                ElevatorCommandFactory.setElevatorPositionCommand(elevatorSubsystem, L3_EXTENSION_METERS.get()),
+                endEffectorSubsystem.setWantedStateCommand(WantedState.IDLE)
+        );
+
+    }
+
+    private Command TRY_L4() {
+        return Commands.parallel(
+                ElevatorCommandFactory.setElevatorPositionCommand(elevatorSubsystem, L4_EXTENSION_METERS.get()),
+                endEffectorSubsystem.setWantedStateCommand(WantedState.IDLE)
+        );
+
+    }
+
+    private Command TRY_GROUND_INTAKE() {
+        if (endEffectorSubsystem.isIntakeFinished()) {
+            return Commands.parallel(
+                    ElevatorCommandFactory.setElevatorPositionCommand(elevatorSubsystem, L1_EXTENSION_METERS.get()).withTimeout(2)
+                            .andThen(new WaitUntilCommand(() -> elevatorSubsystem.getIo().isNearExtension(L1_EXTENSION_METERS.get())))
+                            .andThen(ElevatorCommandFactory.setElevatorPositionCommand(elevatorSubsystem, INTAKER_INTAKE_METERS.get()))
+                            .andThen(endEffectorSubsystem.setWantedStateCommand(WantedState.GROUND_INTAKE)),
+                    endEffectorSubsystem.setWantedStateCommand(EndEffectorSubsystem.WantedState.TRANSFER));
+        } else {
+            return Commands.parallel(
+                    ElevatorCommandFactory.setElevatorPositionCommand(elevatorSubsystem, L1_EXTENSION_METERS.get()).withTimeout(2)
+                            .andThen(new WaitUntilCommand(() -> elevatorSubsystem.getIo().isNearExtension(L1_EXTENSION_METERS.get())))
+                            .andThen(ElevatorCommandFactory.setElevatorPositionCommand(elevatorSubsystem, INTAKER_INTAKE_METERS.get())),
+                    // .andThen(endEffectorSubsystem.setWantedStateCommand(WantedState.GROUND_INTAKE)),
+                    endEffectorSubsystem.setWantedStateCommand(EndEffectorSubsystem.WantedState.GROUND_INTAKE));
+        }
+    }
+
+    private Command TRY_FUNNEL_INTAKE() {
+        if (endEffectorSubsystem.isIntakeFinished()) {
+            return Commands.parallel(
+                    ElevatorCommandFactory.setElevatorPositionCommand(elevatorSubsystem, L1_EXTENSION_METERS.get()).withTimeout(2)
+                            .andThen(new WaitUntilCommand(() -> elevatorSubsystem.getIo().isNearExtension(L1_EXTENSION_METERS.get())))
+                            .andThen(ElevatorCommandFactory.setElevatorPositionCommand(elevatorSubsystem, INTAKER_INTAKE_METERS.get())),
+                    // .andThen(endEffectorSubsystem.setWantedStateCommand(WantedState.GROUND_INTAKE)),
+                    endEffectorSubsystem.setWantedStateCommand(EndEffectorSubsystem.WantedState.TRANSFER));
+        } else {
+            return Commands.parallel(
+                    ElevatorCommandFactory.setElevatorPositionCommand(elevatorSubsystem, FUNNEL_INTAKE_METERS.get()),
+                    endEffectorSubsystem.setWantedStateCommand(EndEffectorSubsystem.WantedState.FUNNEL_INTAKE));
+        }
+    }
+
+    private Command TRY_SHOOT_CORAL() {
+        return new WaitUntilCommand(() -> endEffectorSubsystem.isCoralReady()).andThen(
+                endEffectorSubsystem.setWantedStateCommand(WantedState.SHOOT)
+        );
+    }
+
+    private Command setSuperState(superState state) {
+        return switch (state) {
+            case STOPPED -> TRY_STOPPED();
+            case L1 -> TRY_L1();
+            case L2 -> TRY_L2();
+            case L3 -> TRY_L3();
+            case L4 -> TRY_L4();
+            case GROUND_INTAKE -> TRY_GROUND_INTAKE();
+            case FUNNEL_INTAKE -> TRY_FUNNEL_INTAKE();
+            default -> TRY_STOPPED(); // or some other default value that makes sense in your context
+        };
     }
 
     /**
@@ -232,7 +227,7 @@ public class RobotContainer {
                 .onTrue(setSuperState(superState.L3));
         new Trigger(controller.y())
                 .onTrue(setSuperState(superState.L4));
-        
+
         new Trigger(controller.leftTrigger())
                 .onTrue(setSuperState(superState.STOPPED));
 
@@ -242,14 +237,13 @@ public class RobotContainer {
         //         .onTrue(Commands.parallel(
         //                 // endEffectorSubsystem.setWantedSuperStateCommand(EndEffectorSubsystem.WantedState.FUNNEL_INTAKE),
         //                 elevatorSubsystem.setElevatorWantedPositionCommand("Funnel Intake"),
-                        
+
         //                 elevatorSubsystem.setElevatorStateCommand(ElevatorSubsystem.WantedState.POSITION)
         //         ));
 
         // //Intaker Intake
-        
 
-        
+
         // new Trigger(controller.rightBumper())
         //         .onTrue(Commands.parallel(
         //                 // endEffectorSubsystem.setWantedSuperStateCommand(EndEffectorSubsystem.WantedState.GROUND_INTAKE),
@@ -305,5 +299,16 @@ public class RobotContainer {
 //        } else {
         return FieldConstants.defaultAprilTagType;
 //        }
+    }
+
+    private enum superState {
+        STOPPED,
+        L1,
+        L2,
+        L3,
+        L4,
+        GROUND_INTAKE,
+        FUNNEL_INTAKE,
+        SHOOT_CORAL
     }
 }

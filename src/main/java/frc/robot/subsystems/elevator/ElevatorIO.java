@@ -1,9 +1,8 @@
 package frc.robot.subsystems.elevator;
 
 import edu.wpi.first.units.*;
-import frc.robot.RobotConstants;
-import org.littletonrobotics.junction.AutoLog;
 import frc.robot.RobotConstants.ElevatorConstants.ElevatorGainsClass;
+import org.littletonrobotics.junction.AutoLog;
 
 import static edu.wpi.first.units.Units.*;
 
@@ -11,11 +10,17 @@ public interface ElevatorIO {
     void updateInputs(ElevatorIOInputs inputs);
 
     void setElevatorDirectVoltage(double volts);
+
     void setElevatorTarget(double meters);
+
     void resetElevatorPosition();
+
     double getElevatorVelocity();
+
     double getElevatorPosition();
+
     boolean isNearExtension(double expected);
+
     boolean isNearZeroExtension();
 
     @AutoLog
@@ -30,9 +35,7 @@ public interface ElevatorIO {
         public Measure<VoltageUnit> rightElevatorAppliedVoltage = Volts.zero();
         public Measure<CurrentUnit> rightElevatorSupplyCurrent = Amps.zero();
 
-        public Measure<AngularVelocityUnit> targetElevatorVelocity = RadiansPerSecond.zero();
-
-        public double[] statorCurrentAmps = new double[] {};
+        public double[] statorCurrentAmps = new double[]{};
 
         public double ElevatorKP = ElevatorGainsClass.ELEVATOR_KP.get();
         public double ElevatorKI = ElevatorGainsClass.ELEVATOR_KI.get();

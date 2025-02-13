@@ -40,7 +40,6 @@ public class ElevatorIOReal implements ElevatorIO {
     private final StatusSignal<Angle> rightElevatorPosition = rightElevatorTalon.getPosition();
     private final StatusSignal<Voltage> rightElevatorAppliedVoltage = rightElevatorTalon.getMotorVoltage();
     private final StatusSignal<Current> rightElevatorSupplyCurrent = rightElevatorTalon.getSupplyCurrent();
-    private double targetElevatorVelocity = 0;
 
     private final StatusSignal<Current> statorLeft = leftElevatorTalon.getStatorCurrent();
     private final StatusSignal<Current> statorRight = rightElevatorTalon.getStatorCurrent();
@@ -96,8 +95,6 @@ public class ElevatorIOReal implements ElevatorIO {
         inputs.rightElevatorSupplyCurrent = Amps.of(rightElevatorSupplyCurrent.getValueAsDouble());
 
         inputs.statorCurrentAmps = new double[] { statorLeft.getValueAsDouble(), statorRight.getValueAsDouble() };
-
-        inputs.targetElevatorVelocity = RadiansPerSecond.of(targetElevatorVelocity);
 
         inputs.ElevatorKP = ElevatorGainsClass.ELEVATOR_KP.get();
         inputs.ElevatorKI = ElevatorGainsClass.ELEVATOR_KI.get();
