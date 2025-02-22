@@ -3,6 +3,8 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.endeffector.EndEffectorSubsystem;
+import frc.robot.subsystems.indicator.IndicatorSubsystem;
+import frc.robot.subsystems.indicator.IndicatorIO.Patterns;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem.WantedState;
 
@@ -13,11 +15,22 @@ public class FunnelIntakeCommand extends Command {
     private final ElevatorSubsystem elevatorSubsystem;
     private final EndEffectorSubsystem endEffectorSubsystem;
     private final IntakeSubsystem intakeSubsystem;
+    private final IndicatorSubsystem indicatorSubsystem;
 
-    public FunnelIntakeCommand(ElevatorSubsystem elevatorSubsystem, EndEffectorSubsystem endEffectorSubsystem, IntakeSubsystem intakeSubsystem) {
+    public FunnelIntakeCommand(
+        ElevatorSubsystem elevatorSubsystem, 
+        EndEffectorSubsystem endEffectorSubsystem, 
+        IntakeSubsystem intakeSubsystem, 
+        IndicatorSubsystem indicatorSubsystem) {
         this.elevatorSubsystem = elevatorSubsystem;
         this.endEffectorSubsystem = endEffectorSubsystem;
         this.intakeSubsystem = intakeSubsystem;
+        this.indicatorSubsystem = indicatorSubsystem;
+    }
+
+    @Override
+    public void initialize() {
+        indicatorSubsystem.setPattern(Patterns.INTAKING);
     }
 
     @Override
@@ -36,6 +49,7 @@ public class FunnelIntakeCommand extends Command {
     public void end(boolean interrupted) {
         intakeSubsystem.setWantedState(WantedState.HOME);
         elevatorSubsystem.setElevatorPosition(IDLE_EXTENSION_METERS.get());
+        indicatorSubsystem.setPattern(Patterns.INTAKED);
         if(interrupted){
             endEffectorSubsystem.setWantedState(EndEffectorSubsystem.WantedState.IDLE);
         }

@@ -32,6 +32,9 @@ import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.endeffector.EndEffectorIOReal;
 import frc.robot.subsystems.endeffector.EndEffectorIOSim;
 import frc.robot.subsystems.endeffector.EndEffectorSubsystem;
+import frc.robot.subsystems.indicator.IndicatorIOARGB;
+import frc.robot.subsystems.indicator.IndicatorIOSim;
+import frc.robot.subsystems.indicator.IndicatorSubsystem;
 import frc.robot.subsystems.intake.*;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.utils.DestinationSupplier;
@@ -75,6 +78,7 @@ public class RobotContainer {
     private final EndEffectorSubsystem endEffectorSubsystem;
     private final IntakeSubsystem intakeSubsystem;
     private final ClimberSubsystem climberSubsystem;
+    private final IndicatorSubsystem indicatorSubsystem;
     @Getter
     private final LoggedDashboardChooser<String> autoChooser;
     private double lastResetTime = 0.0;
@@ -86,12 +90,15 @@ public class RobotContainer {
             endEffectorSubsystem = new EndEffectorSubsystem(new EndEffectorIOReal(), new BeambreakIOReal(RobotConstants.BeamBreakConstants.ENDEFFECTOR_MIDDLE_BEAMBREAK_ID), new BeambreakIOReal(RobotConstants.BeamBreakConstants.ENDEFFECTOR_EDGE_BEAMBREAK_ID));
             intakeSubsystem = new IntakeSubsystem(new IntakePivotIOReal(), new IntakeRollerIOReal());
             climberSubsystem = new ClimberSubsystem(new ClimberIOReal());
+            indicatorSubsystem = new IndicatorSubsystem(new IndicatorIOARGB());
         } else {
             elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOSim());
             endEffectorSubsystem = new EndEffectorSubsystem(new EndEffectorIOSim(), new BeambreakIOSim(RobotConstants.BeamBreakConstants.ENDEFFECTOR_MIDDLE_BEAMBREAK_ID), new BeambreakIOSim(RobotConstants.BeamBreakConstants.ENDEFFECTOR_EDGE_BEAMBREAK_ID));
             intakeSubsystem = new IntakeSubsystem(new IntakePivotIOSim(), new IntakeRollerIOSim());
             climberSubsystem = new ClimberSubsystem(new ClimberIOSim());
+            indicatorSubsystem = new IndicatorSubsystem(new IndicatorIOSim());
         }
+
         updateManager = new UpdateManager(swerve,
                 display);
         updateManager.registerAll();
@@ -139,12 +146,12 @@ public class RobotContainer {
                 }).ignoringDisable(true));
 
 
-        driverController.leftBumper().whileTrue(new GroundIntakeCommand(intakeSubsystem, endEffectorSubsystem, elevatorSubsystem));
-        driverController.leftTrigger().whileTrue(new PutCoralCommand(driverController, endEffectorSubsystem, elevatorSubsystem, intakeSubsystem));
-        driverController.rightBumper().whileTrue(new FunnelIntakeCommand(elevatorSubsystem, endEffectorSubsystem, intakeSubsystem));
+        driverController.leftBumper().whileTrue(new GroundIntakeCommand(intakeSubsystem, endEffectorSubsystem, elevatorSubsystem,indicatorSubsystem));
+        driverController.leftTrigger().whileTrue(new PutCoralCommand(driverController, endEffectorSubsystem, elevatorSubsystem, intakeSubsystem, indicatorSubsystem));
+        driverController.rightBumper().whileTrue(new FunnelIntakeCommand(elevatorSubsystem, endEffectorSubsystem, intakeSubsystem,indicatorSubsystem));
         driverController.y().onTrue(new ZeroCommand(elevatorSubsystem, intakeSubsystem, endEffectorSubsystem, climberSubsystem));
-        driverController.povDown().whileTrue(new ClimbCommand(climberSubsystem, elevatorSubsystem, intakeSubsystem, endEffectorSubsystem));
-        driverController.a().whileTrue(new PokeCommand(endEffectorSubsystem, intakeSubsystem, elevatorSubsystem));
+        driverController.povDown().whileTrue(new ClimbCommand(climberSubsystem, elevatorSubsystem, intakeSubsystem, endEffectorSubsystem,indicatorSubsystem));
+        driverController.a().whileTrue(new PokeCommand(endEffectorSubsystem, intakeSubsystem, elevatorSubsystem,indicatorSubsystem));
     }
 
     private void configureOperatorBindings() {
@@ -180,7 +187,7 @@ public class RobotContainer {
     }
 
     private void configureStreamDeckBindings() {
-        streamDeckController.button(1).onTrue(new ReefAimCommand(8, false, () -> streamDeckController.button(17).getAsBoolean()));
+        streamDeckController.button(1).onTrue(new ReefAimCommand(8, false, indicatorSubsystem,() -> streamDeckController.button(17).getAsBoolean()));
     }
 
     public Command getAutonomousCommand() {
