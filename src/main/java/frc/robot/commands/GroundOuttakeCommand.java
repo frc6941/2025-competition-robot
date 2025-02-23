@@ -4,6 +4,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotConstants;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.endeffector.EndEffectorSubsystem;
+import frc.robot.subsystems.indicator.IndicatorSubsystem;
+import frc.robot.subsystems.indicator.IndicatorIO.Patterns;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 
 import static frc.robot.RobotConstants.ElevatorConstants.HOME_EXTENSION_METERS;
@@ -13,12 +15,23 @@ public class GroundOuttakeCommand extends Command {
     private final IntakeSubsystem intakeSubsystem;
     private final EndEffectorSubsystem endEffectorSubsystem;
     private final ElevatorSubsystem elevatorSubsystem;
+    private final IndicatorSubsystem indicatorSubsystem;
 
-    public GroundOuttakeCommand(IntakeSubsystem intakeSubsystem, EndEffectorSubsystem endEffectorSubsystem, ElevatorSubsystem elevatorSubsystem) {
+    public GroundOuttakeCommand(
+        IntakeSubsystem intakeSubsystem, 
+        EndEffectorSubsystem endEffectorSubsystem, 
+        ElevatorSubsystem elevatorSubsystem,
+        IndicatorSubsystem indicatorSubsystem) {
         this.intakeSubsystem = intakeSubsystem;
         this.endEffectorSubsystem = endEffectorSubsystem;
         this.elevatorSubsystem = elevatorSubsystem;
-        addRequirements(intakeSubsystem, endEffectorSubsystem, elevatorSubsystem);
+        this.indicatorSubsystem = indicatorSubsystem;
+        addRequirements(intakeSubsystem, endEffectorSubsystem, elevatorSubsystem, indicatorSubsystem);
+    }
+
+    @Override
+    public void initialize() {
+        indicatorSubsystem.setPattern(Patterns.OUTTAKING);
     }
 
     @Override
@@ -38,6 +51,7 @@ public class GroundOuttakeCommand extends Command {
     public void end(boolean interrupted) {
         intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.HOME);
         elevatorSubsystem.setElevatorPosition(IDLE_EXTENSION_METERS.get());
+        indicatorSubsystem.setPattern(Patterns.NORMAL);
     }
 
     @Override

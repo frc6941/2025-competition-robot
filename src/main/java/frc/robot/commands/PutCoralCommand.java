@@ -15,8 +15,6 @@ public class PutCoralCommand extends ParallelCommandGroup {
                            ElevatorSubsystem elevatorSubsystem, 
                            IntakeSubsystem intakeSubsystem,
                            IndicatorSubsystem indicatorSubsystem) {
-    public PutCoralCommand(CommandXboxController driverController, EndEffectorSubsystem endeffectorSubsystem,
-                           ElevatorSubsystem elevatorSubsystem, IntakeSubsystem intakeSubsystem) {
         addRequirements(endeffectorSubsystem, elevatorSubsystem, intakeSubsystem, indicatorSubsystem);
         addCommands(
                 Commands.deadline(

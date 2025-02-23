@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.endeffector.EndEffectorSubsystem;
+import frc.robot.subsystems.indicator.IndicatorSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 
 public class ZeroCommand extends SequentialCommandGroup {
@@ -20,4 +21,6 @@ public class ZeroCommand extends SequentialCommandGroup {
 
     @Override
     public InterruptionBehavior getInterruptionBehavior() {return InterruptionBehavior.kCancelIncoming;}
+
+    
 }

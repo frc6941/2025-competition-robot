@@ -18,6 +18,8 @@ public interface IndicatorIO {
         NORMAL(new SolidColorPattern(Color.kBlue)),
         INTAKING(new BlinkingPattern(Color.kGreen,0.2)),
         INTAKED(new BlinkingPattern(Color.kAqua,0.1)),
+        OUTTAKING(new BlinkingPattern(Color.kCoral,0.1)),
+        ZEROING(new BlinkingPattern(Color.kDarkViolet,0.1)),
         HOLDING_CORAL(new BlinkingPattern(Color.kCyan, 0.1)),
         POKING(new SolidColorPattern(Color.kCyan)),
         SHOOTING(new RainbowPattern()),
