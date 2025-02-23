@@ -343,8 +343,8 @@ public final class RobotConstants {
         public static final int INTAKE_MOTOR_ID = 15;
         public static final int INTAKE_PIVOT_MOTOR_ID = 16;
         //Constants for intake roller
-        public static final int STATOR_CURRENT_LIMIT_AMPS = 60;
-        public static final int SUPPLY_CURRENT_LIMIT_AMPS = 20;
+        public static final int STATOR_CURRENT_LIMIT_AMPS = 70;
+        public static final int SUPPLY_CURRENT_LIMIT_AMPS = 30;
         public static final boolean IS_BRAKE = true;
         public static final boolean IS_INVERT = false;
         public static final double REDUCTION = 1;
@@ -415,7 +415,7 @@ public final class RobotConstants {
         public static final double ELEVATOR_SPOOL_DIAMETER = 0.04 + 0.003; //0.04m for spool diameter, 0.003 for rope diameter
         public static final double ELEVATOR_GEAR_RATIO = 3.0;
         public static final double ELEVATOR_DANGER_ZONE = 0.4180619200456253;
-        public static final double ELEVATOR_DEFAULT_POSITION_WHEN_DISABLED = 0.46;
+        public static final double ELEVATOR_DEFAULT_POSITION_WHEN_DISABLED = 0.4;
 
         public static final TunableNumber motionAcceleration = new TunableNumber("Elevator/MotionAcceleration",
                 100);
