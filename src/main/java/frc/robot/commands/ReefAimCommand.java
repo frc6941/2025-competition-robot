@@ -7,6 +7,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.FieldConstants;
 import frc.robot.RobotConstants;
+import frc.robot.subsystems.indicator.IndicatorSubsystem;
+import frc.robot.subsystems.indicator.IndicatorIO.Patterns;
 import frc.robot.subsystems.swerve.Swerve;
 import org.littletonrobotics.AllianceFlipUtil;
 
@@ -14,6 +16,7 @@ import java.util.function.BooleanSupplier;
 
 public class ReefAimCommand extends Command {
     private final Swerve swerve = Swerve.getInstance();
+    private final IndicatorSubsystem indicatorSubsystem;
     private final int tagID;
     private final boolean rightReef; // true if shooting right reef
     private final PIDController xPID = new PIDController(
@@ -31,17 +34,23 @@ public class ReefAimCommand extends Command {
     private Translation2d translationalVelocity;
 
     // Constructor for ReefAimCommand
-    public ReefAimCommand(int tagID, boolean rightReef, BooleanSupplier stop) {
+    public ReefAimCommand(
+        int tagID, 
+        boolean rightReef, 
+        IndicatorSubsystem indicatorSubsystem,
+        BooleanSupplier stop) {
         addRequirements(this.swerve);
         this.tagID = tagID;
         this.rightReef = rightReef;
         this.stop = stop;
+        this.indicatorSubsystem = indicatorSubsystem;
         SmartDashboard.putNumber("ReefAimCommand/tagID", tagID);
         SmartDashboard.putBoolean("ReefAimCommand/rightReef", rightReef);
     }
 
     @Override
     public void initialize() {
+        indicatorSubsystem.setPattern(Patterns.AIMING);
         tagPose = FieldConstants.defaultAprilTagType.getLayout().getTagPose(tagID).get().toPose2d();
         if (rightReef) {
             destinationPose = tagPose.transformBy(RobotConstants.ReefAimConstants.tagRightToRobot);
@@ -86,6 +95,7 @@ public class ReefAimCommand extends Command {
     @Override
     public void end(boolean interrupted) {
         swerve.setLockHeading(false);
+        indicatorSubsystem.setPattern(Patterns.NORMAL);
     }
 
     @Override
