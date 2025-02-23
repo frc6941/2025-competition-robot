@@ -17,9 +17,11 @@ import static frc.robot.RobotConstants.IntakeConstants.*;
 public class IntakeSubsystem extends RollerSubsystem {
     public static final String NAME = "Intake/Roller";
     private static double deployAngle = DEPLOY_ANGLE.get();
+    private static double outtakeAngle = OUTTAKE_ANGLE.get();
     private static double funnelAvoidAngle = FUNNEL_AVOID_ANGLE.get();
     private static double homeAngle = HOME_ANGLE.get();
     private static double intakeVoltage = INTAKE_VOLTAGE.get();
+    private static double outtakeVoltage = OUTTAKE_VOLTAGE.get();
     private static double rollerAmpsHasCoral = ROLLER_AMPS_HAS_CORAL.get();
     private final IntakePivotIO intakePivotIO;
     private final IntakeRollerIO intakeRollerIO;
@@ -80,8 +82,8 @@ public class IntakeSubsystem extends RollerSubsystem {
                 trembleIntake();
                 break;
             case OUTTAKING:
-                intakeRollerIO.setVoltage(-3);
-                intakePivotIO.setPivotAngle(deployAngle);
+                intakeRollerIO.setVoltage(outtakeVoltage);
+                intakePivotIO.setPivotAngle(outtakeAngle);
                 break;
             case FUNNEL_AVOIDING:
                 intakeRollerIO.stop();
@@ -100,6 +102,8 @@ public class IntakeSubsystem extends RollerSubsystem {
         if (RobotConstants.TUNING) {
             deployAngle = DEPLOY_ANGLE.get();
             funnelAvoidAngle = FUNNEL_AVOID_ANGLE.get();
+            outtakeVoltage = OUTTAKE_VOLTAGE.get();
+            outtakeAngle = OUTTAKE_ANGLE.get();
             homeAngle = HOME_ANGLE.get();
             intakeVoltage = INTAKE_VOLTAGE.get();
             rollerAmpsHasCoral = ROLLER_AMPS_HAS_CORAL.get();

@@ -8,6 +8,8 @@ import frc.robot.subsystems.indicator.IndicatorSubsystem;
 import frc.robot.subsystems.indicator.IndicatorIO.Patterns;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 
+import static frc.robot.RobotConstants.ElevatorConstants.IDLE_EXTENSION_METERS;
+
 public class PokeCommand extends Command {
     private final EndEffectorSubsystem endEffectorSubsystem;
     private final IntakeSubsystem intakeSubsystem;
@@ -30,6 +32,7 @@ public class PokeCommand extends Command {
     public void initialize() {
         lastPosition = DestinationSupplier.getInstance().getElevatorSetpoint(true);
         indicatorSubsystem.setPattern(Patterns.POKING);
+        addRequirements(endEffectorSubsystem, intakeSubsystem, elevatorSubsystem, indicatorSubsystem);
     }
 
     @Override
@@ -41,7 +44,7 @@ public class PokeCommand extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        elevatorSubsystem.setElevatorPosition(lastPosition);
+        elevatorSubsystem.setElevatorPosition(IDLE_EXTENSION_METERS.get());
         endEffectorSubsystem.setWantedState(EndEffectorSubsystem.WantedState.IDLE);
         indicatorSubsystem.setPattern(Patterns.NORMAL);
     }
@@ -49,5 +52,10 @@ public class PokeCommand extends Command {
     @Override
     public boolean isFinished() {
         return false;
+    }
+
+    @Override
+    public InterruptionBehavior getInterruptionBehavior() {
+        return InterruptionBehavior.kCancelIncoming;
     }
 }

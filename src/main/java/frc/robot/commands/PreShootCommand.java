@@ -39,7 +39,7 @@ public class PreShootCommand extends Command {
     @Override
         public void execute() {
             intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.HOME);
-            elevatorSubsystem.setElevatorPosition(targetPosition);
+            elevatorSubsystem.setElevatorPosition(DestinationSupplier.getInstance().getElevatorSetpoint(true));
             endEffectorSubsystem.setWantedState(EndEffectorSubsystem.WantedState.PRE_SHOOT);
         }
 
