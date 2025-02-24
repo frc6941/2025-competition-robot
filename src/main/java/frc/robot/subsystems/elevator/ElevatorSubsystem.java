@@ -11,6 +11,7 @@ import org.littletonrobotics.junction.Logger;
 
 import static frc.robot.RobotConstants.ElevatorConstants.ELEVATOR_MIN_SAFE_HEIGHT;
 import static frc.robot.RobotConstants.ElevatorConstants.IDLE_EXTENSION_METERS;
+import static frc.robot.RobotConstants.TUNING;
 import static frc.robot.RobotContainer.elevatorIsDanger;
 
 public class ElevatorSubsystem extends SubsystemBase {
@@ -61,10 +62,10 @@ public class ElevatorSubsystem extends SubsystemBase {
         switch (systemState) {
             case POSITION_GOING:
                 //worked, but need clean up
-                if (wantedPosition < ELEVATOR_MIN_SAFE_HEIGHT && RobotContainer.intakeIsAvoiding && RobotContainer.intakeIsDanger) {
+                if (wantedPosition < ELEVATOR_MIN_SAFE_HEIGHT.get() && RobotContainer.intakeIsAvoiding && RobotContainer.intakeIsDanger) {
                     io.setElevatorTarget(Math.max(wantedPosition,0.4));
-                } else if (wantedPosition < RobotConstants.ElevatorConstants.ELEVATOR_MIN_SAFE_HEIGHT && RobotContainer.intakeIsDanger){
-                    io.setElevatorTarget(ELEVATOR_MIN_SAFE_HEIGHT);
+                } else if (wantedPosition < RobotConstants.ElevatorConstants.ELEVATOR_MIN_SAFE_HEIGHT.get() && RobotContainer.intakeIsDanger){
+                    io.setElevatorTarget(ELEVATOR_MIN_SAFE_HEIGHT.get());
                 } else {
                     io.setElevatorTarget(wantedPosition);
                 }
@@ -108,7 +109,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     public void zeroElevator() {
         if (!io.isNearZeroExtension() && !hasReachedNearZero) {
             if (RobotContainer.intakeIsDanger) {
-                io.setElevatorTarget(ELEVATOR_MIN_SAFE_HEIGHT);
+                io.setElevatorTarget(ELEVATOR_MIN_SAFE_HEIGHT.get());
             } else {
                 io.setElevatorTarget(0.05);
             }
@@ -134,7 +135,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     public boolean elevatorIsDanger() {
-        return (inputs.positionMeters < ELEVATOR_MIN_SAFE_HEIGHT - 0.01);
+        return (inputs.positionMeters < ELEVATOR_MIN_SAFE_HEIGHT.get() - 0.01);
     }
 
 

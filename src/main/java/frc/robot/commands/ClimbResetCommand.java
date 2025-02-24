@@ -10,10 +10,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.climber.ClimberSubsystem;
 
 public class ClimbResetCommand extends Command {
-    private final ClimberSubsystem climber;
+    private final ClimberSubsystem climberSubsystem;
 
-    public ClimbResetCommand(ClimberSubsystem climber) {
-        this.climber = climber;
+    public ClimbResetCommand(ClimberSubsystem climberSubsystem) {
+        this.climberSubsystem = climberSubsystem;
     }
 
     @Override
@@ -22,13 +22,9 @@ public class ClimbResetCommand extends Command {
     }
 
     @Override
-    public void initialize() {
-    }
-
-    @Override
     public void execute() {
-        climber.setCoast();
-        climber.resetPosition();
+        climberSubsystem.setCoast();
+        climberSubsystem.resetPosition();
     }
 
     @Override
@@ -38,6 +34,6 @@ public class ClimbResetCommand extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        climber.setBrake();
+        climberSubsystem.setBrake();
     }
 }

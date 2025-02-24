@@ -18,6 +18,7 @@ public class FunnelIntakeCommand extends Command {
         this.elevatorSubsystem = elevatorSubsystem;
         this.endEffectorSubsystem = endEffectorSubsystem;
         this.intakeSubsystem = intakeSubsystem;
+        addRequirements(intakeSubsystem, endEffectorSubsystem, elevatorSubsystem);
     }
 
     @Override
@@ -39,5 +40,10 @@ public class FunnelIntakeCommand extends Command {
         if(interrupted){
             endEffectorSubsystem.setWantedState(EndEffectorSubsystem.WantedState.IDLE);
         }
+    }
+
+    @Override
+    public InterruptionBehavior getInterruptionBehavior() {
+        return InterruptionBehavior.kCancelIncoming;
     }
 }

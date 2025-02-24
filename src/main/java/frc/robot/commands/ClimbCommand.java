@@ -10,16 +10,17 @@ import frc.robot.subsystems.intake.IntakeSubsystem;
 import static frc.robot.RobotConstants.ElevatorConstants.IDLE_EXTENSION_METERS;
 
 public class ClimbCommand extends Command{
-    private ClimberSubsystem climberSubsystem;
-    private ElevatorSubsystem elevatorSubsystem;
-    private IntakeSubsystem intakeSubsystem;
-    private EndEffectorSubsystem endEffectorSubsystem;
+    private final ClimberSubsystem climberSubsystem;
+    private final ElevatorSubsystem elevatorSubsystem;
+    private final IntakeSubsystem intakeSubsystem;
+    private final EndEffectorSubsystem endEffectorSubsystem;
     public ClimbCommand(ClimberSubsystem climberSubsystem,ElevatorSubsystem elevatorSubsystem,
     IntakeSubsystem intakeSubsystem,EndEffectorSubsystem endEffectorSubsystem){
         this.climberSubsystem = climberSubsystem;
         this.elevatorSubsystem = elevatorSubsystem;
         this.endEffectorSubsystem = endEffectorSubsystem;
         this.intakeSubsystem = intakeSubsystem;
+        addRequirements(climberSubsystem, elevatorSubsystem, endEffectorSubsystem, intakeSubsystem);
     }
 
     @Override
@@ -33,5 +34,10 @@ public class ClimbCommand extends Command{
     @Override
     public void end(boolean interrupted) {
         climberSubsystem.setWantedState(WantedState.DEPLOY);
+    }
+
+    @Override
+    public InterruptionBehavior getInterruptionBehavior() {
+        return InterruptionBehavior.kCancelIncoming;
     }
 }

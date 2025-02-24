@@ -11,7 +11,6 @@ public class DestinationSupplier {
         return instance;
     }
 
-
     public enum elevatorSetpoint {
         L1, L2, L3, L4, P1, P2
     }
@@ -63,5 +62,4 @@ public class DestinationSupplier {
             };
         }
     }
-
 }
