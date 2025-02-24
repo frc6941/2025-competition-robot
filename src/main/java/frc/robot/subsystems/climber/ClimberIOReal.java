@@ -18,7 +18,7 @@ import frc.robot.RobotConstants.ClimberConstants.ClimberGainsClass;
 
 public class ClimberIOReal implements ClimberIO {
     private final TalonFX motor = new TalonFX(RobotConstants.ClimberConstants.CLIMBER_MOTOR_ID,
-            RobotConstants.CAN_BUS_NAME);
+            RobotConstants.CANIVORE_CAN_BUS_NAME);
 
     private final StatusSignal<Angle> currentPositionRot = motor.getPosition();
     private final StatusSignal<AngularVelocity> velocityRotPerSec = motor.getVelocity();

@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -41,6 +42,8 @@ import org.littletonrobotics.AllianceFlipUtil;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 import static frc.robot.RobotConstants.ElevatorConstants.*;
+import static frc.robot.RobotConstants.SwerveConstants.DRIVETRAIN_LIMITED;
+import static frc.robot.RobotConstants.SwerveConstants.DRIVETRAIN_UNCAPPED;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -120,6 +123,12 @@ public class RobotContainer {
                 true,
                 false), swerve));
 
+        driverController.povRight().whileTrue(
+                new InstantCommand(() -> swerve.setKinematicsLimit(DRIVETRAIN_LIMITED))
+        ).onFalse(
+                new InstantCommand(() -> swerve.setKinematicsLimit(DRIVETRAIN_UNCAPPED))
+        );
+
         driverController.start().onTrue(
                 Commands.runOnce(() -> {
                     /*
@@ -148,9 +157,9 @@ public class RobotContainer {
 //        driverController.b().whileTrue(new GroundOuttakeCommand(intakeSubsystem, endEffectorSubsystem, elevatorSubsystem));
 
         //cyy's key binding
-        driverController.leftTrigger().whileTrue(new GroundIntakeCommand(intakeSubsystem, endEffectorSubsystem, elevatorSubsystem));
+        driverController.leftTrigger().toggleOnTrue(new GroundIntakeCommand(intakeSubsystem, endEffectorSubsystem, elevatorSubsystem));
         driverController.rightBumper().whileTrue(new PutCoralCommand(driverController, endEffectorSubsystem, elevatorSubsystem, intakeSubsystem));
-        driverController.leftBumper().whileTrue(new FunnelIntakeCommand(elevatorSubsystem, endEffectorSubsystem, intakeSubsystem));
+        driverController.leftBumper().toggleOnTrue(new FunnelIntakeCommand(elevatorSubsystem, endEffectorSubsystem, intakeSubsystem));
         driverController.y().onTrue(new ZeroCommand(elevatorSubsystem, intakeSubsystem, endEffectorSubsystem));
         driverController.povDown().whileTrue(new ClimbCommand(climberSubsystem, elevatorSubsystem, intakeSubsystem, endEffectorSubsystem));
         driverController.a().whileTrue(new PokeCommand(endEffectorSubsystem, intakeSubsystem, elevatorSubsystem));
