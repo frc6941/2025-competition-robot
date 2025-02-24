@@ -7,9 +7,12 @@ import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.auto.basics.CustomAutoChooser;
+import frc.robot.auto.modes.AutoFile;
 import frc.robot.subsystems.swerve.Swerve;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
 
 import static frc.robot.RobotConstants.DriverCamera;
@@ -18,15 +21,21 @@ public class Robot extends LoggedRobot {
     private final Swerve swerve = Swerve.getInstance();
     private Command autonomousCommand;
     private RobotContainer robotContainer;
+    private CustomAutoChooser chooser;
+
+
 
     @Override
     public void robotInit() {
+        robotContainer = new RobotContainer();
         // logger initialization
         Logger.addDataReceiver(new NT4Publisher());
         // Logger.addDataReceiver(new WPILOGWriter());
         Logger.recordMetadata("GitSHA", BuildConstants.GIT_SHA);
         Logger.start();
         WebServer.start(5800, Filesystem.getDeployDirectory().getPath());
+        chooser = new CustomAutoChooser(robotContainer);
+
 
         // early-stage initialization
         DriverStation.silenceJoystickConnectionWarning(true);
@@ -41,7 +50,7 @@ public class Robot extends LoggedRobot {
             CameraServer.startAutomaticCapture("Driver Camera", "/dev/video0");
         }
 
-        robotContainer = new RobotContainer();
+
     }
 
     @Override
@@ -65,7 +74,7 @@ public class Robot extends LoggedRobot {
     @Override
     public void autonomousInit() {
         try {
-            autonomousCommand = robotContainer.getAutonomousCommand();
+            autonomousCommand = chooser.getAuto();
         } catch (Exception e) {
             System.out.println("Autonomous command failed: " + e);
             e.printStackTrace();

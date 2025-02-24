@@ -9,14 +9,10 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.auto.basics.AutoActions;
-import frc.robot.auto.basics.AutoFile;
-import frc.robot.auto.basics.CustomAutoChooser;
 import frc.robot.commands.*;
 import frc.robot.display.Display;
 import frc.robot.subsystems.apriltagvision.AprilTagVision;
@@ -38,7 +34,6 @@ import frc.robot.utils.DestinationSupplier;
 import lombok.Getter;
 import org.frcteam6941.looper.UpdateManager;
 import org.littletonrobotics.AllianceFlipUtil;
-import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 import static frc.robot.RobotConstants.ElevatorConstants.*;
 
@@ -76,7 +71,7 @@ public class RobotContainer {
     private final IntakeSubsystem intakeSubsystem;
     private final ClimberSubsystem climberSubsystem;
     @Getter
-    private final LoggedDashboardChooser<String> autoChooser;
+
     private double lastResetTime = 0.0;
 
 
@@ -95,9 +90,6 @@ public class RobotContainer {
         updateManager = new UpdateManager(swerve,
                 display);
         updateManager.registerAll();
-
-        autoChooser = new LoggedDashboardChooser<>("Chooser", CustomAutoChooser.buildAutoChooser("New Auto"));
-        AutoActions.initializeAutoCommands(elevatorSubsystem, intakeSubsystem, endEffectorSubsystem);
 
         new Trigger(RobotController::getUserButton).whileTrue(new ClimbResetCommand(climberSubsystem));
 
@@ -179,14 +171,21 @@ public class RobotContainer {
 
     }
 
+    public IntakeSubsystem getIntakeSubsystem() {
+        return intakeSubsystem;
+    }
+
+    public ElevatorSubsystem getElevatorSubsystem() {
+        return elevatorSubsystem;
+    }
+
+    public EndEffectorSubsystem getEndEffectorSubsystem() {
+        return endEffectorSubsystem;
+    }
     private void configureStreamDeckBindings() {
         streamDeckController.button(1).onTrue(new ReefAimCommand(8, false, () -> streamDeckController.button(17).getAsBoolean()));
     }
 
-    public Command getAutonomousCommand() {
-        // FIXME: set resetOdometry to false when vision is completed and usable
-        return AutoFile.runAuto(autoChooser.get(), false, true, true);
-    }
 
     public FieldConstants.AprilTagLayoutType getAprilTagLayoutType() {
         return FieldConstants.defaultAprilTagType;

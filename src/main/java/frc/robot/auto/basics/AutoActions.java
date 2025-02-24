@@ -4,6 +4,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.endeffector.EndEffectorSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
@@ -15,8 +16,20 @@ import static frc.robot.RobotConstants.ElevatorConstants.*;
 
 public class AutoActions {
     public static boolean initialized = false;
+    private final RobotContainer m_container;
+    private final EndEffectorSubsystem endEffectorSubsystem;
+    private final IntakeSubsystem intakeSubsystem;
+    private final ElevatorSubsystem elevatorSubsystem;
 
-    public static void initializeAutoCommands(ElevatorSubsystem elevatorSubsystem, IntakeSubsystem intakeSubsystem, EndEffectorSubsystem endEffectorSubsystem) {
+    AutoActions(RobotContainer container) {
+        this.m_container = container;
+        this.intakeSubsystem = m_container.getIntakeSubsystem();
+        this.endEffectorSubsystem = m_container.getEndEffectorSubsystem();
+        this.elevatorSubsystem = m_container.getElevatorSubsystem();
+        initializeAutoCommands();
+    }
+
+    public void initializeAutoCommands() {
         if (initialized) {
             throw new IllegalStateException("AutoActions already initialized");
         }
@@ -62,10 +75,16 @@ public class AutoActions {
                 )
         );
         NamedCommands.registerCommands(autoCommands);
+
     }
 
-    @Synchronized
-    public static Command waitFor(double seconds) {
+
+
+    public Command setElevator(double meters) {
+        return Commands.runOnce(()-> elevatorSubsystem.setElevatorPosition(meters));
+    }
+
+    public Command waitFor(double seconds) {
         return new WaitCommand(seconds);
     }
 }
