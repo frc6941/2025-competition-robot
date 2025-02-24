@@ -80,8 +80,18 @@ public class AutoActions {
 
 
 
-    public Command setElevator(double meters) {
-        return Commands.runOnce(()-> elevatorSubsystem.setElevatorPosition(meters));
+    public Command raiseElevator() {
+        return Commands.runOnce(()-> elevatorSubsystem.setElevatorPosition(L4_EXTENSION_METERS.get()));
+    }
+    public Command homeIntake() {
+        return Commands.runOnce(() -> intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.HOME));
+    }
+
+    public Command preShoot(){
+        return Commands.runOnce(() -> endEffectorSubsystem.setWantedState(EndEffectorSubsystem.WantedState.PRE_SHOOT));
+    }
+    public Command shootCoral(){
+        return Commands.runOnce(() -> endEffectorSubsystem.setWantedState(EndEffectorSubsystem.WantedState.SHOOT));
     }
 
     public Command waitFor(double seconds) {

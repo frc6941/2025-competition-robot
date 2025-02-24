@@ -4,6 +4,7 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.RobotConstants;
 import frc.robot.auto.basics.AutoActions;
 import frc.robot.auto.basics.FollowPath;
 import frc.robot.subsystems.swerve.Swerve;
@@ -41,9 +42,11 @@ public class AutoFile {
     Command buildTestAuto(String fileName) {
         SequentialCommandGroup testAuto = new SequentialCommandGroup();
         List<PathPlannerPath> paths = getAutoPaths(fileName);
-        PathPlannerPath path = paths.get(1);
-        testAuto.addCommands(new FollowPath(Swerve.getInstance(), path, true, true, false ));
-        testAuto.addCommands();
+        PathPlannerPath path = paths.get(0);
+        testAuto.addCommands(autoActions.preShoot());
+        testAuto.addCommands(new FollowPath(Swerve.getInstance(), path, true, true, true ));
+        testAuto.addCommands(autoActions.raiseElevator());
+        testAuto.addCommands(autoActions.shootCoral());
         return testAuto;
     }
 
