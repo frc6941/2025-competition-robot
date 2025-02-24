@@ -41,7 +41,7 @@ public final class RobotConstants {
     public static final boolean is10541 = RobotController.getSerialNumber().matches(Serial10541) && Robot.isReal();
     // canbus name
     public static String CAN_BUS_NAME = "rio";
-    public static String CANIVORE_CAN_BUS_NAME = "10541Canivore0";
+    public static String CANIVORE_CAN_BUS_NAME = is10541?"10541Canivore0":"6941Canivore0";
     // serial baud rate
     public static int baudRate = 115200;
 
@@ -103,7 +103,7 @@ public final class RobotConstants {
         public static final KinematicLimits DRIVETRAIN_UNCAPPED = new KinematicLimits(maxSpeed.magnitude(),
                 11.0, 1000.0);
         public static final KinematicLimits DRIVETRAIN_SMOOTHED = new KinematicLimits(4.5, 30.0, 200.0);
-        public static final KinematicLimits DRIVETRAIN_LIMITED = new KinematicLimits(2.0, 10.0, 1200.0);
+        public static final KinematicLimits DRIVETRAIN_LIMITED = new KinematicLimits(1.5, 10.0, 1200.0);
         public static final KinematicLimits DRIVETRAIN_ROBOT_ORIENTED = new KinematicLimits(2.0, 5.0, 1500.0);
 
         public static final Measure<LinearVelocityUnit> speedAt12Volts = maxSpeed;
