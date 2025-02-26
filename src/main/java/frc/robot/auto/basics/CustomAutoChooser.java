@@ -8,6 +8,7 @@ import static com.pathplanner.lib.auto.AutoBuilder.getAllAutoNames;
 
 // adapted from AutoBuilder since we do not initialize AutoBuilder.
 public class CustomAutoChooser {
+    // FIXME: choose auto based on AutoFile
     public static SendableChooser<String> buildAutoChooser() {
         return buildAutoChooser("");
     }

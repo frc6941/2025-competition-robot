@@ -127,7 +127,7 @@ public class Swerve implements Updatable, Subsystem {
         setpoint = new SwerveSetpoint(new edu.wpi.first.math.kinematics.ChassisSpeeds(), getModuleStates());
         previousSetpoint = new SwerveSetpoint(new edu.wpi.first.math.kinematics.ChassisSpeeds(), getModuleStates());
         generator = new SwerveSetpointGenerator(RobotConstants.SwerveConstants.modulePlacements);
-        kinematicLimits = SwerveConstants.DRIVETRAIN_UNCAPPED;
+        kinematicLimits = SwerveConstants.DRIVETRAIN_LIMITED; // FIXME: change to uncapped
 
         autoConfig = RobotConfig.fromGUISettings();
     }

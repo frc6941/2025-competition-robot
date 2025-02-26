@@ -84,6 +84,8 @@ public class RobotContainer {
     private final IndicatorSubsystem indicatorSubsystem;
     @Getter
     private final LoggedDashboardChooser<String> autoChooser;
+    private final AutoActions autoActions;
+    private final AutoFile autoFile;
     private double lastResetTime = 0.0;
 
 
@@ -106,7 +108,8 @@ public class RobotContainer {
         updateManager.registerAll();
 
         autoChooser = new LoggedDashboardChooser<>("Chooser", CustomAutoChooser.buildAutoChooser("New Auto"));
-        AutoActions.initializeAutoCommands(elevatorSubsystem, intakeSubsystem, endEffectorSubsystem);
+        autoActions = new AutoActions(indicatorSubsystem, elevatorSubsystem, endEffectorSubsystem, intakeSubsystem);
+        autoFile = new AutoFile(autoActions);
 
         new Trigger(RobotController::getUserButton).whileTrue(new ClimbResetCommand(climberSubsystem));
 
@@ -212,7 +215,7 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
         // FIXME: set resetOdometry to false when vision is completed and usable
-        return AutoFile.runAuto(autoChooser.get(), false, true, true);
+        return autoFile.runAuto("4CoralUp");
     }
 
     public FieldConstants.AprilTagLayoutType getAprilTagLayoutType() {

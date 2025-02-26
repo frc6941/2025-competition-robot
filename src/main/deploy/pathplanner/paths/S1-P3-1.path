@@ -3,35 +3,42 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.012,
-        "y": 7.113
+        "x": 7.140880102040817,
+        "y": 4.1779655612244895
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.012,
-        "y": 7.113
+        "x": 6.678425457717574,
+        "y": 4.1779655612244895
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 4.0,
-        "y": 6.0
+        "x": 5.864923469387755,
+        "y": 4.1779655612244895
       },
       "prevControl": {
-        "x": 3.0,
-        "y": 6.0
+        "x": 6.114923088616077,
+        "y": 4.178401893315964
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "P3-1"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "ELE-L4",
+      "waypointRelativePos": 0.8537735849056596,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 0.5,
     "maxAcceleration": 11.0,
@@ -42,13 +49,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 179.07595464722732
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 180.0
   },
   "useDefaultConstraints": true
 }

@@ -1,11 +1,8 @@
 package frc.robot.auto.basics;
 
-import com.pathplanner.lib.commands.PathPlannerAuto;
-import com.pathplanner.lib.events.EventScheduler;
+import com.pathplanner.lib.events.Event;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.trajectory.PathPlannerTrajectory;
-import com.pathplanner.lib.util.PPLibTelemetry;
-import com.pathplanner.lib.util.PathPlannerLogging;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Timer;
@@ -13,27 +10,39 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.swerve.Swerve;
 import org.littletonrobotics.AllianceFlipUtil;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Comparator;
+import java.util.Objects;
+import java.util.PriorityQueue;
+import java.util.Queue;
+
 import static frc.robot.RobotConstants.SwerveConstants.AUTO_SWERVE_TOLERANCE_SECS;
 
 // adapted from FollowPathCommand in pathplanner
 public class FollowPath extends Command {
+    private final AutoActions autoActions;
     private final Swerve swerve;
     private final Timer timer = new Timer();
-    private final EventScheduler eventScheduler;
     private final boolean angleLock;
     private final boolean requiredOnTarget;
     private final boolean resetOdometry;
+    private final Queue<Event> events;
     private PathPlannerPath path;
     private PathPlannerTrajectory trajectory;
     private FollowTrajectory followTrajectoryCommand;
 
-    public FollowPath(Swerve swerve, PathPlannerPath path, boolean angleLock, boolean requiredOnTarget, boolean resetOdometry) {
+    public FollowPath(
+            AutoActions autoActions,
+            Swerve swerve, PathPlannerPath path, boolean angleLock, boolean requiredOnTarget, boolean resetOdometry) {
         this.swerve = swerve;
-        this.eventScheduler = new EventScheduler();
         this.path = path;
         this.angleLock = angleLock;
         this.requiredOnTarget = requiredOnTarget;
         this.resetOdometry = resetOdometry;
+        this.events =
+                new PriorityQueue<>(Comparator.comparingDouble(Event::getTimestampSeconds));
+        this.autoActions = autoActions;
     }
 
     private void initializeTrajectory() {
@@ -71,11 +80,8 @@ public class FollowPath extends Command {
         followTrajectoryCommand = new FollowTrajectory(this.swerve, this.trajectory, this.angleLock, this.requiredOnTarget);
         followTrajectoryCommand.initialize();
 
-        PathPlannerAuto.setCurrentTrajectory(this.trajectory);
-        PathPlannerAuto.currentPathName = this.path.name;
-        PathPlannerLogging.logActivePath(this.path);
-        PPLibTelemetry.setCurrentPath(this.path);
-        this.eventScheduler.initialize(this.trajectory);
+        events.clear();
+        events.addAll(trajectory.getEvents());
         this.timer.reset();
         this.timer.start();
     }
@@ -83,7 +89,19 @@ public class FollowPath extends Command {
     @Override
     public void execute() {
         double currentTime = this.timer.get();
-        this.eventScheduler.execute(currentTime);
+        while (!events.isEmpty() && currentTime >= events.peek().getTimestampSeconds()) {
+            try {
+                Event event = Objects.requireNonNull(events.poll());
+                if (!event.getClass().getName().equals("com.pathplanner.lib.events.OneShotTriggerEvent")) {
+                    System.out.println("No matching event handler found for event " + event.getClass().getName());
+                    continue;
+                }
+                Method cmd = event.getClass().getMethod("getEventName");
+                autoActions.invokeCommand((String) cmd.invoke(event), () -> followTrajectoryCommand.isFinished());
+            } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     @Override
@@ -95,6 +113,6 @@ public class FollowPath extends Command {
     public void end(boolean interrupted) {
         swerve.stopMovement();
         this.timer.stop();
-        this.eventScheduler.end();
+        this.events.clear();
     }
 }
