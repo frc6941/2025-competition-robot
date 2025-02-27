@@ -12,24 +12,25 @@ import frc.robot.subsystems.intake.IntakeSubsystem;
 import java.util.function.BooleanSupplier;
 
 public class AutoAimShootCommand extends ParallelCommandGroup {
+
     public AutoAimShootCommand(IndicatorSubsystem indicatorSubsystem, EndEffectorSubsystem endeffectorSubsystem,
                                ElevatorSubsystem elevatorSubsystem, IntakeSubsystem intakeSubsystem, BooleanSupplier stop) {
         addRequirements(endeffectorSubsystem, elevatorSubsystem, intakeSubsystem);
         addCommands(
-                Commands.race(
-                        Commands.sequence(
-                                new WaitUntilCommand(stop),
-                                Commands.sequence(
-                                        Commands.runOnce(() ->
-                                                elevatorSubsystem.setElevatorPosition(
-                                                        RobotConstants.ElevatorConstants.IDLE_EXTENSION_METERS.get())))
-                        ),
-                        Commands.sequence(
+                Commands.sequence(
+                        Commands.race(
+                            new WaitUntilCommand(stop),
+                            Commands.sequence(
                                 Commands.parallel(
                                         new ReefAimCommand(stop, elevatorSubsystem),
                                         new AutoPreShootCommand(indicatorSubsystem, endeffectorSubsystem, intakeSubsystem, elevatorSubsystem)
                                 ),
                                 new ShootCommand(indicatorSubsystem, endeffectorSubsystem)
+                            )
+                        ),
+                        Commands.runOnce(() ->
+                                elevatorSubsystem.setElevatorPosition(
+                                        RobotConstants.ElevatorConstants.IDLE_EXTENSION_METERS.get())
                         )
                 )
         );
