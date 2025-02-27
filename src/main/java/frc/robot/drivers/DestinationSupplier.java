@@ -32,6 +32,34 @@ public class DestinationSupplier implements Updatable {
         return instance;
     }
 
+    public static Pose2d getNearestTag(Pose2d robotPose) {
+        double minDistance = Double.MAX_VALUE;
+        int minDistanceID = 0;
+        // Loop from 6 to 11
+        for (int i = 6; i <= 11; i++) {
+            if (minDistance > FieldConstants.officialAprilTagType.getLayout().getTagPose(i).get().
+                    toPose2d().getTranslation().getDistance(robotPose.getTranslation())) {
+                minDistanceID = i;
+                minDistance = FieldConstants.officialAprilTagType.getLayout().getTagPose(i).get().
+                        toPose2d().getTranslation().getDistance(robotPose.getTranslation());
+            }
+        }
+
+        // Loop from 17 to 22
+        for (int i = 17; i <= 22; i++) {
+            if (minDistance > FieldConstants.officialAprilTagType.getLayout().getTagPose(i).get().
+                    toPose2d().getTranslation().getDistance(robotPose.getTranslation())) {
+                minDistanceID = i;
+                minDistance = FieldConstants.officialAprilTagType.getLayout().getTagPose(i).get().
+                        toPose2d().getTranslation().getDistance(robotPose.getTranslation());
+            }
+        }
+        minDistance = Double.MAX_VALUE;
+        Pose2d goal = FieldConstants.officialAprilTagType.getLayout().getTagPose(minDistanceID).get().toPose2d();
+
+        return goal;
+    }
+
     public static Pose2d getDriveTarget(Pose2d robot, Pose2d goal, boolean rightReef) {
         goal = getFinalDriveTarget(goal,rightReef);
         var offset = goal.relativeTo(robot);
@@ -62,6 +90,12 @@ public class DestinationSupplier implements Updatable {
                         RobotConstants.ReefAimConstants.PIPE_TO_TAG.magnitude() * (rightReef ? 1 : -1)),
                 new Rotation2d()));
         return goal;
+    }
+
+    public static boolean isSafeToRaise(Pose2d robotPose, boolean rightReef) {
+        Pose2d tag = getNearestTag(robotPose);
+        Pose2d goal =  getFinalDriveTarget(tag,rightReef);
+        return goal.getTranslation().getDistance(robotPose.getTranslation()) < RobotConstants.ReefAimConstants.RAISE_LIMIT_METERS.get();
     }
 
     public void updateElevatorSetpoint(elevatorSetpoint setpoint) {
@@ -121,33 +155,6 @@ public class DestinationSupplier implements Updatable {
         return coralRight;
     }
 
-    public Pose2d getNearestTag(Pose2d robotPose) {
-        double minDistance = Double.MAX_VALUE;
-        int minDistanceID = 0;
-        // Loop from 6 to 11
-        for (int i = 6; i <= 11; i++) {
-            if (minDistance > FieldConstants.officialAprilTagType.getLayout().getTagPose(i).get().
-                    toPose2d().getTranslation().getDistance(robotPose.getTranslation())) {
-                minDistanceID = i;
-                minDistance = FieldConstants.officialAprilTagType.getLayout().getTagPose(i).get().
-                        toPose2d().getTranslation().getDistance(robotPose.getTranslation());
-            }
-        }
-
-        // Loop from 17 to 22
-        for (int i = 17; i <= 22; i++) {
-            if (minDistance > FieldConstants.officialAprilTagType.getLayout().getTagPose(i).get().
-                    toPose2d().getTranslation().getDistance(robotPose.getTranslation())) {
-                minDistanceID = i;
-                minDistance = FieldConstants.officialAprilTagType.getLayout().getTagPose(i).get().
-                        toPose2d().getTranslation().getDistance(robotPose.getTranslation());
-            }
-        }
-        minDistance = Double.MAX_VALUE;
-        Pose2d goal = FieldConstants.officialAprilTagType.getLayout().getTagPose(minDistanceID).get().toPose2d();
-
-        return goal;
-    }
 
     @Override
     public void update(double time, double dt) {
