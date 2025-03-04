@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.685564159288847,
-        "y": 4.730365044245699
+        "x": 2.6068798094051076,
+        "y": 5.079593435207438
       },
       "isLocked": false,
       "linkedName": null
@@ -20,27 +20,26 @@
         "y": 4.018528761061947
       },
       "prevControl": {
-        "x": 2.0837389380499087,
-        "y": 4.426216814157204
+        "x": 1.9210174090454486,
+        "y": 4.559358769515704
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": -150.0
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "ZEROELEVATOR",
-      "waypointRelativePos": 0.11307625398667173,
-      "endWaypointRelativePos": null,
-      "command": null
-    },
-    {
       "name": "DEPLOY-INTAKE",
-      "waypointRelativePos": 0.3577848651783216,
+      "waypointRelativePos": 0.2978906586310806,
       "endWaypointRelativePos": null,
       "command": null
     }
@@ -55,7 +54,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": -149.99532066550222
   },
   "reversed": false,
   "folder": null,

@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.296902654867257,
-        "y": 1.6435840707964613
+        "x": 4.148492217898833,
+        "y": 1.9891658560311294
       },
       "isLocked": false,
       "linkedName": null
@@ -20,8 +20,8 @@
         "y": 2.2130530973451323
       },
       "prevControl": {
-        "x": 2.7049778761061942,
-        "y": 2.25188053097345
+        "x": 2.885154569874886,
+        "y": 2.4311845431612937
       },
       "nextControl": null,
       "isLocked": false,
@@ -33,14 +33,8 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "ZEROELEVATOR",
-      "waypointRelativePos": 0.14554943461874165,
-      "endWaypointRelativePos": null,
-      "command": null
-    },
-    {
       "name": "DEPLOY-INTAKE",
-      "waypointRelativePos": 0.49463612641346294,
+      "waypointRelativePos": 0.35987946620748884,
       "endWaypointRelativePos": null,
       "command": null
     }

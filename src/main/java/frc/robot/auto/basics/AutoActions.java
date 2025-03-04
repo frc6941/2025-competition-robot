@@ -41,7 +41,8 @@ public class AutoActions {
     public void invokeCommand(String name, BooleanSupplier stopSupplier) {
         switch (name) {
             case "DEPLOY-INTAKE":
-                deployIntake().until(stopSupplier).schedule();
+                zeroAndIntake().until(stopSupplier).schedule();
+                //deployIntake().until(stopSupplier).schedule();
                 break;
             case "PRESHOOT":
                 preShoot().until(stopSupplier).schedule();
@@ -70,6 +71,12 @@ public class AutoActions {
 
     public Command zeroElevator() {
         return new ZeroElevatorCommand(elevatorSubsystem, intakeSubsystem, endEffectorSubsystem);
+    }
+
+    public Command zeroAndIntake() {
+        return Commands.sequence(
+                new ZeroCommand(elevatorSubsystem, intakeSubsystem, endEffectorSubsystem),
+                new GroundIntakeCommand(indicatorSubsystem, intakeSubsystem, endEffectorSubsystem, elevatorSubsystem));
     }
 
     public Command deployIntake() {

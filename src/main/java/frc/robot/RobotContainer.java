@@ -112,9 +112,15 @@ public class RobotContainer {
 
         new Trigger(RobotController::getUserButton).whileTrue(new ClimbResetCommand(climberSubsystem));
 
+        configureAutoChooser();
         configureDriverBindings();
         configureStreamDeckBindings();
         configureTesterBindings();
+    }
+
+    private void configureAutoChooser() {
+        autoChooser.addOption("4CoralLeft", "4CoralLeft");
+        autoChooser.addOption("4CoralRight", "4CoralRight");
     }
 
     //Configure all commands for driver
@@ -199,7 +205,8 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
         // FIXME: set resetOdometry to false when vision is completed and usable
-        return autoFile.runAuto("4CoralLeft");
+        //return autoFile.runAuto("4CoralLeft");
+        return autoFile.runAuto(autoChooser.get());
     }
 
     public FieldConstants.AprilTagLayoutType getAprilTagLayoutType() {
