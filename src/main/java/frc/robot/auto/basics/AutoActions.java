@@ -4,6 +4,7 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.RobotConstants;
 import frc.robot.commands.*;
 import frc.robot.drivers.DestinationSupplier;
@@ -78,7 +79,8 @@ public class AutoActions {
 
     public Command zeroAndIntake() {
         return Commands.sequence(
-                new ZeroCommand(elevatorSubsystem, intakeSubsystem, endEffectorSubsystem).until(() -> (elevatorSubsystem.hasReachedNearZero && intakeSubsystem.hasHomed)),
+                new ZeroCommand(elevatorSubsystem, intakeSubsystem, endEffectorSubsystem),
+                new WaitUntilCommand(() -> (elevatorSubsystem.hasReachedNearZero && intakeSubsystem.hasHomed)),
                 new GroundIntakeCommand(indicatorSubsystem, intakeSubsystem, endEffectorSubsystem, elevatorSubsystem));
     }
 
