@@ -389,4 +389,5 @@ public class AprilTagVision extends SubsystemBase {
 
         // Return the closest tag pose
         return closestTagPose;
-    }
+    }
+}
