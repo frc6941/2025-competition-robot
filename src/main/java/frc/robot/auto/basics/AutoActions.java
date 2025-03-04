@@ -78,7 +78,7 @@ public class AutoActions {
 
     public Command zeroAndIntake() {
         return Commands.sequence(
-                new ZeroCommand(elevatorSubsystem, intakeSubsystem, endEffectorSubsystem),
+                new ZeroCommand(elevatorSubsystem, intakeSubsystem, endEffectorSubsystem).until(() -> (elevatorSubsystem.hasReachedNearZero && intakeSubsystem.hasHomed)),
                 new GroundIntakeCommand(indicatorSubsystem, intakeSubsystem, endEffectorSubsystem, elevatorSubsystem));
     }
 

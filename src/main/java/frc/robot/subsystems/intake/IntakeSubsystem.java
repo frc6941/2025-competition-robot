@@ -30,11 +30,11 @@ public class IntakeSubsystem extends RollerSubsystem {
     private final IntakePivotIOInputsAutoLogged intakePivotIOInputs = new IntakePivotIOInputsAutoLogged();
     private final RollerIOInputsAutoLogged intakeRollerIOInputs = new RollerIOInputsAutoLogged();
     private final LinearFilter currentFilter = LinearFilter.movingAverage(5);
+    public boolean hasHomed = false;
     Timer timer = new Timer();
     private boolean shouldOuttake = false;
     private WantedState wantedState = WantedState.HOME;
     private SystemState systemState = SystemState.HOMING;
-    private boolean hasHomed = false;
     private double currentFilterValue = 0.0;
     private boolean timerStarted = false;
 
