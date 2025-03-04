@@ -210,7 +210,7 @@ public class AprilTagVision extends SubsystemBase {
 
                 // Create a vision observation based on the robot pose, timestamp, and calculated standard deviations
                 double xyStdDev =
-                        instanceIndex <= 1 ? xyStdDevCoefficient * 2 : xyStdDevCoefficient
+                        instanceIndex <= 1 ? xyStdDevCoefficient * 4 : xyStdDevCoefficient
                                 * Math.pow(avgDistance, 2.0)
                                 / tagPoses.size()
                                 * stdDevFactors[instanceIndex];

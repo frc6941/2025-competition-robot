@@ -26,8 +26,8 @@ public class AprilTagVisionIONorthstar implements AprilTagVisionIO {
     private static final int cameraResolutionWidth = 1280;
     private static final int cameraResolutionHeight = 720;
     private static final int cameraAutoExposure = 1;
-    private static final int cameraExposure = 100;
-    private static final int cameraGain = 60;
+    private static final int cameraExposure = 1;
+    private static final int cameraGain = 1;
     private static final int fps = 120;
     private static final int brightness = 1;
     private static final int contrast = 60;
@@ -53,7 +53,7 @@ public class AprilTagVisionIONorthstar implements AprilTagVisionIO {
         configTable.getIntegerTopic("camera_exposure").publish().set(cameraExposure);
         configTable.getIntegerTopic("camera_gain").publish().set(cameraGain);
         configTable.getIntegerTopic("fps").publish().set(fps);
-        configTable.getIntegerTopic("brightness").publish().set(brightness);
+        configTable.getIntegerTopic("brightness").publish().set(index <= 1 ? -60 : -30);
         configTable.getIntegerTopic("contrast").publish().set(contrast);
         configTable.getIntegerTopic("buffersize").publish().set(buffersize);
         configTable.getDoubleTopic("fiducial_size_m").publish().set(FieldConstants.aprilTagWidth);
