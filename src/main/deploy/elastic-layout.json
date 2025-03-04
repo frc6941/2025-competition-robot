@@ -450,19 +450,6 @@
             }
           },
           {
-            "title": "currentElevSetpointCoral",
-            "x": 0.0,
-            "y": 128.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Large Text Display",
-            "properties": {
-              "topic": "/AdvantageKit/RealOutputs/DestinationSupplier/currentElevSetpointCoral",
-              "period": 0.06,
-              "data_type": "string"
-            }
-          },
-          {
             "title": "currentElevSetpointPoke",
             "x": 128.0,
             "y": 128.0,
@@ -470,9 +457,8 @@
             "height": 128.0,
             "type": "Large Text Display",
             "properties": {
-              "topic": "/AdvantageKit/RealOutputs/DestinationSupplier/currentElevSetpointPoke",
-              "period": 0.06,
-              "data_type": "string"
+              "topic": "/SmartDashboard/DestinationSupplier/currentElevSetpointPoke",
+              "period": 0.06
             }
           },
           {
@@ -483,9 +469,8 @@
             "height": 128.0,
             "type": "Large Text Display",
             "properties": {
-              "topic": "/AdvantageKit/RealOutputs/DestinationSupplier/CurrentControlMode",
-              "period": 0.06,
-              "data_type": "string"
+              "topic": "/SmartDashboard/DestinationSupplier/CurrentControlMode",
+              "period": 0.06
             }
           },
           {
@@ -496,9 +481,8 @@
             "height": 128.0,
             "type": "Large Text Display",
             "properties": {
-              "topic": "/AdvantageKit/RealOutputs/DestinationSupplier/Pipe",
-              "period": 0.06,
-              "data_type": "string"
+              "topic": "/SmartDashboard/DestinationSupplier/DestinationSupplier/Pipe",
+              "period": 0.06
             }
           },
           {
@@ -512,6 +496,19 @@
               "topic": "/SmartDashboard/Chooser",
               "period": 0.06,
               "sort_options": false
+            }
+          },
+          {
+            "title": "currentElevSetpointCoral",
+            "x": 0.0,
+            "y": 128.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Large Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/DestinationSupplier/currentElevSetpointCoral",
+              "period": 0.06,
+              "data_type": "string"
             }
           }
         ]
