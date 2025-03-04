@@ -3,7 +3,6 @@ package frc.robot.auto.basics;
 import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import org.json.simple.parser.ParseException;
 
@@ -46,7 +45,7 @@ public class AutoFile {
         return switch (autoName) {
             case "4CoralLeft" -> build4CoralLeft();
             case "4CoralRight" -> build4CoralRight();
-            default -> Commands.waitSeconds(0.1);
+            default -> autoActions.ReverseEndEffector();
             //default -> throw new IllegalArgumentException("No corresponding auto named " + autoName);
         };
     }
