@@ -172,10 +172,10 @@ public class RobotContainer {
         driverController.b().whileTrue(new GroundOuttakeCommand(intakeSubsystem, endEffectorSubsystem, elevatorSubsystem));
         driverController.x().toggleOnTrue(new TrembleIntakeCommand(indicatorSubsystem, intakeSubsystem, endEffectorSubsystem, elevatorSubsystem));
         driverController.povRight().whileTrue(
-                Commands.parallel(
-                        new ReefAimCommand(() -> false, elevatorSubsystem, driverController),
-                        new PutCoralCommand(driverController, endEffectorSubsystem, elevatorSubsystem, intakeSubsystem, indicatorSubsystem)));
-        //        new ReefAimCommand(() -> false, elevatorSubsystem, driverController));
+//                Commands.parallel(
+//                        new ReefAimCommand(() -> false, elevatorSubsystem, driverController),
+//                        new AutoPutCoralCommand(driverController, endEffectorSubsystem, elevatorSubsystem, intakeSubsystem, indicatorSubsystem)));
+                new ReefAimCommand(() -> false, elevatorSubsystem, driverController));
         driverController.rightBumper().whileTrue(new PutCoralCommand(driverController, endEffectorSubsystem, elevatorSubsystem, intakeSubsystem, indicatorSubsystem));
     }
 
@@ -228,7 +228,7 @@ public class RobotContainer {
                         //SEMI
                         Commands.parallel(
                                 new ReefAimCommand(() -> streamDeckController.button(17).getAsBoolean(), elevatorSubsystem, driverController),
-                                new PutCoralCommand(driverController, endEffectorSubsystem, elevatorSubsystem, intakeSubsystem, indicatorSubsystem)),
+                                new AutoPutCoralCommand(driverController, endEffectorSubsystem, elevatorSubsystem, intakeSubsystem, indicatorSubsystem)),
                         //MANUAL
                         new PutCoralCommand(driverController, endEffectorSubsystem, elevatorSubsystem, intakeSubsystem, indicatorSubsystem),
                         () -> destinationSupplier.getCurrentControlMode() == DestinationSupplier.controlMode.SEMI
