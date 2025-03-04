@@ -41,8 +41,8 @@ public class AutoActions {
     public void invokeCommand(String name, BooleanSupplier stopSupplier) {
         switch (name) {
             case "DEPLOY-INTAKE":
-                zeroAndIntake().until(stopSupplier).schedule();
-                //deployIntake().until(stopSupplier).schedule();
+                //zeroAndIntake().until(stopSupplier).schedule();
+                deployIntake().until(stopSupplier).schedule();
                 break;
             case "PRESHOOT":
                 preShoot().until(stopSupplier).schedule();

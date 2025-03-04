@@ -181,19 +181,6 @@
             }
           },
           {
-            "title": "Auto Selector",
-            "x": 512.0,
-            "y": 384.0,
-            "width": 256.0,
-            "height": 128.0,
-            "type": "ComboBox Chooser",
-            "properties": {
-              "topic": "/Shuffleboard/Operator/Auto Selector",
-              "period": 0.06,
-              "sort_options": false
-            }
-          },
-          {
             "title": "DriverMotor 0",
             "x": 768.0,
             "y": 384.0,
@@ -247,6 +234,19 @@
               "period": 0.06,
               "data_type": "double",
               "show_submit_button": false
+            }
+          },
+          {
+            "title": "Chooser",
+            "x": 512.0,
+            "y": 384.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "ComboBox Chooser",
+            "properties": {
+              "topic": "/SmartDashboard/Chooser",
+              "period": 0.06,
+              "sort_options": false
             }
           }
         ]
@@ -384,19 +384,6 @@
         ],
         "containers": [
           {
-            "title": "Auto Selector",
-            "x": 0.0,
-            "y": 0.0,
-            "width": 256.0,
-            "height": 128.0,
-            "type": "ComboBox Chooser",
-            "properties": {
-              "topic": "/Shuffleboard/Operator/Auto Selector",
-              "period": 0.06,
-              "sort_options": false
-            }
-          },
-          {
             "title": "Field",
             "x": 640.0,
             "y": 0.0,
@@ -512,6 +499,19 @@
               "topic": "/AdvantageKit/RealOutputs/DestinationSupplier/Pipe",
               "period": 0.06,
               "data_type": "string"
+            }
+          },
+          {
+            "title": "Chooser",
+            "x": 0.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "ComboBox Chooser",
+            "properties": {
+              "topic": "/SmartDashboard/Chooser",
+              "period": 0.06,
+              "sort_options": false
             }
           }
         ]
