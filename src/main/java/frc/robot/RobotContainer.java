@@ -171,7 +171,11 @@ public class RobotContainer {
         driverController.a().whileTrue(new PokeCommand(endEffectorSubsystem, intakeSubsystem, elevatorSubsystem));
         driverController.b().whileTrue(new GroundOuttakeCommand(intakeSubsystem, endEffectorSubsystem, elevatorSubsystem));
         driverController.x().toggleOnTrue(new TrembleIntakeCommand(indicatorSubsystem, intakeSubsystem, endEffectorSubsystem, elevatorSubsystem));
-        driverController.povRight().whileTrue(new ReefAimCommand(() -> false, elevatorSubsystem, driverController));
+        driverController.povRight().whileTrue(
+                Commands.parallel(
+                        new ReefAimCommand(() -> false, elevatorSubsystem, driverController),
+                        new PutCoralCommand(driverController, endEffectorSubsystem, elevatorSubsystem, intakeSubsystem, indicatorSubsystem)));
+        //        new ReefAimCommand(() -> false, elevatorSubsystem, driverController));
         driverController.rightBumper().whileTrue(new PutCoralCommand(driverController, endEffectorSubsystem, elevatorSubsystem, intakeSubsystem, indicatorSubsystem));
     }
 
