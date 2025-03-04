@@ -53,7 +53,7 @@ public class AprilTagVisionIONorthstar implements AprilTagVisionIO {
         configTable.getIntegerTopic("camera_exposure").publish().set(cameraExposure);
         configTable.getIntegerTopic("camera_gain").publish().set(cameraGain);
         configTable.getIntegerTopic("fps").publish().set(fps);
-        configTable.getIntegerTopic("brightness").publish().set(index <= 1 ? -60 : -30);
+        configTable.getIntegerTopic("brightness").publish().set(index <= 1 ? -60 : 20);
         configTable.getIntegerTopic("contrast").publish().set(contrast);
         configTable.getIntegerTopic("buffersize").publish().set(buffersize);
         configTable.getDoubleTopic("fiducial_size_m").publish().set(FieldConstants.aprilTagWidth);
