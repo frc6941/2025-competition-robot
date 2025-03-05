@@ -52,7 +52,8 @@ public class AutoActions {
                 zeroElevator().until(stopSupplier).schedule();
                 break;
             case "DEPLOY-INTAKE-INIT":
-                zeroAndIntake().until(stopSupplier).schedule();
+                //zeroAndIntake().until(stopSupplier).schedule();
+                deployIntake().until(stopSupplier).schedule();
                 break;
         }
     }
