@@ -19,7 +19,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     private final ElevatorIOInputsAutoLogged inputs = new ElevatorIOInputsAutoLogged();
     private final LinearFilter currentFilter = LinearFilter.movingAverage(5);
     public double currentFilterValue = 0.0;
-    public boolean hasReachedNearZero = false;//TODO: ????
+    public boolean hasReachedNearZero = false;
     private WantedState wantedState = WantedState.POSITION;
     private SystemState systemState = SystemState.POSITION_GOING;
     @Getter
