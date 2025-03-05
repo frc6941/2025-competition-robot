@@ -42,7 +42,6 @@ public class AutoActions {
     public void invokeCommand(String name, BooleanSupplier stopSupplier) {
         switch (name) {
             case "DEPLOY-INTAKE":
-                //zeroAndIntake().until(stopSupplier).schedule();
                 deployIntake().until(stopSupplier).schedule();
                 break;
             case "PRESHOOT":
@@ -82,6 +81,7 @@ public class AutoActions {
         return Commands.sequence(
                 new ZeroCommand(elevatorSubsystem, intakeSubsystem, endEffectorSubsystem),
                 new WaitUntilCommand(() -> (elevatorSubsystem.hasReachedNearZero && intakeSubsystem.hasHomed)),
+                new WaitUntilCommand(() -> (!elevatorSubsystem.hasReachedNearZero && !intakeSubsystem.hasHomed)),
                 new GroundIntakeCommand(indicatorSubsystem, intakeSubsystem, endEffectorSubsystem, elevatorSubsystem));
     }
 

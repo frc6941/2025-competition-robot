@@ -291,7 +291,7 @@ public final class RobotConstants {
         public static final TunableNumber ROBOT_TO_PIPE_METERS = new TunableNumber("AIM/ROBOT_TO_PIPE_METERS", 0.505);
         public static final TunableNumber X_TOLERANCE_METERS = new TunableNumber("AIM/X_TOLERANCE_METERS", 0.02);
         public static final TunableNumber Y_TOLERANCE_METERS = new TunableNumber("AIM/Y_TOLERANCE_METERS", 0.02);
-        public static final TunableNumber RAISE_LIMIT_METERS = new TunableNumber("AIM/RAISE_LIMIT_METERS", 0.5);
+        public static final TunableNumber RAISE_LIMIT_METERS = new TunableNumber("AIM/RAISE_LIMIT_METERS", 1);
         public static final TunableNumber OMEGA_TOLERANCE_DEGREES = new TunableNumber("AIM/OMEGA_TOLERANCE_DEGREES", 1);
         public static final Measure<LinearVelocityUnit> MAX_AIMING_SPEED = MetersPerSecond.of(4.5);
         public static final Measure<LinearAccelerationUnit> MAX_AIMING_ACCELERATION = MetersPerSecondPerSecond.of(9);
