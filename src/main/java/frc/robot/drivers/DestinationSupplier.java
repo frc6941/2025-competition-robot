@@ -19,7 +19,7 @@ public class DestinationSupplier implements Updatable {
     private static DestinationSupplier instance;
     Swerve swerve;
     @Getter
-    private controlMode currentControlMode = controlMode.MANUAL;
+    private controlMode currentControlMode = controlMode.AUTO;
     @Getter
     @Setter
     private int targetTagID = 0;
