@@ -470,7 +470,8 @@
             "type": "Large Text Display",
             "properties": {
               "topic": "/SmartDashboard/DestinationSupplier/CurrentControlMode",
-              "period": 0.06
+              "period": 0.06,
+              "data_type": "string"
             }
           },
           {
@@ -507,6 +508,33 @@
             "type": "Large Text Display",
             "properties": {
               "topic": "/SmartDashboard/DestinationSupplier/currentElevSetpointCoral",
+              "period": 0.06,
+              "data_type": "string"
+            }
+          },
+          {
+            "title": "climbAngle",
+            "x": 256.0,
+            "y": 256.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/TunableNumbers/CLIMBER/climbAngle",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "CurrentL1Mode",
+            "x": 256.0,
+            "y": 128.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Large Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/DestinationSupplier/CurrentL1Mode",
               "period": 0.06,
               "data_type": "string"
             }
