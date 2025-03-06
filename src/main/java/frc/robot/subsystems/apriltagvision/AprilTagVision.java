@@ -99,6 +99,7 @@ public class AprilTagVision extends SubsystemBase {
         List<VisionObservation> allVisionObservations = new ArrayList<>();
 
         for (int instanceIndex = 0; instanceIndex < io.length; instanceIndex++) {
+            Logger.recordOutput("AprilTagVision/Inst" + instanceIndex + "/CameraPoseConstants", cameraPoses[instanceIndex]);
             // Loop over frames to extract and process data
             for (int frameIndex = 0; frameIndex < inputs[instanceIndex].timestamps.length; frameIndex++) {
                 lastFrameTimes.put(instanceIndex, Timer.getFPGATimestamp());
@@ -150,7 +151,6 @@ public class AprilTagVision extends SubsystemBase {
                         Pose3d robotPose3d1 =
                                 cameraPose1.transformBy(cameraPoses[instanceIndex].toTransform3d().inverse());
 
-                        Logger.recordOutput("AprilTagVision/Inst" + instanceIndex + "/CameraPoseConstants", cameraPoses[instanceIndex]);
                         Logger.recordOutput("AprilTagVision/Inst" + instanceIndex + "/robotPose3d0", robotPose3d0);
                         Logger.recordOutput("AprilTagVision/Inst" + instanceIndex + "/robotPose3d1", robotPose3d1);
 
