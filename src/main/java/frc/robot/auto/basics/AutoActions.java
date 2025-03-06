@@ -80,8 +80,10 @@ public class AutoActions {
     public Command zeroAndIntake() {
         return Commands.sequence(
                 new ZeroCommand(elevatorSubsystem, intakeSubsystem, endEffectorSubsystem),
-                new WaitUntilCommand(() -> (elevatorSubsystem.hasReachedNearZero && intakeSubsystem.hasHomed)),
-                new WaitUntilCommand(() -> (!elevatorSubsystem.hasReachedNearZero && !intakeSubsystem.hasHomed)),
+                new WaitUntilCommand(() -> (elevatorSubsystem.getSystemState() != ElevatorSubsystem.SystemState.ZEROING &&
+                        intakeSubsystem.getSystemState() == IntakeSubsystem.SystemState.HOMING)),
+//                new WaitUntilCommand(() -> elevatorSubsystem.hasReachedNearZero && intakeSubsystem.hasHomed),
+//                new WaitUntilCommand(() -> !elevatorSubsystem.hasReachedNearZero && !intakeSubsystem.hasHomed),
                 new GroundIntakeCommand(indicatorSubsystem, intakeSubsystem, endEffectorSubsystem, elevatorSubsystem));
     }
 
