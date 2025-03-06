@@ -231,9 +231,9 @@ public class RobotContainer {
 //                        Commands.parallel(
 //                                new ReefAimCommand(() -> streamDeckController.button(17).getAsBoolean(), elevatorSubsystem, driverController),
 //                                new AutoPutCoralCommand(driverController, endEffectorSubsystem, elevatorSubsystem, intakeSubsystem, indicatorSubsystem)),
-                        new ReefAimCommand(() -> false, elevatorSubsystem, driverController),
+                        new ReefAimCommand(() -> false, elevatorSubsystem, driverController, indicatorSubsystem),
                         //MANUAL
-                        new ReefAimCommand(() -> false, elevatorSubsystem, driverController),
+                        new ReefAimCommand(() -> false, elevatorSubsystem, driverController, indicatorSubsystem),
 //                        new PutCoralCommand(driverController, endEffectorSubsystem, elevatorSubsystem, intakeSubsystem, indicatorSubsystem),
                         () -> destinationSupplier.getCurrentControlMode() == DestinationSupplier.controlMode.SEMI
                 ), () -> destinationSupplier.getCurrentControlMode() == DestinationSupplier.controlMode.AUTO);
