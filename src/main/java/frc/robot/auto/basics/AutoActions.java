@@ -112,7 +112,9 @@ public class AutoActions {
                         new ReefAimAutoCommand(elevatorSubsystem, tagChar),
                         new AutoPreShootCommand(indicatorSubsystem, endEffectorSubsystem, intakeSubsystem, elevatorSubsystem)
                 ),
+                new WaitCommand(0.05),
                 new ShootCommand(indicatorSubsystem, endEffectorSubsystem),
+                new WaitCommand(0.05),
                 Commands.runOnce(() -> elevatorSubsystem.setElevatorPosition(
                         RobotConstants.ElevatorConstants.IDLE_EXTENSION_METERS.get())));
     }

@@ -19,6 +19,8 @@ public class DestinationSupplier implements Updatable {
     private static DestinationSupplier instance;
     Swerve swerve;
     @Getter
+    private L1Mode l1Mode = L1Mode.ELEVATOR;
+    @Getter
     private controlMode currentControlMode = controlMode.AUTO;
     @Getter
     @Setter
@@ -148,11 +150,21 @@ public class DestinationSupplier implements Updatable {
         SmartDashboard.putString("DestinationSupplier/CurrentControlMode", mode.name());
     }
 
+    public void setCurrentL1Mode(L1Mode mode) {
+        this.l1Mode = mode;
+        SmartDashboard.putString("DestinationSupplier/CurrentL1Mode", mode.name());
+    }
+
     public enum elevatorSetpoint {
         L1, L2, L3, L4, P1, P2
     }
 
     public enum controlMode {
         MANUAL, SEMI, AUTO
+    }
+
+    public enum L1Mode {
+        ELEVATOR,
+        INTAKE
     }
 }
