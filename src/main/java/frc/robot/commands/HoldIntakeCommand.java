@@ -33,7 +33,7 @@ public class HoldIntakeCommand extends Command {
     @Override
     public void execute() {
         if (elevatorSubsystem.getIo().isNearExtension(RobotConstants.ElevatorConstants.HOME_EXTENSION_METERS.get())) {
-            intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.DEPLOY_INTAKE);
+            intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.DEPLOY_INTAKE_HOLD);
         } else {
             intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.DEPLOY_WITHOUT_ROLL);
         }

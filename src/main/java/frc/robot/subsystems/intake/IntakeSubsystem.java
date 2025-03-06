@@ -11,6 +11,7 @@ import frc.robot.subsystems.beambreak.BeambreakIO;
 import frc.robot.subsystems.beambreak.BeambreakIOInputsAutoLogged;
 import frc.robot.subsystems.roller.RollerIOInputsAutoLogged;
 import frc.robot.subsystems.roller.RollerSubsystem;
+import lombok.Getter;
 import org.littletonrobotics.junction.Logger;
 
 import static frc.robot.RobotConstants.IntakeConstants.*;
@@ -25,6 +26,7 @@ public class IntakeSubsystem extends RollerSubsystem {
     private static double homeAngle = HOME_ANGLE.get();
     private static double funnelAvoidAngle = FUNNEL_AVOID_ANGLE.get();
     private static double intakeVoltage = INTAKE_VOLTAGE.get();
+    private static double intakeHoldVoltage = INTAKE_HOLD_VOLTAGE.get();
     private static double outtakeVoltage = OUTTAKE_VOLTAGE.get();
     private static double rollerAmpsHasCoral = ROLLER_AMPS_HAS_CORAL.get();
     private static double intakeTime = INTAKE_TIME.get();
@@ -40,6 +42,7 @@ public class IntakeSubsystem extends RollerSubsystem {
     Timer timer = new Timer();
     private boolean shouldOuttake = false;
     private WantedState wantedState = WantedState.HOME;
+    @Getter
     private SystemState systemState = SystemState.HOMING;
     private double currentFilterValue = 0.0;
     private boolean timerStarted = false;
@@ -121,6 +124,10 @@ public class IntakeSubsystem extends RollerSubsystem {
             case FUNNEL_AVOIDING:
                 intakeRollerIO.stop();
                 intakePivotIO.setPivotAngle(funnelAvoidAngle);
+            case DEPLOY_INTAKE_HOLDING:
+                rollerHoldIntake();
+                intakePivotIO.setPivotAngle(deployAngle);
+                break;
             case OFF:
         }
 
@@ -137,6 +144,7 @@ public class IntakeSubsystem extends RollerSubsystem {
             intakeTime = INTAKE_TIME.get();
             outtakeTime = OUTTAKE_TIME.get();
             shootAngle = SHOOT_ANGLE.get();
+            intakeHoldVoltage = INTAKE_HOLD_VOLTAGE.get();
         }
     }
 
@@ -144,6 +152,7 @@ public class IntakeSubsystem extends RollerSubsystem {
         return switch (wantedState) {
             case DEPLOY_WITHOUT_ROLL -> SystemState.DEPLOY_WITHOUT_ROLLING;
             case DEPLOY_INTAKE -> SystemState.DEPLOY_INTAKING;
+            case DEPLOY_INTAKE_HOLD -> SystemState.DEPLOY_INTAKE_HOLDING;
             case TREMBLE_INTAKE -> SystemState.TREMBLE_INTAKING;
             case OUTTAKE -> SystemState.OUTTAKING;
             case AVOID -> SystemState.AVOIDING;
@@ -228,6 +237,32 @@ public class IntakeSubsystem extends RollerSubsystem {
 
     }
 
+    private void rollerHoldIntake() {
+        if (inputs.statorCurrentAmps > rollerAmpsHasCoral && !timerStarted) {
+            timer.start();
+            timerStarted = true;
+        }
+        if (inputs.statorCurrentAmps < rollerAmpsHasCoral && timerStarted && !shouldOuttake) {
+            timer.stop();
+            timer.reset();
+            timerStarted = false;
+        }
+        if (timerStarted && timer.hasElapsed(outtakeTime)) {
+            intakeRollerIO.setVoltage(outtakeVoltage);
+            shouldOuttake = true;
+            if (timer.hasElapsed(intakeTime)) {
+                intakeRollerIO.setVoltage(intakeHoldVoltage);
+                timer.stop();
+                timer.reset();
+                shouldOuttake = false;
+                timerStarted = false;
+            }
+        } else {
+            intakeRollerIO.setVoltage(intakeHoldVoltage);
+        }
+
+    }
+
     public boolean hasCoral() {
         return timerStarted && timer.hasElapsed(0.1);
     }
@@ -261,6 +296,7 @@ public class IntakeSubsystem extends RollerSubsystem {
         GROUNDZERO,
         DEPLOY_SHOOT,
         SHOOT,
+        DEPLOY_INTAKE_HOLD,
         OFF,
     }
 
@@ -275,6 +311,7 @@ public class IntakeSubsystem extends RollerSubsystem {
         GROUNDZEROING,
         DEPLOY_SHOOTING,
         SHOOTING,
+        DEPLOY_INTAKE_HOLDING,
         OFF,
     }
 }

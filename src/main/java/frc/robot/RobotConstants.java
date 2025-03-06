@@ -303,7 +303,7 @@ public final class RobotConstants {
     public static class BeamBreakConstants {
         public static final int ENDEFFECTOR_MIDDLE_BEAMBREAK_ID = 2;
         public static final int ENDEFFECTOR_EDGE_BEAMBREAK_ID = 0;
-        public static final int INTAKE_BEAMBREAK_ID = 1;
+        public static final int INTAKE_BEAMBREAK_ID = 3;
     }
 
     /**
@@ -373,7 +373,8 @@ public final class RobotConstants {
         //Motion constants for intake roller
         public static final TunableNumber INTAKE_VOLTAGE = new TunableNumber("INTAKE_ROLLER/intakeVoltage", 15.0);
         public static final TunableNumber OUTTAKE_VOLTAGE = new TunableNumber("INTAKE_ROLLER/outtakeVoltage", -6.0);
-        public static final TunableNumber SHOOT_VOLTAGE = new TunableNumber("INTAKE_ROLLER/shootVoltage", -6.0);
+        public static final TunableNumber SHOOT_VOLTAGE = new TunableNumber("INTAKE_ROLLER/shootVoltage", -2.0);
+        public static final TunableNumber INTAKE_HOLD_VOLTAGE = new TunableNumber("INTAKE_ROLLER/intakeHoldVoltage", 5.0);
 
         public static final TunableNumber OUTTAKE_TIME = new TunableNumber("INTAKE_ROLLER/outtake time", 0.4);
         public static final TunableNumber INTAKE_TIME = new TunableNumber("INTAKE_ROLLER/intake time", 0.55);

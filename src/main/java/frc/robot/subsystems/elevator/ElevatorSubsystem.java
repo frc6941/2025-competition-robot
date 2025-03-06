@@ -21,6 +21,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     public double currentFilterValue = 0.0;
     public boolean hasReachedNearZero = false;
     private WantedState wantedState = WantedState.POSITION;
+    @Getter
     private SystemState systemState = SystemState.POSITION_GOING;
     @Getter
     private double wantedPosition = IDLE_EXTENSION_METERS.get();
