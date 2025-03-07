@@ -45,5 +45,6 @@ public class ShootHoldCommand extends Command {
         hasShoot = false;
         timer.stop();
         timer.reset();
+        RobotContainer.intakeHasCoral = false;
     }
 }

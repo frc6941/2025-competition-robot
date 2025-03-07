@@ -48,6 +48,7 @@ public class HoldIntakeCommand extends Command {
         elevatorSubsystem.setElevatorPosition(IDLE_EXTENSION_METERS.get());
         indicatorSubsystem.setPattern(IndicatorIO.Patterns.AFTER_INTAKE);
         hasCoral = false;
+        if (!interrupted) RobotContainer.intakeHasCoral = true;
     }
 
     @Override
