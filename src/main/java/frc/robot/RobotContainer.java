@@ -233,7 +233,7 @@ public class RobotContainer {
     public Command switchIntakeModeCommand() {
         return new ConditionalCommand(
                 new GroundIntakeCommand(indicatorSubsystem, intakeSubsystem, endEffectorSubsystem, elevatorSubsystem),
-                new HoldIntakeCommand(indicatorSubsystem, intakeSubsystem, endEffectorSubsystem, elevatorSubsystem),
+                new HoldIntakeCommand(indicatorSubsystem, intakeSubsystem, elevatorSubsystem),
                 () -> destinationSupplier.getL1Mode() == DestinationSupplier.L1Mode.ELEVATOR);
     }
 
