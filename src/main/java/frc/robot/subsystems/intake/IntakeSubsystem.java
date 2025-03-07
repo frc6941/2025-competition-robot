@@ -85,8 +85,9 @@ public class IntakeSubsystem extends RollerSubsystem {
             systemState = newState;
         }
 
-        switch (systemState) {
+        System.out.println(systemState.toString());
 
+        switch (systemState) {
             case DEPLOY_WITHOUT_ROLLING:
                 intakeRollerIO.stop();
                 intakePivotIO.setPivotAngle(deployAngle);
@@ -124,6 +125,7 @@ public class IntakeSubsystem extends RollerSubsystem {
             case FUNNEL_AVOIDING:
                 intakeRollerIO.stop();
                 intakePivotIO.setPivotAngle(funnelAvoidAngle);
+                break;
             case DEPLOY_INTAKE_HOLDING:
                 rollerHoldIntake();
                 intakePivotIO.setPivotAngle(deployAngle);
