@@ -190,7 +190,7 @@ public class IntakeSubsystem extends RollerSubsystem {
 
     public void trembleIntake() {
         intakeRollerIO.setVoltage(intakeVoltage);
-        intakePivotIO.setPivotAngle(deployAngle + 3);
+        intakePivotIO.setPivotAngle(deployAngle + 2);
     }
 
     public void zeroIntakeGround() {
