@@ -1,14 +1,13 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.RobotConstants;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.endeffector.EndEffectorSubsystem;
 import frc.robot.subsystems.indicator.IndicatorIO;
 import frc.robot.subsystems.indicator.IndicatorSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 
-import static frc.robot.RobotConstants.ElevatorConstants.HOME_EXTENSION_METERS;
+import static frc.robot.RobotConstants.ElevatorConstants.HOLD_INTAKE_METERS;
 import static frc.robot.RobotConstants.ElevatorConstants.IDLE_EXTENSION_METERS;
 
 public class HoldIntakeCommand extends Command {
@@ -32,13 +31,13 @@ public class HoldIntakeCommand extends Command {
 
     @Override
     public void execute() {
-        if (elevatorSubsystem.getIo().isNearExtension(RobotConstants.ElevatorConstants.HOME_EXTENSION_METERS.get())) {
+        if (elevatorSubsystem.getIo().isNearExtension(HOLD_INTAKE_METERS.get())) {
             intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.DEPLOY_INTAKE_HOLD);
         } else {
             intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.DEPLOY_WITHOUT_ROLL);
         }
         endEffectorSubsystem.setWantedState(EndEffectorSubsystem.WantedState.GROUND_INTAKE);
-        elevatorSubsystem.setElevatorPosition(HOME_EXTENSION_METERS.get());
+        elevatorSubsystem.setElevatorPosition(HOLD_INTAKE_METERS.get());
     }
 
     @Override

@@ -63,13 +63,12 @@ public class IntakeSubsystem extends RollerSubsystem {
         super.periodic();
 
         BBIO.updateInputs(BBInputs);
-
         intakePivotIO.updateInputs(intakePivotIOInputs);
 
         SystemState newState = handleStateTransition();
 
         Logger.processInputs("Intake/Pivot", intakePivotIOInputs);
-
+        Logger.processInputs(NAME + "/Beambreak", BBInputs);
         Logger.recordOutput("Intake/SystemState", systemState.toString());
 
         RobotContainer.intakeIsDanger = intakeIsDanger();
