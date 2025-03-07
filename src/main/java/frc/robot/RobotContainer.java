@@ -58,6 +58,7 @@ public class RobotContainer {
     public static boolean elevatorIsDanger;
     public static boolean intakeIsDanger;
     public static boolean intakeIsAvoiding;
+    public static boolean intakeHasCoral;
 
     // Controllers
     private final CommandXboxController driverController = new CommandXboxController(0);
@@ -173,13 +174,12 @@ public class RobotContainer {
         driverController.b().whileTrue(new GroundOuttakeCommand(intakeSubsystem, endEffectorSubsystem, elevatorSubsystem));
         driverController.x().toggleOnTrue(new TrembleIntakeCommand(indicatorSubsystem, intakeSubsystem, endEffectorSubsystem, elevatorSubsystem));
         driverController.povRight().whileTrue(switchAimingModeCommand());
-        driverController.rightBumper().whileTrue(new PutCoralCommand(driverController, endEffectorSubsystem, elevatorSubsystem, intakeSubsystem, indicatorSubsystem));
+        driverController.rightBumper().whileTrue(switchPreMoveModeCommand());
     }
 
     private void configureStreamDeckBindings() {
         // Operator's controller
         streamDeckController.button(1).onTrue(Commands.runOnce(() -> destinationSupplier.setCurrentControlMode(DestinationSupplier.controlMode.MANUAL)).ignoringDisable(true));
-        streamDeckController.button(2).onTrue(Commands.runOnce(() -> destinationSupplier.setCurrentControlMode(DestinationSupplier.controlMode.SEMI)).ignoringDisable(true));
         streamDeckController.button(3).onTrue(Commands.runOnce(() -> destinationSupplier.setCurrentControlMode(DestinationSupplier.controlMode.AUTO)).ignoringDisable(true));
         streamDeckController.button(4).onTrue(Commands.runOnce(() -> destinationSupplier.updateBranch(false)).ignoringDisable(true));
         streamDeckController.button(5).onTrue(Commands.runOnce(() -> destinationSupplier.updateBranch(true)).ignoringDisable(true));
@@ -189,14 +189,16 @@ public class RobotContainer {
         streamDeckController.button(16).onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L4)).ignoringDisable(true));
         streamDeckController.button(18).onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.P1)).ignoringDisable(true));
         streamDeckController.button(19).onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.P2)).ignoringDisable(true));
-
         streamDeckController.button(8).whileTrue(Commands.run(() -> destinationSupplier.setCurrentL1Mode(DestinationSupplier.L1Mode.INTAKE))
-                .finallyDo(() -> destinationSupplier.setCurrentL1Mode(DestinationSupplier.L1Mode.ELEVATOR)));
+                .finallyDo(() -> destinationSupplier.setCurrentL1Mode(DestinationSupplier.L1Mode.ELEVATOR)).ignoringDisable(true));
+        streamDeckController.button(10).whileTrue(Commands.run(() -> destinationSupplier.setCurrentL1Mode(DestinationSupplier.L1Mode.INTAKE))
+                .finallyDo(() -> destinationSupplier.setCurrentL1Mode(DestinationSupplier.L1Mode.ELEVATOR)).ignoringDisable(true));
     }
 
     public void configureTesterBindings() {
         testerController.x().onTrue(Commands.runOnce(() -> destinationSupplier.setCurrentControlMode(DestinationSupplier.controlMode.MANUAL)).ignoringDisable(true));
-        testerController.b().onTrue(Commands.runOnce(() -> destinationSupplier.setCurrentControlMode(DestinationSupplier.controlMode.SEMI)).ignoringDisable(true));
+        testerController.b().onTrue(Commands.run(() -> destinationSupplier.setCurrentL1Mode(DestinationSupplier.L1Mode.INTAKE))
+                .finallyDo(() -> destinationSupplier.setCurrentL1Mode(DestinationSupplier.L1Mode.ELEVATOR)).ignoringDisable(true));
         testerController.a().onTrue(Commands.runOnce(() -> destinationSupplier.setCurrentControlMode(DestinationSupplier.controlMode.AUTO)).ignoringDisable(true));
         testerController.leftBumper().onTrue(Commands.runOnce(() -> destinationSupplier.updateBranch(false)).ignoringDisable(true));
         testerController.rightBumper().onTrue(Commands.runOnce(() -> destinationSupplier.updateBranch(true)).ignoringDisable(true));
@@ -220,24 +222,29 @@ public class RobotContainer {
 
     public Command switchAimingModeCommand() {
         return new ConditionalCommand(
-                // L1
-                new ShootHoldCommand(intakeSubsystem, () -> driverController.rightTrigger().getAsBoolean()),
-                new ConditionalCommand(
-                        // AUTO
-                        new AutoAimShootCommand(
-                                indicatorSubsystem, endEffectorSubsystem, elevatorSubsystem, intakeSubsystem,
-                                () -> false, driverController),
-                        // MANUAL
-                        new ReefAimCommand(() -> false, elevatorSubsystem, driverController, indicatorSubsystem),
-                        () -> destinationSupplier.getCurrentControlMode() == DestinationSupplier.controlMode.AUTO),
-                () -> destinationSupplier.getL1Mode() == DestinationSupplier.L1Mode.INTAKE);
+                // AUTO
+                new AutoAimShootCommand(
+                        indicatorSubsystem, endEffectorSubsystem, elevatorSubsystem, intakeSubsystem,
+                        () -> false, driverController),
+                // MANUAL
+                new ReefAimCommand(() -> false, elevatorSubsystem, driverController, indicatorSubsystem),
+                () -> destinationSupplier.getCurrentControlMode() == DestinationSupplier.controlMode.AUTO);
     }
 
     public Command switchIntakeModeCommand() {
         return new ConditionalCommand(
                 new GroundIntakeCommand(indicatorSubsystem, intakeSubsystem, endEffectorSubsystem, elevatorSubsystem),
-                new HoldIntakeCommand(indicatorSubsystem, intakeSubsystem, endEffectorSubsystem, elevatorSubsystem),
+                new HoldIntakeCommand(indicatorSubsystem, intakeSubsystem, elevatorSubsystem),
                 () -> destinationSupplier.getL1Mode() == DestinationSupplier.L1Mode.ELEVATOR);
+    }
+
+    public Command switchPreMoveModeCommand() {
+        return new ConditionalCommand(
+                // Intake L1
+                new ShootHoldCommand(intakeSubsystem, () -> driverController.rightTrigger().getAsBoolean()),
+                // Elevator
+                new PutCoralCommand(driverController, endEffectorSubsystem, elevatorSubsystem, intakeSubsystem, indicatorSubsystem),
+                () -> destinationSupplier.getL1Mode() == DestinationSupplier.L1Mode.INTAKE);
     }
 
 }

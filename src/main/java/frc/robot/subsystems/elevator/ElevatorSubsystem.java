@@ -9,8 +9,7 @@ import frc.robot.display.SuperstructureVisualizer;
 import lombok.Getter;
 import org.littletonrobotics.junction.Logger;
 
-import static frc.robot.RobotConstants.ElevatorConstants.ELEVATOR_MIN_SAFE_HEIGHT;
-import static frc.robot.RobotConstants.ElevatorConstants.IDLE_EXTENSION_METERS;
+import static frc.robot.RobotConstants.ElevatorConstants.*;
 import static frc.robot.RobotContainer.elevatorIsDanger;
 
 public class ElevatorSubsystem extends SubsystemBase {
@@ -61,10 +60,10 @@ public class ElevatorSubsystem extends SubsystemBase {
         switch (systemState) {
             case POSITION_GOING:
                 //worked, but need clean up
-                if (wantedPosition < ELEVATOR_MIN_SAFE_HEIGHT.get() && RobotContainer.intakeIsAvoiding && RobotContainer.intakeIsDanger) {
+                if (wantedPosition < (RobotContainer.intakeHasCoral ? ELEVATOR_MIN_SAFE_HEIGHT_HOLDING.get() : ELEVATOR_MIN_SAFE_HEIGHT.get()) && RobotContainer.intakeIsAvoiding && RobotContainer.intakeIsDanger) {
                     io.setElevatorTarget(Math.max(wantedPosition, 0.4));
-                } else if (wantedPosition < RobotConstants.ElevatorConstants.ELEVATOR_MIN_SAFE_HEIGHT.get() && RobotContainer.intakeIsDanger) {
-                    io.setElevatorTarget(ELEVATOR_MIN_SAFE_HEIGHT.get());
+                } else if (wantedPosition < (RobotContainer.intakeHasCoral ? ELEVATOR_MIN_SAFE_HEIGHT_HOLDING.get() : ELEVATOR_MIN_SAFE_HEIGHT.get()) && RobotContainer.intakeIsDanger) {
+                    io.setElevatorTarget(RobotContainer.intakeHasCoral ? ELEVATOR_MIN_SAFE_HEIGHT_HOLDING.get() : ELEVATOR_MIN_SAFE_HEIGHT.get());
                 } else {
                     io.setElevatorTarget(wantedPosition);
                 }
@@ -141,7 +140,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     public boolean elevatorIsDanger() {
-        return (inputs.positionMeters < ELEVATOR_MIN_SAFE_HEIGHT.get() - 0.01);
+        return (inputs.positionMeters < (RobotContainer.intakeHasCoral ? ELEVATOR_MIN_SAFE_HEIGHT_HOLDING.get() : ELEVATOR_MIN_SAFE_HEIGHT.get()) - 0.01);
     }
 
 

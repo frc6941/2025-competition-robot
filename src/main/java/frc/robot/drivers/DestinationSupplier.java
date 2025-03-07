@@ -21,6 +21,8 @@ public class DestinationSupplier implements Updatable {
     @Getter
     private L1Mode l1Mode = L1Mode.ELEVATOR;
     @Getter
+    private IntakeMode intakeMode = IntakeMode.NORMAL;
+    @Getter
     private controlMode currentControlMode = controlMode.AUTO;
     @Getter
     @Setter
@@ -155,6 +157,11 @@ public class DestinationSupplier implements Updatable {
         SmartDashboard.putString("DestinationSupplier/CurrentL1Mode", mode.name());
     }
 
+    public void setCurrentIntaleMode(IntakeMode mode) {
+        this.intakeMode = mode;
+        SmartDashboard.putString("DestinationSupplier/CurrentIntaleMode", mode.name());
+    }
+
     public enum elevatorSetpoint {
         L1, L2, L3, L4, P1, P2
     }
@@ -166,5 +173,10 @@ public class DestinationSupplier implements Updatable {
     public enum L1Mode {
         ELEVATOR,
         INTAKE
+    }
+
+    public enum IntakeMode {
+        TREMBLE,
+        NORMAL
     }
 }

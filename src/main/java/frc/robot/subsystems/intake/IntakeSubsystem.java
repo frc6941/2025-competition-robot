@@ -22,6 +22,7 @@ public class IntakeSubsystem extends RollerSubsystem {
     private static double deployAngle = DEPLOY_ANGLE.get();
     private static double outtakeAngle = OUTTAKE_ANGLE.get();
     private static double shootVoltage = SHOOT_VOLTAGE.get();
+    private static double outtakeHoldVoltage = OUT_TAKE_HOLD.get();
     private static double avoidAngle = AVOID_ANGLE.get();
     private static double homeAngle = HOME_ANGLE.get();
     private static double funnelAvoidAngle = FUNNEL_AVOID_ANGLE.get();
@@ -63,17 +64,17 @@ public class IntakeSubsystem extends RollerSubsystem {
         super.periodic();
 
         BBIO.updateInputs(BBInputs);
-
         intakePivotIO.updateInputs(intakePivotIOInputs);
 
         SystemState newState = handleStateTransition();
 
         Logger.processInputs("Intake/Pivot", intakePivotIOInputs);
-
+        Logger.processInputs(NAME + "/Beambreak", BBInputs);
         Logger.recordOutput("Intake/SystemState", systemState.toString());
 
         RobotContainer.intakeIsDanger = intakeIsDanger();
         RobotContainer.intakeIsAvoiding = intakeIsAvoiding();
+        RobotContainer.intakeHasCoral = hasCoralBB();
         Logger.recordOutput("Flags/intakeIsDanger", intakeIsDanger());
 
         SuperstructureVisualizer.getInstance().updateIntake(intakePivotIOInputs.currentAngleDeg);
@@ -86,7 +87,6 @@ public class IntakeSubsystem extends RollerSubsystem {
         }
 
         switch (systemState) {
-
             case DEPLOY_WITHOUT_ROLLING:
                 intakeRollerIO.stop();
                 intakePivotIO.setPivotAngle(deployAngle);
@@ -102,6 +102,9 @@ public class IntakeSubsystem extends RollerSubsystem {
                 intakeRollerIO.setVoltage(outtakeVoltage);
                 intakePivotIO.setPivotAngle(outtakeAngle);
                 break;
+            case HOLD_OUTTAKING:
+                intakeRollerIO.setVoltage(outtakeHoldVoltage);
+                intakePivotIO.setPivotAngle(deployAngle);
             case SHOOTING:
                 intakeRollerIO.setVoltage(shootVoltage);
                 intakePivotIO.setPivotAngle(shootAngle);
@@ -124,6 +127,7 @@ public class IntakeSubsystem extends RollerSubsystem {
             case FUNNEL_AVOIDING:
                 intakeRollerIO.stop();
                 intakePivotIO.setPivotAngle(funnelAvoidAngle);
+                break;
             case DEPLOY_INTAKE_HOLDING:
                 rollerHoldIntake();
                 intakePivotIO.setPivotAngle(deployAngle);
@@ -145,6 +149,7 @@ public class IntakeSubsystem extends RollerSubsystem {
             outtakeTime = OUTTAKE_TIME.get();
             shootAngle = SHOOT_ANGLE.get();
             intakeHoldVoltage = INTAKE_HOLD_VOLTAGE.get();
+            outtakeHoldVoltage = OUT_TAKE_HOLD.get();
         }
     }
 
@@ -155,6 +160,7 @@ public class IntakeSubsystem extends RollerSubsystem {
             case DEPLOY_INTAKE_HOLD -> SystemState.DEPLOY_INTAKE_HOLDING;
             case TREMBLE_INTAKE -> SystemState.TREMBLE_INTAKING;
             case OUTTAKE -> SystemState.OUTTAKING;
+            case HOLD_OUTTAKE -> SystemState.HOLD_OUTTAKING;
             case AVOID -> SystemState.AVOIDING;
             case FUNNEL_AVOID -> SystemState.FUNNEL_AVOIDING;
             case HOME -> {
@@ -195,7 +201,7 @@ public class IntakeSubsystem extends RollerSubsystem {
         hasHomed = true;
         if (RobotBase.isReal()) {
             if (currentFilterValue <= 18) {
-                intakePivotIO.setMotorVoltage(1);
+                intakePivotIO.setMotorVoltage(0.5);
                 setWantedState(WantedState.GROUNDZERO);
             }
             if (currentFilterValue > 18) {
@@ -267,7 +273,7 @@ public class IntakeSubsystem extends RollerSubsystem {
         return timerStarted && timer.hasElapsed(0.1);
     }
 
-    public boolean hasCoralBB() {
+    private boolean hasCoralBB() {
         return BBInputs.isBeambreakOn;
     }
 
@@ -290,6 +296,7 @@ public class IntakeSubsystem extends RollerSubsystem {
         DEPLOY_INTAKE,
         TREMBLE_INTAKE,
         OUTTAKE,
+        HOLD_OUTTAKE,
         AVOID,
         FUNNEL_AVOID,
         HOME,
@@ -305,6 +312,7 @@ public class IntakeSubsystem extends RollerSubsystem {
         DEPLOY_INTAKING,
         TREMBLE_INTAKING,
         OUTTAKING,
+        HOLD_OUTTAKING,
         AVOIDING,
         FUNNEL_AVOIDING,
         HOMING,

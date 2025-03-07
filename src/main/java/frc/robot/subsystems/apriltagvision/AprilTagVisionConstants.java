@@ -9,6 +9,7 @@ package frc.robot.subsystems.apriltagvision;
 
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.util.Units;
 
 // Constants related to AprilTag vision processing and camera configuration for the robot
@@ -53,6 +54,22 @@ public class AprilTagVisionConstants {
                             -0.29981,
                             0.31560,
                             new Rotation3d(0.0, 0.0, Units.degreesToRadians(20))),
+            };
+
+    public static final Transform3d[] cameraError =
+            new Transform3d[]{
+                    new Transform3d(),
+                    new Transform3d(),
+                    new Transform3d(
+                            0.01,
+                            0.02,
+                            0,
+                            new Rotation3d()),
+                    new Transform3d(
+                            -0.01,
+                            -0.02,
+                            0,
+                            new Rotation3d()),
             };
 
     // Instance names for the installed AprilTag vision cameras
