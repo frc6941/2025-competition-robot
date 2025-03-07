@@ -375,6 +375,7 @@ public final class RobotConstants {
         public static final TunableNumber OUTTAKE_VOLTAGE = new TunableNumber("INTAKE_ROLLER/outtakeVoltage", -6.0);
         public static final TunableNumber SHOOT_VOLTAGE = new TunableNumber("INTAKE_ROLLER/shootVoltage", -2.0);
         public static final TunableNumber INTAKE_HOLD_VOLTAGE = new TunableNumber("INTAKE_ROLLER/intakeHoldVoltage", 5.0);
+        public static final TunableNumber OUT_TAKE_HOLD = new TunableNumber("INTAKE_ROLLER/outtakeHoldVoltage", -1.0);
 
         public static final TunableNumber OUTTAKE_TIME = new TunableNumber("INTAKE_ROLLER/outtake time", 0.4);
         public static final TunableNumber INTAKE_TIME = new TunableNumber("INTAKE_ROLLER/intake time", 0.55);

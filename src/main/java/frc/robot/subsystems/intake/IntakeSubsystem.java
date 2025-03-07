@@ -22,6 +22,7 @@ public class IntakeSubsystem extends RollerSubsystem {
     private static double deployAngle = DEPLOY_ANGLE.get();
     private static double outtakeAngle = OUTTAKE_ANGLE.get();
     private static double shootVoltage = SHOOT_VOLTAGE.get();
+    private static double outtakeHoldVoltage = OUT_TAKE_HOLD.get();
     private static double avoidAngle = AVOID_ANGLE.get();
     private static double homeAngle = HOME_ANGLE.get();
     private static double funnelAvoidAngle = FUNNEL_AVOID_ANGLE.get();
@@ -100,6 +101,9 @@ public class IntakeSubsystem extends RollerSubsystem {
                 intakeRollerIO.setVoltage(outtakeVoltage);
                 intakePivotIO.setPivotAngle(outtakeAngle);
                 break;
+            case HOLD_OUTTAKING:
+                intakeRollerIO.setVoltage(outtakeHoldVoltage);
+                intakePivotIO.setPivotAngle(deployAngle);
             case SHOOTING:
                 intakeRollerIO.setVoltage(shootVoltage);
                 intakePivotIO.setPivotAngle(shootAngle);
@@ -144,6 +148,7 @@ public class IntakeSubsystem extends RollerSubsystem {
             outtakeTime = OUTTAKE_TIME.get();
             shootAngle = SHOOT_ANGLE.get();
             intakeHoldVoltage = INTAKE_HOLD_VOLTAGE.get();
+            outtakeHoldVoltage = OUT_TAKE_HOLD.get();
         }
     }
 
@@ -154,6 +159,7 @@ public class IntakeSubsystem extends RollerSubsystem {
             case DEPLOY_INTAKE_HOLD -> SystemState.DEPLOY_INTAKE_HOLDING;
             case TREMBLE_INTAKE -> SystemState.TREMBLE_INTAKING;
             case OUTTAKE -> SystemState.OUTTAKING;
+            case HOLD_OUTTAKE -> SystemState.HOLD_OUTTAKING;
             case AVOID -> SystemState.AVOIDING;
             case FUNNEL_AVOID -> SystemState.FUNNEL_AVOIDING;
             case HOME -> {
@@ -289,6 +295,7 @@ public class IntakeSubsystem extends RollerSubsystem {
         DEPLOY_INTAKE,
         TREMBLE_INTAKE,
         OUTTAKE,
+        HOLD_OUTTAKE,
         AVOID,
         FUNNEL_AVOID,
         HOME,
@@ -304,6 +311,7 @@ public class IntakeSubsystem extends RollerSubsystem {
         DEPLOY_INTAKING,
         TREMBLE_INTAKING,
         OUTTAKING,
+        HOLD_OUTTAKING,
         AVOIDING,
         FUNNEL_AVOIDING,
         HOMING,

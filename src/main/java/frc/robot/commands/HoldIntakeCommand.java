@@ -37,7 +37,7 @@ public class HoldIntakeCommand extends Command {
         elevatorSubsystem.setElevatorPosition(HOLD_INTAKE_METERS.get());
         hasCoral = hasCoral || intakeSubsystem.hasCoralBB();
         if (hasCoral) {
-            intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.OUTTAKE);
+            intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.HOLD_OUTTAKE);
         }
     }
 
