@@ -30,7 +30,7 @@ public class AprilTagVisionIONorthstar implements AprilTagVisionIO {
     private static final int cameraExposure = 50;
     private static final int cameraGain = 1;
     private static final int fps = 120;
-    private static final int brightness = 20;
+    private static final int brightness = 0;
     private static final int contrast = 60;
     private static final int buffersize = 1;
     private static final double disconnectedTimeout = 0.5;

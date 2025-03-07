@@ -188,7 +188,7 @@ public class AprilTagVision extends SubsystemBase {
                 }
 
                 // Convert the 3D robot pose to a 2D pose
-                Pose2d robotPose = robotPose3d.toPose2d();
+                Pose2d robotPose = robotPose3d.plus(cameraError[instanceIndex]).toPose2d();
 
                 // Collect tag poses and update the last detection times for each tag
                 List<Pose3d> tagPoses = new ArrayList<>();
