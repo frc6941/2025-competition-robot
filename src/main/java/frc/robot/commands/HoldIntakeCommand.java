@@ -13,7 +13,6 @@ public class HoldIntakeCommand extends Command {
     private final IntakeSubsystem intakeSubsystem;
     private final ElevatorSubsystem elevatorSubsystem;
     private final IndicatorSubsystem indicatorSubsystem;
-    private final boolean reversed = false;
     private boolean hasCoral = false;
 
     public HoldIntakeCommand(IndicatorSubsystem indicatorSubsystem, IntakeSubsystem intakeSubsystem, ElevatorSubsystem elevatorSubsystem) {
@@ -47,6 +46,7 @@ public class HoldIntakeCommand extends Command {
         intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.HOME);
         elevatorSubsystem.setElevatorPosition(IDLE_EXTENSION_METERS.get());
         indicatorSubsystem.setPattern(IndicatorIO.Patterns.AFTER_INTAKE);
+        hasCoral = false;
     }
 
     @Override
