@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.FieldConstants.AprilTagLayoutType;
+import frc.robot.drivers.DestinationSupplier;
 import frc.robot.subsystems.swerve.Swerve;
 import lombok.Getter;
 import lombok.Setter;
@@ -46,18 +47,17 @@ public class AprilTagVision extends SubsystemBase {
     private final AprilTagVisionIOInputs[] inputs;
     private final Map<Integer, Double> lastFrameTimes = new HashMap<>();
     private final Map<Integer, Double> lastTagDetectionTimes = new HashMap<>();
+    private final DestinationSupplier destinationSupplier = DestinationSupplier.getInstance();
     private Pose3d demoTagPose = null;
     private double lastDemoTagPoseTimestamp = 0.0;
     private double lastPrint;
     private double frameUpdateCount;
     @Getter
     private ArrayList<Pose3d> allTagPoses;
-
     @Getter
     private Pose3d cameraPose;
     @Getter
     private Pose3d robotPose3d;
-
     @Setter
     private int measureCnt = 0;
 
@@ -231,7 +231,7 @@ public class AprilTagVision extends SubsystemBase {
                         measureCnt++;
                         xyStdDev = 0.01;
                     }
-                    if (instanceIndex >= 2) {
+                    if (instanceIndex >= 2 && destinationSupplier.isUseVision()) {
                         Swerve.getInstance().getLocalizer().addMeasurement(
                                 timestamp,
                                 robotPose3d.toPose2d(),

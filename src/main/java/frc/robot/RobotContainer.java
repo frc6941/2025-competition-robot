@@ -122,6 +122,8 @@ public class RobotContainer {
     private void configureAutoChooser() {
         autoChooser.addOption("4CoralLeft", "4CoralLeft");
         autoChooser.addOption("4CoralRight", "4CoralRight");
+        autoChooser.addOption("FunnelRight", "FunnelRight");
+        autoChooser.addOption("FunnelLeft", "FunnelLeft");
         autoChooser.addOption("Test", "Test");
         autoChooser.addOption("None", "None");
     }

@@ -27,6 +27,8 @@ public class DestinationSupplier implements Updatable {
     @Getter
     @Setter
     private int targetTagID = 0;
+    @Getter
+    private boolean useVision = true;
     private boolean coralRight = false;
     private boolean useCoral = false;
     private elevatorSetpoint currentElevSetpointCoral = elevatorSetpoint.L2;
@@ -160,6 +162,11 @@ public class DestinationSupplier implements Updatable {
     public void setCurrentIntakeMode(IntakeMode mode) {
         this.intakeMode = mode;
         SmartDashboard.putString("DestinationSupplier/CurrentIntakeMode", mode.name());
+    }
+
+    public void setUseVision(boolean useVision) {
+        this.useVision = useVision;
+        SmartDashboard.putBoolean("DestinationSupplier/UseVision", useVision);
     }
 
     public enum elevatorSetpoint {

@@ -24,6 +24,7 @@ public class AutoActions {
     private final IndicatorSubsystem indicatorSubsystem;
     private final AprilTagVision aprilTagVision;
     private final Swerve swerve;
+    private final DestinationSupplier destinationSupplier = DestinationSupplier.getInstance();
 
     public AutoActions(IndicatorSubsystem indicatorSubsystem, ElevatorSubsystem elevatorSubsystem, EndEffectorSubsystem endEffectorSubsystem, IntakeSubsystem intakeSubsystem, AprilTagVision aprilTagVision) {
         this.intakeSubsystem = intakeSubsystem;
@@ -70,7 +71,7 @@ public class AutoActions {
     }
 
     public Command setL4() {
-        return Commands.runOnce(() -> DestinationSupplier.getInstance().updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L4));
+        return Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L4));
     }
 
     public Command zeroElevator() {
@@ -104,7 +105,7 @@ public class AutoActions {
     }
 
     public Command setLevel(DestinationSupplier.elevatorSetpoint setpoint) {
-        return Commands.runOnce(() -> DestinationSupplier.getInstance().updateElevatorSetpoint(setpoint));
+        return Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(setpoint));
     }
 
     public Command AutoAimShoot(DestinationSupplier.elevatorSetpoint setpoint, char tagChar) {
@@ -123,5 +124,13 @@ public class AutoActions {
 
     public Command ReverseEndEffector() {
         return new ReverseEndEffectorCommand(endEffectorSubsystem);
+    }
+
+    public Command disableVision() {
+        return Commands.runOnce(() -> destinationSupplier.setUseVision(false));
+    }
+
+    public Command enableVision() {
+        return Commands.runOnce(() -> destinationSupplier.setUseVision(true));
     }
 }

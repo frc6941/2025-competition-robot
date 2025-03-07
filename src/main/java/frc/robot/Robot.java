@@ -7,9 +7,11 @@ import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.drivers.DestinationSupplier;
 import frc.robot.subsystems.swerve.Swerve;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
 import static frc.robot.RobotConstants.DriverCamera;
@@ -23,7 +25,7 @@ public class Robot extends LoggedRobot {
     @Override
     public void robotInit() {
         // logger initialization
-        // Logger.addDataReceiver(new NT4Publisher());
+        Logger.addDataReceiver(new NT4Publisher());
         Logger.addDataReceiver(new WPILOGWriter());
         Logger.recordMetadata("GitSHA", BuildConstants.GIT_SHA);
         Logger.start();
@@ -97,12 +99,14 @@ public class Robot extends LoggedRobot {
         robotContainer.getUpdateManager().invokeStop();
         swerve.normal();
         swerve.cancelFollow();
+        DestinationSupplier.getInstance().setUseVision(true);
     }
 
     @Override
     public void teleopInit() {
         swerve.normal();
         robotContainer.getUpdateManager().invokeStart();
+        DestinationSupplier.getInstance().setUseVision(true);
     }
 
     @Override
