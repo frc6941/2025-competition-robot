@@ -272,7 +272,7 @@ public class IntakeSubsystem extends RollerSubsystem {
         return timerStarted && timer.hasElapsed(0.1);
     }
 
-    private boolean hasCoralBB() {
+    public boolean hasCoralBB() {
         return BBInputs.isBeambreakOn;
     }
 
