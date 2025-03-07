@@ -197,7 +197,7 @@ public class IntakeSubsystem extends RollerSubsystem {
         hasHomed = true;
         if (RobotBase.isReal()) {
             if (currentFilterValue <= 18) {
-                intakePivotIO.setMotorVoltage(1);
+                intakePivotIO.setMotorVoltage(0.5);
                 setWantedState(WantedState.GROUNDZERO);
             }
             if (currentFilterValue > 18) {
