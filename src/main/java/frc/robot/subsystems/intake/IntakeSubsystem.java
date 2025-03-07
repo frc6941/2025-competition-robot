@@ -85,8 +85,6 @@ public class IntakeSubsystem extends RollerSubsystem {
             systemState = newState;
         }
 
-        System.out.println(systemState.toString());
-
         switch (systemState) {
             case DEPLOY_WITHOUT_ROLLING:
                 intakeRollerIO.stop();

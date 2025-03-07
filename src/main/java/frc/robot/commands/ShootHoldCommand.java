@@ -42,6 +42,7 @@ public class ShootHoldCommand extends Command {
     public void end(boolean interrupted) {
         intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.HOME);
         hasShoot = false;
+        timer.stop();
         timer.reset();
     }
 }
