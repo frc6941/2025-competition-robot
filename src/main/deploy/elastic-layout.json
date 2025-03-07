@@ -514,7 +514,7 @@
           },
           {
             "title": "climbAngle",
-            "x": 256.0,
+            "x": 384.0,
             "y": 256.0,
             "width": 128.0,
             "height": 128.0,
@@ -535,6 +535,19 @@
             "type": "Large Text Display",
             "properties": {
               "topic": "/SmartDashboard/DestinationSupplier/CurrentL1Mode",
+              "period": 0.06,
+              "data_type": "string"
+            }
+          },
+          {
+            "title": "CurrentIntakeMode",
+            "x": 256.0,
+            "y": 256.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Large Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/DestinationSupplier/CurrentIntakeMode",
               "period": 0.06,
               "data_type": "string"
             }

@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.Timer;
 import frc.robot.RobotConstants;
 import frc.robot.RobotContainer;
 import frc.robot.display.SuperstructureVisualizer;
+import frc.robot.drivers.DestinationSupplier;
 import frc.robot.subsystems.beambreak.BeambreakIO;
 import frc.robot.subsystems.beambreak.BeambreakIOInputsAutoLogged;
 import frc.robot.subsystems.roller.RollerIOInputsAutoLogged;
@@ -47,7 +48,6 @@ public class IntakeSubsystem extends RollerSubsystem {
     private SystemState systemState = SystemState.HOMING;
     private double currentFilterValue = 0.0;
     private boolean timerStarted = false;
-    private boolean lowerAngle = false;
 
     public IntakeSubsystem(
             IntakePivotIO intakePivotIO,
@@ -158,7 +158,7 @@ public class IntakeSubsystem extends RollerSubsystem {
         return switch (wantedState) {
             case DEPLOY_WITHOUT_ROLL -> SystemState.DEPLOY_WITHOUT_ROLLING;
             case DEPLOY_INTAKE -> {
-                if (lowerAngle) {
+                if (DestinationSupplier.getInstance().getIntakeMode() == DestinationSupplier.IntakeMode.TREMBLE) {
                     yield SystemState.TREMBLE_INTAKING;
                 } else {
                     yield SystemState.DEPLOY_INTAKING;
@@ -290,10 +290,6 @@ public class IntakeSubsystem extends RollerSubsystem {
 
     private boolean intakeIsAvoiding() {
         return intakePivotIOInputs.currentAngleDeg > 50;
-    }
-
-    public void lowerAngle() {
-        lowerAngle = !lowerAngle;
     }
 
     public enum WantedState {

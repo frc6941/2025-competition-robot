@@ -157,9 +157,9 @@ public class DestinationSupplier implements Updatable {
         SmartDashboard.putString("DestinationSupplier/CurrentL1Mode", mode.name());
     }
 
-    public void setCurrentIntaleMode(IntakeMode mode) {
+    public void setCurrentIntakeMode(IntakeMode mode) {
         this.intakeMode = mode;
-        SmartDashboard.putString("DestinationSupplier/CurrentIntaleMode", mode.name());
+        SmartDashboard.putString("DestinationSupplier/CurrentIntakeMode", mode.name());
     }
 
     public enum elevatorSetpoint {
