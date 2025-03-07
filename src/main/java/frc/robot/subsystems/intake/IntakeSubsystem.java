@@ -47,6 +47,7 @@ public class IntakeSubsystem extends RollerSubsystem {
     private SystemState systemState = SystemState.HOMING;
     private double currentFilterValue = 0.0;
     private boolean timerStarted = false;
+    private boolean lowerAngle = false;
 
     public IntakeSubsystem(
             IntakePivotIO intakePivotIO,
@@ -105,6 +106,7 @@ public class IntakeSubsystem extends RollerSubsystem {
             case HOLD_OUTTAKING:
                 intakeRollerIO.setVoltage(outtakeHoldVoltage);
                 intakePivotIO.setPivotAngle(deployAngle);
+                break;
             case SHOOTING:
                 intakeRollerIO.setVoltage(shootVoltage);
                 intakePivotIO.setPivotAngle(shootAngle);

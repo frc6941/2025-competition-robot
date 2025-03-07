@@ -87,8 +87,6 @@ public class RobotContainer {
     private final AutoActions autoActions;
     private final AutoFile autoFile;
     private double lastResetTime = 0.0;
-    // a boolean to store whether to lower intake pivot
-    private boolean lowerIntake = false;
 
 
     public RobotContainer() {
