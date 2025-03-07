@@ -275,7 +275,7 @@ public final class RobotConstants {
          * Constants for the gains in the ReefAimCommand.
          */
         public static class AimGainsClass {
-            public static final TunableNumber AIM_KP = new TunableNumber("AIM/kp", 2.8);
+            public static final TunableNumber AIM_KP = new TunableNumber("AIM/kp", 2.7);
             public static final TunableNumber AIM_KI = new TunableNumber("AIM/ki", 0);
             public static final TunableNumber AIM_KD = new TunableNumber("AIM/kd", 0.1);
         }
