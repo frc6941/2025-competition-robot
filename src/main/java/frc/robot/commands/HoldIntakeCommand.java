@@ -1,6 +1,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.indicator.IndicatorIO;
 import frc.robot.subsystems.indicator.IndicatorSubsystem;
@@ -35,7 +36,7 @@ public class HoldIntakeCommand extends Command {
             intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.DEPLOY_WITHOUT_ROLL);
         }
         elevatorSubsystem.setElevatorPosition(HOLD_INTAKE_METERS.get());
-        hasCoral = hasCoral || intakeSubsystem.hasCoralBB();
+        hasCoral = hasCoral || RobotContainer.intakeHasCoral;
         if (hasCoral) {
             intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.HOLD_OUTTAKE);
         }
@@ -51,7 +52,7 @@ public class HoldIntakeCommand extends Command {
 
     @Override
     public boolean isFinished() {
-        return !intakeSubsystem.hasCoralBB() && hasCoral;
+        return !RobotContainer.intakeHasCoral && hasCoral;
     }
 
     @Override

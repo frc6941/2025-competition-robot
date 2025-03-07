@@ -74,6 +74,7 @@ public class IntakeSubsystem extends RollerSubsystem {
 
         RobotContainer.intakeIsDanger = intakeIsDanger();
         RobotContainer.intakeIsAvoiding = intakeIsAvoiding();
+        RobotContainer.intakeHasCoral = hasCoralBB();
         Logger.recordOutput("Flags/intakeIsDanger", intakeIsDanger());
 
         SuperstructureVisualizer.getInstance().updateIntake(intakePivotIOInputs.currentAngleDeg);
@@ -272,7 +273,7 @@ public class IntakeSubsystem extends RollerSubsystem {
         return timerStarted && timer.hasElapsed(0.1);
     }
 
-    public boolean hasCoralBB() {
+    private boolean hasCoralBB() {
         return BBInputs.isBeambreakOn;
     }
 
