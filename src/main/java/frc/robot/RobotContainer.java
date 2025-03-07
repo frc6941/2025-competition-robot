@@ -171,8 +171,8 @@ public class RobotContainer {
         driverController.povDown().onTrue(new ZeroCommand(elevatorSubsystem, intakeSubsystem, endEffectorSubsystem));
         driverController.y().whileTrue(new ClimbCommand(climberSubsystem, elevatorSubsystem, intakeSubsystem, endEffectorSubsystem));
         driverController.a().whileTrue(new PokeCommand(endEffectorSubsystem, intakeSubsystem, elevatorSubsystem));
-        driverController.b().whileTrue(new GroundOuttakeCommand(intakeSubsystem, endEffectorSubsystem, elevatorSubsystem));
-        driverController.x().toggleOnTrue(new TrembleIntakeCommand(indicatorSubsystem, intakeSubsystem, endEffectorSubsystem, elevatorSubsystem));
+        driverController.b().toggleOnTrue(new GroundOuttakeCommand(intakeSubsystem, endEffectorSubsystem, elevatorSubsystem));
+        driverController.x().onTrue(Commands.runOnce(intakeSubsystem::lowerAngle));
         driverController.povRight().whileTrue(switchAimingModeCommand());
         driverController.rightBumper().whileTrue(switchPreMoveModeCommand());
     }

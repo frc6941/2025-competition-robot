@@ -47,6 +47,7 @@ public class IntakeSubsystem extends RollerSubsystem {
     private SystemState systemState = SystemState.HOMING;
     private double currentFilterValue = 0.0;
     private boolean timerStarted = false;
+    private boolean lowerAngle = false;
 
     public IntakeSubsystem(
             IntakePivotIO intakePivotIO,
@@ -105,6 +106,7 @@ public class IntakeSubsystem extends RollerSubsystem {
             case HOLD_OUTTAKING:
                 intakeRollerIO.setVoltage(outtakeHoldVoltage);
                 intakePivotIO.setPivotAngle(deployAngle);
+                break;
             case SHOOTING:
                 intakeRollerIO.setVoltage(shootVoltage);
                 intakePivotIO.setPivotAngle(shootAngle);
@@ -156,7 +158,13 @@ public class IntakeSubsystem extends RollerSubsystem {
     private SystemState handleStateTransition() {
         return switch (wantedState) {
             case DEPLOY_WITHOUT_ROLL -> SystemState.DEPLOY_WITHOUT_ROLLING;
-            case DEPLOY_INTAKE -> SystemState.DEPLOY_INTAKING;
+            case DEPLOY_INTAKE -> {
+                if (lowerAngle) {
+                    yield SystemState.TREMBLE_INTAKING;
+                } else {
+                    yield SystemState.DEPLOY_INTAKING;
+                }
+            }
             case DEPLOY_INTAKE_HOLD -> SystemState.DEPLOY_INTAKE_HOLDING;
             case TREMBLE_INTAKE -> SystemState.TREMBLE_INTAKING;
             case OUTTAKE -> SystemState.OUTTAKING;
@@ -182,14 +190,8 @@ public class IntakeSubsystem extends RollerSubsystem {
     }
 
     public void trembleIntake() {
-        rollerIntake();
-        intakePivotIO.setPivotAngle(deployAngle - 3);
-        if (intakePivotIOInputs.currentAngleDeg > deployAngle + 2) {
-            intakePivotIO.setPivotAngle(deployAngle - 3);
-        } else if (intakePivotIOInputs.currentAngleDeg < deployAngle - 2) {
-            intakePivotIO.setPivotAngle(deployAngle + 3);
-        }
-
+        intakeRollerIO.setVoltage(intakeVoltage);
+        intakePivotIO.setPivotAngle(deployAngle + 3);
     }
 
     public void zeroIntakeGround() {
@@ -289,6 +291,10 @@ public class IntakeSubsystem extends RollerSubsystem {
 
     private boolean intakeIsAvoiding() {
         return intakePivotIOInputs.currentAngleDeg > 50;
+    }
+
+    public void lowerAngle() {
+        lowerAngle = !lowerAngle;
     }
 
     public enum WantedState {
