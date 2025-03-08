@@ -133,4 +133,8 @@ public class AutoActions {
     public Command enableVision() {
         return Commands.runOnce(() -> destinationSupplier.setUseVision(true));
     }
+
+    public Command funnelIntake() {
+        return new FunnelIntakeCommand(indicatorSubsystem, elevatorSubsystem, endEffectorSubsystem, intakeSubsystem);
+    }
 }

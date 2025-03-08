@@ -1,6 +1,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Robot;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.endeffector.EndEffectorSubsystem;
 import frc.robot.subsystems.indicator.IndicatorIO;
@@ -32,7 +33,7 @@ public class FunnelIntakeCommand extends Command {
 
     @Override
     public void execute() {
-        if (endEffectorSubsystem.containsCoral()){
+        if (endEffectorSubsystem.containsCoral()) {
             return;
         }
         intakeSubsystem.setWantedState(WantedState.FUNNEL_AVOID);
@@ -42,7 +43,7 @@ public class FunnelIntakeCommand extends Command {
 
     @Override
     public boolean isFinished() {
-        return endEffectorSubsystem.containsCoral();
+        return endEffectorSubsystem.containsCoral() || Robot.isSimulation();
     }
 
     @Override
