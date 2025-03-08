@@ -132,7 +132,7 @@ public class ReefAimCommand extends Command {
     public void end(boolean interrupted) {
         swerve.drive(new Translation2d(), 0.0, true, false);
         swerve.setLockHeading(false);
-        indicatorSubsystem.setPattern(IndicatorIO.Patterns.AIMED);
+        if (!interrupted) indicatorSubsystem.setPattern(IndicatorIO.Patterns.AIMED);
     }
 
     @Override
