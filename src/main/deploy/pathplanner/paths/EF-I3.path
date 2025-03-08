@@ -39,13 +39,13 @@
   "eventMarkers": [
     {
       "name": "DEPLOY-INTAKE-INIT",
-      "waypointRelativePos": 0.27428240069585913,
+      "waypointRelativePos": 0.23,
       "endWaypointRelativePos": null,
       "command": null
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 2.0,
+    "maxVelocity": 1.5,
     "maxAcceleration": 3.0,
     "maxAngularVelocity": 360.0,
     "maxAngularAcceleration": 720.0,
@@ -62,5 +62,5 @@
     "velocity": 0,
     "rotation": 119.99999999999999
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

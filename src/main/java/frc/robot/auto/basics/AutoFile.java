@@ -54,7 +54,6 @@ public class AutoFile {
     }
 
     private Command buildTest() {
-
         //return autoActions.zeroAndIntake();
         //return autoActions.AutoAimShoot(L4, 'C');
         return new SequentialCommandGroup(
