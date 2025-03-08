@@ -126,7 +126,7 @@ public class AprilTagVision extends SubsystemBase {
                                         new Rotation3d(new Quaternion(values[5], values[6], values[7], values[8])));
                         robotPose3d =
                                 cameraPose.transformBy(cameraPoses[instanceIndex].toTransform3d().inverse());
-                        //useVisionRotation = true;
+                        useVisionRotation = true;
                         Logger.recordOutput("AprilTagVision/Inst" + instanceIndex + "/CameraPose", cameraPose);
 
                         break;
