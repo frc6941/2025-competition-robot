@@ -54,8 +54,8 @@ public class AutoFile {
     }
 
     private Command buildTest() {
-        //return autoActions.zeroAndIntake();
-        return autoActions.AutoAimShoot(L4, 'C');
+        return autoActions.zeroAndIntake();
+        //return autoActions.AutoAimShoot(L4, 'C');
     }
 
     private Command build4CoralLeft() {
