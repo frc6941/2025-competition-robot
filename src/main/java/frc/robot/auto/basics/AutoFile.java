@@ -54,8 +54,12 @@ public class AutoFile {
     }
 
     private Command buildTest() {
-        return autoActions.zeroAndIntake();
+
+        //return autoActions.zeroAndIntake();
         //return autoActions.AutoAimShoot(L4, 'C');
+        return new SequentialCommandGroup(
+                autoActions.disableVision(),
+                autoActions.followPath(getAutoPath("Test"), true, true, true));
     }
 
     private Command build4CoralLeft() {
