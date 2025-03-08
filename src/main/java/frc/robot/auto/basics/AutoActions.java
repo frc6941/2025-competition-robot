@@ -55,6 +55,9 @@ public class AutoActions {
                 //zeroAndIntake().until(stopSupplier).schedule();
                 deployIntake().until(stopSupplier).schedule();
                 break;
+            case "FUNNEL-INTAKE":
+                funnelIntake().until(stopSupplier).schedule();
+                break;
         }
     }
 

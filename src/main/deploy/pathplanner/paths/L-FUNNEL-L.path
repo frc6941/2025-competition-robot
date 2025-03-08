@@ -33,8 +33,8 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "DEPLOY-INTAKE-INIT",
-      "waypointRelativePos": 0.1,
+      "name": "FUNNEL-INTAKE",
+      "waypointRelativePos": 0.6646577701248298,
       "endWaypointRelativePos": null,
       "command": null
     }

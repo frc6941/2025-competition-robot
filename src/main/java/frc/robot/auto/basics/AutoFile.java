@@ -101,13 +101,10 @@ public class AutoFile {
                 autoActions.ReverseEndEffector(),
                 autoActions.AutoAimShoot(L4, 'F'),
                 autoActions.followPath(getAutoPath("EF-FUNNEL-R"), true, true, false),
-                autoActions.funnelIntake(),
                 autoActions.AutoAimShoot(L4, 'D'),
                 autoActions.followPath(getAutoPath("D-FUNNEL-R"), true, true, false),
-                autoActions.funnelIntake(),
                 autoActions.AutoAimShoot(L4, 'C'),
                 autoActions.followPath(getAutoPath("C-FUNNEL-R"), true, true, false),
-                autoActions.funnelIntake(),
                 autoActions.AutoAimShoot(L4, 'B')
         );
     }
@@ -117,13 +114,10 @@ public class AutoFile {
                 autoActions.ReverseEndEffector(),
                 autoActions.AutoAimShoot(L4, 'I'),
                 autoActions.followPath(getAutoPath("IJ-FUNNEL-L"), true, true, false),
-                autoActions.funnelIntake(),
                 autoActions.AutoAimShoot(L4, 'K'),
                 autoActions.followPath(getAutoPath("K-FUNNEL-L"), true, true, false),
-                autoActions.funnelIntake(),
                 autoActions.AutoAimShoot(L4, 'L'),
                 autoActions.followPath(getAutoPath("L-FUNNEL-L"), true, true, false),
-                autoActions.funnelIntake(),
                 autoActions.AutoAimShoot(L4, 'A')
         );
     }
