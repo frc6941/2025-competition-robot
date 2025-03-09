@@ -481,4 +481,8 @@ public final class RobotConstants {
                 0);
         public static final TunableNumber ELEVATOR_KG = new TunableNumber("ELEVATOR PID/kg", 0.3);//0.3
     }
+
+    public static class Limelight {
+        public static final String LIMELIGHT_LEFT = "limelight-leftf";
+    }
 }
