@@ -251,4 +251,8 @@ public class RobotContainer {
                 () -> destinationSupplier.getL1Mode() == DestinationSupplier.L1Mode.INTAKE);
     }
 
+    public void setMegaTag2 (boolean setMegaTag2) {
+        limelight.setMegaTag2(setMegaTag2);
+    }
+
 }

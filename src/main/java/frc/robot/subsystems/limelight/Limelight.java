@@ -12,27 +12,25 @@ import frc.robot.subsystems.swerve.Swerve;
 
 import java.util.Optional;
 
-import static frc.robot.RobotConstants.Limelight.LIMELIGHT_LEFT;
+import static frc.robot.RobotConstants.LimelightConstants.*;
 
 public class Limelight extends SubsystemBase {
-    //PoseEstimate lastEstimateRight = new PoseEstimate();
+    PoseEstimate lastEstimateRight = new PoseEstimate();
     PoseEstimate lastEstimateLeft = new PoseEstimate();
 
-    //boolean newRightEstimate = false;
+    boolean newRightEstimate = false;
     boolean newLeftEstimate = false;
 
-    //Pose2d rightPose = new Pose2d();
+    Pose2d rightPose = new Pose2d();
     Pose2d leftPose = new Pose2d();
 
-    private boolean useMegaTag2 = true;
-
-    private String LIMELIGHT_NAME = LIMELIGHT_LEFT;
+    private boolean useMegaTag2 = false;
 
     public Limelight() {
     }
 
-    public PoseEstimate getLastPoseEstimates() {
-        return lastEstimateLeft;
+    public PoseEstimate[] getLastPoseEstimates() {
+        return new PoseEstimate[] {lastEstimateRight, lastEstimateLeft};
     }
 
     public void setMegaTag2(boolean useMegaTag2) {
@@ -61,8 +59,7 @@ public class Limelight extends SubsystemBase {
         }
 
         // 1 Tag with a large area
-        //TODO add tagarea into constants
-        if (poseEstimate.tagCount == 1 && poseEstimate.avgTagArea > 0.1) {
+        if (poseEstimate.tagCount == 1 && poseEstimate.avgTagArea > AREA_THRESHOLD) {
             return false;
             // 2 tags or more
         } else if (poseEstimate.tagCount > 1) {
@@ -93,22 +90,22 @@ public class Limelight extends SubsystemBase {
      *                 indicating new estimates are available.
      */
     public void setCurrentEstimates(AngularVelocity gyroRate) {
-        //PoseEstimate currentEstimateRight = new PoseEstimate();
+        PoseEstimate currentEstimateRight = new PoseEstimate();
         PoseEstimate currentEstimateLeft = new PoseEstimate();
 
         if (useMegaTag2) {
-            //currentEstimateRight = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(constVision.LIMELIGHT_NAMES[0]);
+            currentEstimateRight = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(LIMELIGHT_RIGHT);
             currentEstimateLeft = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(LIMELIGHT_LEFT);
         } else {
-            //currentEstimateRight = LimelightHelpers.getBotPoseEstimate_wpiBlue(constVision.LIMELIGHT_NAMES[0]);
+            currentEstimateRight = LimelightHelpers.getBotPoseEstimate_wpiBlue(LIMELIGHT_RIGHT);
             currentEstimateLeft = LimelightHelpers.getBotPoseEstimate_wpiBlue(LIMELIGHT_LEFT);
         }
 
-        /*if (currentEstimateRight != null && !rejectUpdate(currentEstimateRight, gyroRate)) {
+        if (currentEstimateRight != null && !rejectUpdate(currentEstimateRight, gyroRate)) {
             lastEstimateRight = currentEstimateRight;
             rightPose = currentEstimateRight.pose;
             newRightEstimate = true;
-        }*/
+        }
         if (currentEstimateLeft != null && !rejectUpdate(currentEstimateLeft, gyroRate)) {
             lastEstimateLeft = currentEstimateLeft;
             leftPose = currentEstimateLeft.pose;
@@ -120,20 +117,20 @@ public class Limelight extends SubsystemBase {
         setCurrentEstimates(gyroRate);
 
         // No valid pose estimates :(
-        if (/*!newRightEstimate && */!newLeftEstimate) {
+        if (!newRightEstimate && !newLeftEstimate) {
             return Optional.empty();
 
-        } /*else if (newRightEstimate && !newLeftEstimate) {
+        } else if (newRightEstimate && !newLeftEstimate) {
             // One valid pose estimate (right)
             newRightEstimate = false;
             return Optional.of(lastEstimateRight);
 
-        } */else {
+        } else if (!newRightEstimate && newLeftEstimate) {
             // One valid pose estimate (left)
             newLeftEstimate = false;
             return Optional.of(lastEstimateLeft);
 
-        } /*else {
+        } else {
             // Two valid pose estimates, disgard the one that's further
             newRightEstimate = false;
             newLeftEstimate = false;
@@ -142,19 +139,23 @@ public class Limelight extends SubsystemBase {
             } else {
                 return Optional.of(lastEstimateLeft);
             }
-        }*/
+        }
     }
 
     private void addVisionMeasurement(){
         LimelightHelpers.SetRobotOrientation(LIMELIGHT_LEFT,
                 Swerve.getInstance().getLocalizer().getLatestPose().getRotation().getDegrees(), 0, 0, 0, 0, 0);
-//        LimelightHelpers.SetRobotOrientation(constVision.LIMELIGHT_NAMES[1],
-//                subDrivetrain.getPose().getRotation().getDegrees(), 0, 0, 0, 0, 0);
+        LimelightHelpers.SetRobotOrientation(LIMELIGHT_RIGHT,
+                Swerve.getInstance().getLocalizer().getLatestPose().getRotation().getDegrees(), 0, 0, 0, 0, 0);
         AngularVelocity gyroRate = Units.DegreesPerSecond.of(Swerve.getInstance().getLocalizer().getSmoothedVelocity().getRotation().getDegrees());
 
         Optional<PoseEstimate> estimatedPose = determinePoseEstimate(gyroRate);
         if (estimatedPose.isPresent()) {
-            Swerve.getInstance().getLocalizer().addMeasurement(estimatedPose.get().timestampSeconds, estimatedPose.get().pose, VecBuilder.fill(.7,.7,9999999));
+            if (useMegaTag2) {
+                Swerve.getInstance().getLocalizer().addMeasurement(estimatedPose.get().timestampSeconds, estimatedPose.get().pose, VecBuilder.fill(.7, .7, 9999999));
+            } else {
+                Swerve.getInstance().getLocalizer().addMeasurement(estimatedPose.get().timestampSeconds, estimatedPose.get().pose, VecBuilder.fill(.5, .5, 9999999));
+            }
         }
     }
 

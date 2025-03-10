@@ -482,7 +482,9 @@ public final class RobotConstants {
         public static final TunableNumber ELEVATOR_KG = new TunableNumber("ELEVATOR PID/kg", 0.3);//0.3
     }
 
-    public static class Limelight {
+    public static class LimelightConstants {
         public static final String LIMELIGHT_LEFT = "limelight-leftf";
+        public static final String LIMELIGHT_RIGHT = "limelight-rightf";
+        public static final double AREA_THRESHOLD = 0.1;
     }
 }

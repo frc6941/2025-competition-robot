@@ -60,6 +60,7 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void disabledInit() {
+        robotContainer.setMegaTag2(false);
     }
 
     @Override
@@ -84,6 +85,7 @@ public class Robot extends LoggedRobot {
         }
         swerve.auto();
         robotContainer.getUpdateManager().invokeStart();
+        robotContainer.setMegaTag2(true);
     }
 
     @Override
@@ -104,6 +106,7 @@ public class Robot extends LoggedRobot {
     public void teleopInit() {
         swerve.normal();
         robotContainer.getUpdateManager().invokeStart();
+        robotContainer.setMegaTag2(true);
     }
 
     @Override
