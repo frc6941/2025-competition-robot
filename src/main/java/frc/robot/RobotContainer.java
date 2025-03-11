@@ -231,7 +231,7 @@ public class RobotContainer {
                         indicatorSubsystem, endEffectorSubsystem, elevatorSubsystem, intakeSubsystem,
                         () -> false, driverController),
                 // MANUAL
-                new ReefAimCommand(() -> false, elevatorSubsystem, driverController, indicatorSubsystem),
+                new ReefAimCommand(() -> false, elevatorSubsystem, driverController, indicatorSubsystem, driverController.getLeftX(), driverController.getLeftY()),
                 () -> destinationSupplier.getCurrentControlMode() == DestinationSupplier.controlMode.AUTO);
     }
 
