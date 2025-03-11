@@ -23,13 +23,14 @@ import static frc.robot.subsystems.apriltagvision.AprilTagVisionConstants.instan
 // This class implements the AprilTagVisionIO interface for the Northstar vision system.
 // It handles the configuration and data retrieval for AprilTag detection using NetworkTables.
 public class AprilTagVisionIONorthstar implements AprilTagVisionIO {
+    // use v4l2-ctl -d /dev/video0 --list-ctrls
     private static final int cameraResolutionWidth = 1280;
     private static final int cameraResolutionHeight = 720;
     private static final int cameraAutoExposure = 1;
-    private static final int cameraExposure = 100;
-    private static final int cameraGain = 60;
+    private static final int cameraExposure = 50;
+    private static final int cameraGain = 1;
     private static final int fps = 120;
-    private static final int brightness = 1;
+    private static final int brightness = 0;
     private static final int contrast = 60;
     private static final int buffersize = 1;
     private static final double disconnectedTimeout = 0.5;

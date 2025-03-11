@@ -45,8 +45,15 @@ public class AutoFile {
         return switch (autoName) {
             case "4CoralLeft" -> build4CoralLeft();
             case "4CoralRight" -> build4CoralRight();
-            default -> throw new IllegalArgumentException("No corresponding auto named " + autoName);
+            case "Test" -> buildTest();
+            default -> autoActions.ReverseEndEffector();
+            //default -> throw new IllegalArgumentException("No corresponding auto named " + autoName);
         };
+    }
+
+    private Command buildTest() {
+        //return autoActions.zeroAndIntake();
+        return autoActions.AutoAimShoot(L4, 'C');
     }
 
     private Command build4CoralLeft() {

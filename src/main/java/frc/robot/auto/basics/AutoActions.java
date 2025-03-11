@@ -4,6 +4,7 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.RobotConstants;
 import frc.robot.commands.*;
 import frc.robot.drivers.DestinationSupplier;
@@ -49,6 +50,10 @@ public class AutoActions {
             case "ZEROELEVATOR":
                 zeroElevator().until(stopSupplier).schedule();
                 break;
+            case "DEPLOY-INTAKE-INIT":
+                //zeroAndIntake().until(stopSupplier).schedule();
+                deployIntake().until(stopSupplier).schedule();
+                break;
         }
     }
 
@@ -70,6 +75,16 @@ public class AutoActions {
 
     public Command zeroElevator() {
         return new ZeroElevatorCommand(elevatorSubsystem, intakeSubsystem, endEffectorSubsystem);
+    }
+
+    public Command zeroAndIntake() {
+        return Commands.sequence(
+                new ZeroCommand(elevatorSubsystem, intakeSubsystem, endEffectorSubsystem),
+                new WaitUntilCommand(() -> (elevatorSubsystem.getSystemState() != ElevatorSubsystem.SystemState.ZEROING &&
+                        intakeSubsystem.getSystemState() == IntakeSubsystem.SystemState.HOMING)),
+//                new WaitUntilCommand(() -> elevatorSubsystem.hasReachedNearZero && intakeSubsystem.hasHomed),
+//                new WaitUntilCommand(() -> !elevatorSubsystem.hasReachedNearZero && !intakeSubsystem.hasHomed),
+                new GroundIntakeCommand(indicatorSubsystem, intakeSubsystem, endEffectorSubsystem, elevatorSubsystem));
     }
 
     public Command deployIntake() {
@@ -99,7 +114,9 @@ public class AutoActions {
                         new ReefAimAutoCommand(elevatorSubsystem, tagChar),
                         new AutoPreShootCommand(indicatorSubsystem, endEffectorSubsystem, intakeSubsystem, elevatorSubsystem)
                 ),
+                new WaitCommand(0.05),
                 new ShootCommand(indicatorSubsystem, endEffectorSubsystem),
+                new WaitCommand(0.05),
                 Commands.runOnce(() -> elevatorSubsystem.setElevatorPosition(
                         RobotConstants.ElevatorConstants.IDLE_EXTENSION_METERS.get())));
     }

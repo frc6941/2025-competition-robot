@@ -5,6 +5,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.FieldConstants;
 import frc.robot.FieldConstants.Reef;
 import frc.robot.RobotConstants;
@@ -13,13 +14,16 @@ import lombok.Getter;
 import lombok.Setter;
 import org.frcteam6941.looper.Updatable;
 import org.littletonrobotics.AllianceFlipUtil;
-import org.littletonrobotics.junction.Logger;
 
 public class DestinationSupplier implements Updatable {
     private static DestinationSupplier instance;
     Swerve swerve;
     @Getter
-    private controlMode currentControlMode = controlMode.MANUAL;
+    private L1Mode l1Mode = L1Mode.ELEVATOR;
+    @Getter
+    private IntakeMode intakeMode = IntakeMode.NORMAL;
+    @Getter
+    private controlMode currentControlMode = controlMode.AUTO;
     @Getter
     @Setter
     private int targetTagID = 0;
@@ -95,11 +99,13 @@ public class DestinationSupplier implements Updatable {
         switch (setpoint) {
             case L1, L2, L3, L4:
                 currentElevSetpointCoral = setpoint;
-                Logger.recordOutput("DestinationSupplier/currentElevSetpointCoral", setpoint);
+                //Logger.recordOutput("DestinationSupplier/currentElevSetpointCoral", setpoint);
+                SmartDashboard.putString("DestinationSupplier/currentElevSetpointCoral", setpoint.toString());
                 break;
             case P1, P2:
                 currentElevSetpointPoke = setpoint;
-                Logger.recordOutput("DestinationSupplier/currentElevSetpointPoke", setpoint);
+                //Logger.recordOutput("DestinationSupplier/currentElevSetpointPoke", setpoint);
+                SmartDashboard.putString("DestinationSupplier/currentElevSetpointPoke", setpoint.toString());
                 break;
             default:
                 System.out.println("Unknown elevator setpoint: " + setpoint);
@@ -132,7 +138,8 @@ public class DestinationSupplier implements Updatable {
 
     public void updateBranch(boolean coralRight) {
         this.coralRight = coralRight;
-        Logger.recordOutput("DestinationSupplier/Pipe", coralRight ? "Right" : "Left");
+        //Logger.recordOutput("DestinationSupplier/Pipe", coralRight ? "Right" : "Left");
+        SmartDashboard.putString("DestinationSupplier/Pipe", coralRight ? "Right" : "Left");
     }
 
     public boolean getCurrentBranch() {
@@ -141,7 +148,18 @@ public class DestinationSupplier implements Updatable {
 
     public void setCurrentControlMode(controlMode mode) {
         this.currentControlMode = mode;
-        Logger.recordOutput("DestinationSupplier/CurrentControlMode", mode);
+        //Logger.recordOutput("DestinationSupplier/CurrentControlMode", mode);
+        SmartDashboard.putString("DestinationSupplier/CurrentControlMode", mode.name());
+    }
+
+    public void setCurrentL1Mode(L1Mode mode) {
+        this.l1Mode = mode;
+        SmartDashboard.putString("DestinationSupplier/CurrentL1Mode", mode.name());
+    }
+
+    public void setCurrentIntaleMode(IntakeMode mode) {
+        this.intakeMode = mode;
+        SmartDashboard.putString("DestinationSupplier/CurrentIntaleMode", mode.name());
     }
 
     public enum elevatorSetpoint {
@@ -150,5 +168,15 @@ public class DestinationSupplier implements Updatable {
 
     public enum controlMode {
         MANUAL, SEMI, AUTO
+    }
+
+    public enum L1Mode {
+        ELEVATOR,
+        INTAKE
+    }
+
+    public enum IntakeMode {
+        TREMBLE,
+        NORMAL
     }
 }

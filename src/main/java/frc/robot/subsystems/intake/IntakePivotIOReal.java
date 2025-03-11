@@ -46,7 +46,7 @@ public class IntakePivotIOReal implements IntakePivotIO {
         config.CurrentLimits.StatorCurrentLimit = 40.0;
         config.CurrentLimits.StatorCurrentLimitEnable = true;
 
-        motor.setPosition(angleToTalonPos(5));
+        motor.setPosition(angleToTalonPos(0));
 
         config.withSlot0(new Slot0Configs()
                 .withKP(IntakePivotGainsClass.INTAKE_PIVOT_KP.get())

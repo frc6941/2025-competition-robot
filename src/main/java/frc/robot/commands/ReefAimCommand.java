@@ -11,6 +11,8 @@ import frc.robot.RobotConstants;
 import frc.robot.display.Display;
 import frc.robot.drivers.DestinationSupplier;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
+import frc.robot.subsystems.indicator.IndicatorIO;
+import frc.robot.subsystems.indicator.IndicatorSubsystem;
 import frc.robot.subsystems.swerve.Swerve;
 import org.littletonrobotics.AllianceFlipUtil;
 import org.littletonrobotics.junction.Logger;
@@ -38,6 +40,7 @@ public class ReefAimCommand extends Command {
     private final BooleanSupplier stop;
     private final ElevatorSubsystem elevatorSubsystem;
     private final CommandXboxController driverController;
+    private final IndicatorSubsystem indicatorSubsystem;
     private boolean rightReef; // true if shooting right reef
     private boolean xFinished = false;
     private boolean yFinished = false;
@@ -46,11 +49,12 @@ public class ReefAimCommand extends Command {
     private Translation2d translationalVelocity, controllerVelocity;
 
     public ReefAimCommand(BooleanSupplier stop, ElevatorSubsystem elevatorSubsystem,
-                          CommandXboxController driverController) {
+                          CommandXboxController driverController, IndicatorSubsystem indicatorSubsystem) {
         addRequirements(swerve);
         this.stop = stop;
         this.elevatorSubsystem = elevatorSubsystem;
         this.driverController = driverController;
+        this.indicatorSubsystem = indicatorSubsystem;
     }
 
     @Override
@@ -65,6 +69,8 @@ public class ReefAimCommand extends Command {
         rightReef = DestinationSupplier.getInstance().getCurrentBranch();
         DestinationSupplier.getInstance();
         finalDestinationPose = DestinationSupplier.getFinalDriveTarget(tagPose, rightReef);
+        indicatorSubsystem.setPattern(IndicatorIO.Patterns.AIMING);
+
     }
 
     @Override
@@ -126,6 +132,7 @@ public class ReefAimCommand extends Command {
     public void end(boolean interrupted) {
         swerve.drive(new Translation2d(), 0.0, true, false);
         swerve.setLockHeading(false);
+        indicatorSubsystem.setPattern(IndicatorIO.Patterns.AIMED);
     }
 
     @Override

@@ -99,6 +99,7 @@ public class AprilTagVision extends SubsystemBase {
         List<VisionObservation> allVisionObservations = new ArrayList<>();
 
         for (int instanceIndex = 0; instanceIndex < io.length; instanceIndex++) {
+            Logger.recordOutput("AprilTagVision/Inst" + instanceIndex + "/CameraPoseConstants", cameraPoses[instanceIndex]);
             // Loop over frames to extract and process data
             for (int frameIndex = 0; frameIndex < inputs[instanceIndex].timestamps.length; frameIndex++) {
                 lastFrameTimes.put(instanceIndex, Timer.getFPGATimestamp());
@@ -150,7 +151,6 @@ public class AprilTagVision extends SubsystemBase {
                         Pose3d robotPose3d1 =
                                 cameraPose1.transformBy(cameraPoses[instanceIndex].toTransform3d().inverse());
 
-                        Logger.recordOutput("AprilTagVision/Inst" + instanceIndex + "/CameraPoseConstants", cameraPoses[instanceIndex]);
                         Logger.recordOutput("AprilTagVision/Inst" + instanceIndex + "/robotPose3d0", robotPose3d0);
                         Logger.recordOutput("AprilTagVision/Inst" + instanceIndex + "/robotPose3d1", robotPose3d1);
 
@@ -188,7 +188,7 @@ public class AprilTagVision extends SubsystemBase {
                 }
 
                 // Convert the 3D robot pose to a 2D pose
-                Pose2d robotPose = robotPose3d.toPose2d();
+                Pose2d robotPose = robotPose3d.plus(cameraError[instanceIndex]).toPose2d();
 
                 // Collect tag poses and update the last detection times for each tag
                 List<Pose3d> tagPoses = new ArrayList<>();
@@ -210,10 +210,10 @@ public class AprilTagVision extends SubsystemBase {
 
                 // Create a vision observation based on the robot pose, timestamp, and calculated standard deviations
                 double xyStdDev =
-                        xyStdDevCoefficient
-                                * Math.pow(avgDistance, 2.0)
-                                / tagPoses.size()
-                                * stdDevFactors[instanceIndex];
+                        /*instanceIndex <= 1 ? xyStdDevCoefficient * 4 : */xyStdDevCoefficient
+                        * Math.pow(avgDistance, 2.0)
+                        / tagPoses.size()
+                        * stdDevFactors[instanceIndex];
                 double thetaStdDev =
                         useVisionRotation
                                 ? thetaStdDevCoefficient
@@ -231,11 +231,13 @@ public class AprilTagVision extends SubsystemBase {
                         measureCnt++;
                         xyStdDev = 0.01;
                     }
-                    Swerve.getInstance().getLocalizer().addMeasurement(
-                            timestamp,
-                            robotPose3d.toPose2d(),
-                            new Pose2d(new Translation2d(xyStdDev, xyStdDev),
-                                    Rotation2d.fromDegrees(thetaStdDev)));
+                    if (instanceIndex >= 2) {
+                        Swerve.getInstance().getLocalizer().addMeasurement(
+                                timestamp,
+                                robotPose3d.toPose2d(),
+                                new Pose2d(new Translation2d(xyStdDev, xyStdDev),
+                                        Rotation2d.fromDegrees(thetaStdDev)));
+                    }
                     SmartDashboard.putBoolean("TargetUpdated", true);
                 } else {
                     SmartDashboard.putBoolean("TargetUpdated", false);
