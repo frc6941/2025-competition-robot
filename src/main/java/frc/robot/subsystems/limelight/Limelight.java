@@ -113,7 +113,7 @@ public class Limelight extends SubsystemBase {
         }
     }
 
-    public Optional<PoseEstimate> determinePoseEstimate(AngularVelocity gyroRate) {
+    public Optional<PoseEstimate[]> determinePoseEstimate(AngularVelocity gyroRate) {
         setCurrentEstimates(gyroRate);
 
         // No valid pose estimates :(
@@ -123,22 +123,18 @@ public class Limelight extends SubsystemBase {
         } else if (newRightEstimate && !newLeftEstimate) {
             // One valid pose estimate (right)
             newRightEstimate = false;
-            return Optional.of(lastEstimateRight);
+            return Optional.of(new PoseEstimate[]{lastEstimateRight, null});
 
         } else if (!newRightEstimate && newLeftEstimate) {
             // One valid pose estimate (left)
             newLeftEstimate = false;
-            return Optional.of(lastEstimateLeft);
+            return Optional.of(new PoseEstimate[]{lastEstimateLeft, null});
 
         } else {
             // Two valid pose estimates, disgard the one that's further
             newRightEstimate = false;
             newLeftEstimate = false;
-            if (lastEstimateLeft.avgTagDist < lastEstimateRight.avgTagDist) {
-                return Optional.of(lastEstimateRight);
-            } else {
-                return Optional.of(lastEstimateLeft);
-            }
+            return Optional.of(new PoseEstimate[]{lastEstimateRight, lastEstimateLeft});
         }
     }
 
@@ -149,13 +145,23 @@ public class Limelight extends SubsystemBase {
                 Swerve.getInstance().getLocalizer().getLatestPose().getRotation().getDegrees(), 0, 0, 0, 0, 0);
         AngularVelocity gyroRate = Units.DegreesPerSecond.of(Swerve.getInstance().getLocalizer().getSmoothedVelocity().getRotation().getDegrees());
 
-        Optional<PoseEstimate> estimatedPose = determinePoseEstimate(gyroRate);
+        Optional<PoseEstimate[]> estimatedPose = determinePoseEstimate(gyroRate);
         if (estimatedPose.isPresent()) {
-            if (useMegaTag2) {
-                Swerve.getInstance().getLocalizer().addMeasurement(estimatedPose.get().timestampSeconds, estimatedPose.get().pose, VecBuilder.fill(.7, .7, 9999999));
-            } else {
-                Swerve.getInstance().getLocalizer().addMeasurement(estimatedPose.get().timestampSeconds, estimatedPose.get().pose, VecBuilder.fill(.5, .5, 9999999));
+            if(estimatedPose.get()[0]!=null){
+                if (useMegaTag2) {
+                    Swerve.getInstance().getLocalizer().addMeasurement(estimatedPose.get()[0].timestampSeconds, estimatedPose.get()[0].pose, VecBuilder.fill(.7, .7, 9999999));
+                } else {
+                    Swerve.getInstance().getLocalizer().addMeasurement(estimatedPose.get()[0].timestampSeconds, estimatedPose.get()[0].pose, VecBuilder.fill(.5, .5, 9999999));
+                }
             }
+            if(estimatedPose.get()[1] != null){
+                if (useMegaTag2) {
+                    Swerve.getInstance().getLocalizer().addMeasurement(estimatedPose.get()[1].timestampSeconds, estimatedPose.get()[1].pose, VecBuilder.fill(.7, .7, 9999999));
+                } else {
+                    Swerve.getInstance().getLocalizer().addMeasurement(estimatedPose.get()[1].timestampSeconds, estimatedPose.get()[1].pose, VecBuilder.fill(.5, .5, 9999999));
+                }
+            }
+
         }
     }
 
