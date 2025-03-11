@@ -11,11 +11,11 @@ import frc.robot.subsystems.intake.IntakeSubsystem;
 
 public class AutoPutCoralCommand extends ParallelCommandGroup {
     public AutoPutCoralCommand(CommandXboxController driverController, EndEffectorSubsystem endeffectorSubsystem,
-                               ElevatorSubsystem elevatorSubsystem, IntakeSubsystem intakeSubsystem, IndicatorSubsystem indicatorSubsystem) {
+                               ElevatorSubsystem elevatorSubsystem, IntakeSubsystem intakeSubsystem, IndicatorSubsystem indicatorSubsystem, double ControllerX, double ControllerY) {
         addRequirements(endeffectorSubsystem, elevatorSubsystem, intakeSubsystem);
         addCommands(
                 Commands.deadline(
-                        new AutoPreShootCommand(indicatorSubsystem, endeffectorSubsystem, intakeSubsystem, elevatorSubsystem),
+                        new AutoPreShootCommand(indicatorSubsystem, endeffectorSubsystem, intakeSubsystem, elevatorSubsystem, ControllerX, ControllerY),
                         Commands.sequence(
                                 new WaitUntilCommand(() -> (
                                         driverController.rightTrigger().getAsBoolean() &&
