@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.151106194690264,
-        "y": 2.5042588495575226
+        "x": 5.3,
+        "y": 2.95
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.078915369649805,
-        "y": 1.4513983463035027
+        "x": 5.227809174959541,
+        "y": 1.8971394967459803
       },
       "isLocked": false,
       "linkedName": null
@@ -39,13 +39,13 @@
   "eventMarkers": [
     {
       "name": "DEPLOY-INTAKE-INIT",
-      "waypointRelativePos": 0.27428240069585913,
+      "waypointRelativePos": 0.23,
       "endWaypointRelativePos": null,
       "command": null
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 2.0,
+    "maxVelocity": 1.5,
     "maxAcceleration": 3.0,
     "maxAngularVelocity": 360.0,
     "maxAngularAcceleration": 720.0,
@@ -62,5 +62,5 @@
     "velocity": 0,
     "rotation": 119.99999999999999
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

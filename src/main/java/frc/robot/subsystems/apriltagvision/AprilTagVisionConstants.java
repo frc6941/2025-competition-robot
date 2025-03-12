@@ -54,6 +54,11 @@ public class AprilTagVisionConstants {
                             -0.29981,
                             0.31560,
                             new Rotation3d(0.0, 0.0, Units.degreesToRadians(20))),
+//                    new Pose3d(
+//                            0.15540948732209714,
+//                            -0.24762365813825055,
+//                            0.37630667446147353,
+//                            new Rotation3d(new Quaternion(0.9238472145814227, 0.06441497987427977, -0.3412469688366055, -0.16095819562163288))),
             };
 
     public static final Transform3d[] cameraError =

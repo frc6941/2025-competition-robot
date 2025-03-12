@@ -36,7 +36,7 @@ public class HoldIntakeCommand extends Command {
             intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.DEPLOY_WITHOUT_ROLL);
         }
         elevatorSubsystem.setElevatorPosition(HOLD_INTAKE_METERS.get());
-        hasCoral = hasCoral || RobotContainer.intakeHasCoral;
+        hasCoral = hasCoral || intakeSubsystem.hasCoralBB();
         if (hasCoral) {
             intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.HOLD_OUTTAKE);
         }
@@ -48,11 +48,12 @@ public class HoldIntakeCommand extends Command {
         elevatorSubsystem.setElevatorPosition(IDLE_EXTENSION_METERS.get());
         indicatorSubsystem.setPattern(IndicatorIO.Patterns.AFTER_INTAKE);
         hasCoral = false;
+        if (!interrupted) RobotContainer.intakeHasCoral = true;
     }
 
     @Override
     public boolean isFinished() {
-        return !RobotContainer.intakeHasCoral && hasCoral;
+        return !intakeSubsystem.hasCoralBB() && hasCoral;
     }
 
     @Override

@@ -28,7 +28,7 @@ public class ShootHoldCommand extends Command {
         hasShoot = shoot.getAsBoolean() || hasShoot;
         if (hasShoot) {
             intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.SHOOT);
-            if (!RobotContainer.intakeHasCoral && !timer.isRunning()) {
+            if (!intakeSubsystem.hasCoralBB() && !timer.isRunning()) {
                 timer.start();
             }
         }
@@ -45,5 +45,6 @@ public class ShootHoldCommand extends Command {
         hasShoot = false;
         timer.stop();
         timer.reset();
+        RobotContainer.intakeHasCoral = false;
     }
 }

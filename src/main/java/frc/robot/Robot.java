@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.drivers.DestinationSupplier;
 import frc.robot.subsystems.swerve.Swerve;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
@@ -100,12 +101,14 @@ public class Robot extends LoggedRobot {
         robotContainer.getUpdateManager().invokeStop();
         swerve.normal();
         swerve.cancelFollow();
+        DestinationSupplier.getInstance().setUseVision(true);
     }
 
     @Override
     public void teleopInit() {
         swerve.normal();
         robotContainer.getUpdateManager().invokeStart();
+        DestinationSupplier.getInstance().setUseVision(true);
         robotContainer.setMegaTag2(true);
     }
 

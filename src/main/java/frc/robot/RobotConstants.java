@@ -203,7 +203,7 @@ public final class RobotConstants {
         private static final int BACK_LEFT_DRIVE_MOTOR_ID = 2;
         private static final int BACK_LEFT_STEER_MOTOR_ID = 1;
         private static final int BACK_LEFT_ENCODER_ID = 0;
-        private static final double BACK_LEFT_ENCODER_OFFSET = is10541 ? -0.1180423438 : -0.354248046875;
+        private static final double BACK_LEFT_ENCODER_OFFSET = is10541 ? -0.1082763438 : -0.354248046875;
         private static final Measure<DistanceUnit> backLeftXPos = Meters.of(-0.29);
         private static final Measure<DistanceUnit> backLeftYPos = Meters.of(0.29);
         public static final LegacySwerveModuleConstants BackLeft = ConstantCreator.createModuleConstants(
@@ -458,7 +458,7 @@ public final class RobotConstants {
                 0.50);
         public static final TunableNumber P2_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/P2",
                 0.70);
-        public static final TunableNumber FUNNEL_INTAKE_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/FunnnelIntake",
+        public static final TunableNumber FUNNEL_INTAKE_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/FunnelIntake",
                 0.34);
         public static final TunableNumber ELEVATOR_ZEROING_CURRENT = new TunableNumber("Elevator zeroing current",
                 40);
