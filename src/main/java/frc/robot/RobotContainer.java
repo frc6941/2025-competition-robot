@@ -174,11 +174,11 @@ public class RobotContainer {
         driverController.povLeft().whileTrue(new IdleClimbCommand(climberSubsystem, elevatorSubsystem, intakeSubsystem, endEffectorSubsystem));
         driverController.leftTrigger().toggleOnTrue(switchIntakeModeCommand());
         driverController.leftBumper().toggleOnTrue(new FunnelIntakeCommand(indicatorSubsystem, elevatorSubsystem, endEffectorSubsystem, intakeSubsystem));
-        driverController.rightBumper().whileTrue(new PutCoralCommand(driverController, endEffectorSubsystem, elevatorSubsystem, intakeSubsystem, indicatorSubsystem));
+        driverController.rightBumper().whileTrue(switchPreMoveModeCommand());
         driverController.povDown().onTrue(new ZeroCommand(elevatorSubsystem, intakeSubsystem, endEffectorSubsystem));
         driverController.a().whileTrue(new PokeCommand(endEffectorSubsystem, intakeSubsystem, elevatorSubsystem));
         driverController.b().toggleOnTrue(new GroundOuttakeCommand(intakeSubsystem, endEffectorSubsystem, elevatorSubsystem));
-        driverController.x().onTrue(Commands.runOnce(intakeSubsystem::lowerAngle));
+        driverController.x().onTrue(Commands.runOnce(() -> intakeSubsystem.setLowerAngle(true))).onFalse(Commands.runOnce(() -> intakeSubsystem.setLowerAngle(false)));
         driverController.y().whileTrue(new ClimbCommand(climberSubsystem, elevatorSubsystem, intakeSubsystem, endEffectorSubsystem));
         driverController.back().whileTrue(switchAimingModeCommand());
         driverController.leftStick().onTrue(Commands.runOnce(() -> destinationSupplier.updateBranch(false)).ignoringDisable(true));
@@ -204,18 +204,18 @@ public class RobotContainer {
     }
 
     public void configureTesterBindings() {
-        testerController.x().onTrue(Commands.runOnce(() -> destinationSupplier.setCurrentControlMode(DestinationSupplier.controlMode.MANUAL)).ignoringDisable(true));
-        testerController.b().onTrue(Commands.run(() -> destinationSupplier.setCurrentL1Mode(DestinationSupplier.L1Mode.INTAKE))
+        testerController.a().whileTrue(Commands.run(() -> destinationSupplier.setCurrentL1Mode(DestinationSupplier.L1Mode.INTAKE))
                 .finallyDo(() -> destinationSupplier.setCurrentL1Mode(DestinationSupplier.L1Mode.ELEVATOR)).ignoringDisable(true));
-        testerController.a().onTrue(Commands.runOnce(() -> destinationSupplier.setCurrentControlMode(DestinationSupplier.controlMode.AUTO)).ignoringDisable(true));
-        testerController.leftBumper().onTrue(Commands.runOnce(() -> destinationSupplier.updateBranch(false)).ignoringDisable(true));
-        testerController.rightBumper().onTrue(Commands.runOnce(() -> destinationSupplier.updateBranch(true)).ignoringDisable(true));
-        testerController.povUp().onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L1)).ignoringDisable(true));
-        testerController.povLeft().onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L2)).ignoringDisable(true));
-        testerController.povRight().onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L3)).ignoringDisable(true));
-        testerController.povDown().onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L4)).ignoringDisable(true));
-        testerController.leftTrigger().onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.P1)).ignoringDisable(true));
-        testerController.rightTrigger().onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.P2)).ignoringDisable(true));
+        testerController.b().onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L2)));
+        testerController.x().onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L3)));
+        testerController.y().onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L4)));
+
+
+
+        testerController.rightBumper().onTrue(Commands.runOnce(() -> destinationSupplier.setCurrentControlMode(DestinationSupplier.controlMode.MANUAL)).ignoringDisable(true));
+        testerController.leftBumper().onTrue(Commands.runOnce(() -> destinationSupplier.setCurrentControlMode(DestinationSupplier.controlMode.AUTO)).ignoringDisable(true));
+        testerController.povUp().onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.P2)).ignoringDisable(true));
+        testerController.povDown().onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.P1)).ignoringDisable(true));
     }
 
     public Command getAutonomousCommand() {
