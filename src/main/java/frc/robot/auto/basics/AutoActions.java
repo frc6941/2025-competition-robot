@@ -1,6 +1,7 @@
 package frc.robot.auto.basics;
 
 import com.pathplanner.lib.path.PathPlannerPath;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -116,7 +117,7 @@ public class AutoActions {
                 Commands.parallel(
                         setLevel(setpoint),
                         new ReefAimAutoCommand(elevatorSubsystem, tagChar),
-                        new AutoPreShootCommand(indicatorSubsystem, endEffectorSubsystem, intakeSubsystem, elevatorSubsystem)
+                        new AutoPreShootCommand(indicatorSubsystem, endEffectorSubsystem, intakeSubsystem, elevatorSubsystem, 0, 0)
                 ),
                 new WaitCommand(0.05),
                 new ShootCommand(indicatorSubsystem, endEffectorSubsystem),
