@@ -101,7 +101,8 @@ public class DestinationSupplier implements Updatable {
                 minDistance = distance;
             }
         }
-        if ((secondMinDistance - minDistance) < 0.05){
+        Logger.recordOutput("DeltaDistance",secondMinDistance - minDistance);
+        if ((secondMinDistance - minDistance) < RobotConstants.ReefAimConstants.Edge_Case_Max_Delta.get()){
             Logger.recordOutput("IsEdgeCase",true);
             if (correctTagPair(secondMinDistanceID, minDistanceID, 6,11)){
                 minDistanceID = ControllerY>0?11:6;
