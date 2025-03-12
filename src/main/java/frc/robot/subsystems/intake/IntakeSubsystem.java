@@ -48,6 +48,7 @@ public class IntakeSubsystem extends RollerSubsystem {
     private SystemState systemState = SystemState.HOMING;
     private double currentFilterValue = 0.0;
     private boolean timerStarted = false;
+    private boolean lowerAngle = false;
 
     public IntakeSubsystem(
             IntakePivotIO intakePivotIO,
@@ -158,7 +159,7 @@ public class IntakeSubsystem extends RollerSubsystem {
         return switch (wantedState) {
             case DEPLOY_WITHOUT_ROLL -> SystemState.DEPLOY_WITHOUT_ROLLING;
             case DEPLOY_INTAKE -> {
-                if (DestinationSupplier.getInstance().getIntakeMode() == DestinationSupplier.IntakeMode.TREMBLE) {
+                if (lowerAngle) {
                     yield SystemState.TREMBLE_INTAKING;
                 } else {
                     yield SystemState.DEPLOY_INTAKING;
@@ -216,6 +217,10 @@ public class IntakeSubsystem extends RollerSubsystem {
             setWantedState(WantedState.HOME);
             hasHomed = false;
         }
+    }
+
+    public void lowerAngle() {
+        lowerAngle = !lowerAngle;
     }
 
     private void rollerIntake() {
