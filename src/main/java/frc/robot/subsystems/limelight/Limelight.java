@@ -9,6 +9,7 @@ import frc.robot.LimelightHelpers;
 import frc.robot.LimelightHelpers.PoseEstimate;
 import frc.robot.RobotConstants;
 import frc.robot.subsystems.swerve.Swerve;
+import org.littletonrobotics.junction.Logger;
 
 import java.util.Optional;
 
@@ -50,22 +51,26 @@ public class Limelight extends SubsystemBase {
     public boolean rejectUpdate(PoseEstimate poseEstimate, AngularVelocity gyroRate) {
         // Angular velocity is too high to have accurate vision
         if (gyroRate.compareTo(RobotConstants.SwerveConstants.maxAngularRate) > 0) {
+            Logger.recordOutput("Limelight/UpdateRejected", true);
             return true;
         }
 
         // No tags :<
         if (poseEstimate.tagCount == 0) {
+            Logger.recordOutput("Limelight/UpdateRejected", true);
             return true;
         }
 
         // 1 Tag with a large area
         if (poseEstimate.tagCount == 1 && poseEstimate.avgTagArea > AREA_THRESHOLD) {
+            Logger.recordOutput("Limelight/UpdateRejected", false);
             return false;
             // 2 tags or more
         } else if (poseEstimate.tagCount > 1) {
+            Logger.recordOutput("Limelight/UpdateRejected", false);
             return false;
         }
-
+        Logger.recordOutput("Limelight/UpdateRejected", true);
         return true;
     }
 

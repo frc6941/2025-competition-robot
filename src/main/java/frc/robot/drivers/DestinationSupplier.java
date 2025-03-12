@@ -15,6 +15,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.frcteam6941.looper.Updatable;
 import org.littletonrobotics.AllianceFlipUtil;
+import org.littletonrobotics.junction.Logger;
 
 public class DestinationSupplier implements Updatable {
     private static DestinationSupplier instance;
@@ -100,7 +101,9 @@ public class DestinationSupplier implements Updatable {
                 minDistance = distance;
             }
         }
-        if ((secondMinDistance - minDistance) < 0.05){
+        Logger.recordOutput("DeltaDistance",secondMinDistance - minDistance);
+        if ((secondMinDistance - minDistance) < RobotConstants.ReefAimConstants.Edge_Case_Max_Delta.get()){
+            Logger.recordOutput("IsEdgeCase",true);
             if (correctTagPair(secondMinDistanceID, minDistanceID, 6,11)){
                 minDistanceID = ControllerY>0?11:6;
             }
@@ -120,6 +123,9 @@ public class DestinationSupplier implements Updatable {
                 minDistanceID = ControllerX>0?10:11;
             }
         }
+        else{
+            Logger.recordOutput("IsEdgeCase",false);
+        }
         Pose2d goal = FieldConstants.officialAprilTagType.getLayout().getTagPose(minDistanceID).get().toPose2d();
         return goal;
     }
@@ -133,7 +139,6 @@ public class DestinationSupplier implements Updatable {
         }
         return false;
     }
-
 
     public void updateElevatorSetpoint(elevatorSetpoint setpoint) {
         switch (setpoint) {
