@@ -84,17 +84,11 @@ public class AutoFile {
         return new SequentialCommandGroup(
                 autoActions.ReverseEndEffector(),
                 autoActions.AutoAimShoot(L4, 'F'),
-                autoActions.disableVision(),
                 autoActions.followPath(getAutoPath("EF-I3"), true, true, false),
-                autoActions.enableVision(),
                 autoActions.AutoAimShoot(L4, 'C'),
-                autoActions.disableVision(),
                 autoActions.followPath(getAutoPath("C-I2"), true, true, false),
-                autoActions.enableVision(),
                 autoActions.AutoAimShoot(L4, 'A'),
-                autoActions.disableVision(),
                 autoActions.followPath(getAutoPath("A-I1"), true, true, false),
-                autoActions.enableVision(),
                 autoActions.AutoAimShoot(L4, 'L')
         );
     }
