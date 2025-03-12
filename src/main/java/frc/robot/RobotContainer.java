@@ -39,6 +39,7 @@ import frc.robot.subsystems.indicator.IndicatorIOARGB;
 import frc.robot.subsystems.indicator.IndicatorIOSim;
 import frc.robot.subsystems.indicator.IndicatorSubsystem;
 import frc.robot.subsystems.intake.*;
+import frc.robot.subsystems.limelight.Limelight;
 import frc.robot.subsystems.swerve.Swerve;
 import lombok.Getter;
 import org.frcteam6941.looper.UpdateManager;
@@ -82,6 +83,7 @@ public class RobotContainer {
     private final IntakeSubsystem intakeSubsystem;
     private final ClimberSubsystem climberSubsystem;
     private final IndicatorSubsystem indicatorSubsystem;
+    private final Limelight limelight;
     @Getter
     private final LoggedDashboardChooser<String> autoChooser;
     private final AutoActions autoActions;
@@ -96,12 +98,14 @@ public class RobotContainer {
             endEffectorSubsystem = new EndEffectorSubsystem(new EndEffectorIOReal(), new BeambreakIOReal(RobotConstants.BeamBreakConstants.ENDEFFECTOR_MIDDLE_BEAMBREAK_ID), new BeambreakIOReal(RobotConstants.BeamBreakConstants.ENDEFFECTOR_EDGE_BEAMBREAK_ID));
             intakeSubsystem = new IntakeSubsystem(new IntakePivotIOReal(), new IntakeRollerIOReal(), new BeambreakIOReal(RobotConstants.BeamBreakConstants.INTAKE_BEAMBREAK_ID));
             climberSubsystem = new ClimberSubsystem(new ClimberIOReal());
+            limelight = new Limelight();
         } else {
             indicatorSubsystem = new IndicatorSubsystem(new IndicatorIOSim());
             elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOSim());
             endEffectorSubsystem = new EndEffectorSubsystem(new EndEffectorIOSim(), new BeambreakIOSim(RobotConstants.BeamBreakConstants.ENDEFFECTOR_MIDDLE_BEAMBREAK_ID), new BeambreakIOSim(RobotConstants.BeamBreakConstants.ENDEFFECTOR_EDGE_BEAMBREAK_ID));
             intakeSubsystem = new IntakeSubsystem(new IntakePivotIOSim(), new IntakeRollerIOSim(), new BeambreakIOSim(RobotConstants.BeamBreakConstants.INTAKE_BEAMBREAK_ID));
             climberSubsystem = new ClimberSubsystem(new ClimberIOSim());
+            limelight = new Limelight();
         }
         updateManager = new UpdateManager(swerve,
                 display, destinationSupplier);
@@ -176,6 +180,8 @@ public class RobotContainer {
         driverController.b().whileTrue(new GroundOuttakeCommand(intakeSubsystem, endEffectorSubsystem, elevatorSubsystem));
         driverController.povRight().whileTrue(switchAimingModeCommand());
         driverController.rightBumper().whileTrue(switchPreMoveModeCommand());
+        driverController.leftStick().onTrue(Commands.runOnce(() -> destinationSupplier.updateBranch(false)).ignoringDisable(true));
+        driverController.rightStick().onTrue(Commands.runOnce(() -> destinationSupplier.updateBranch(true)).ignoringDisable(true));
     }
 
     private void configureStreamDeckBindings() {
@@ -228,7 +234,7 @@ public class RobotContainer {
                         indicatorSubsystem, endEffectorSubsystem, elevatorSubsystem, intakeSubsystem,
                         () -> false, driverController),
                 // MANUAL
-                new ReefAimCommand(() -> false, elevatorSubsystem, driverController, indicatorSubsystem),
+                new ReefAimCommand(() -> false, elevatorSubsystem, driverController, indicatorSubsystem, driverController.getLeftX(), driverController.getLeftY()),
                 () -> destinationSupplier.getCurrentControlMode() == DestinationSupplier.controlMode.AUTO);
     }
 
@@ -246,6 +252,10 @@ public class RobotContainer {
                 // Elevator
                 new PutCoralCommand(driverController, endEffectorSubsystem, elevatorSubsystem, intakeSubsystem, indicatorSubsystem),
                 () -> destinationSupplier.getL1Mode() == DestinationSupplier.L1Mode.INTAKE);
+    }
+
+    public void setMegaTag2 (boolean setMegaTag2) {
+        limelight.setMegaTag2(setMegaTag2);
     }
 
 }

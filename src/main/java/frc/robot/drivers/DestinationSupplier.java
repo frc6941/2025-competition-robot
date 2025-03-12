@@ -5,6 +5,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.FieldConstants;
 import frc.robot.FieldConstants.Reef;
@@ -14,6 +15,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.frcteam6941.looper.Updatable;
 import org.littletonrobotics.AllianceFlipUtil;
+import org.littletonrobotics.junction.Logger;
 
 public class DestinationSupplier implements Updatable {
     private static DestinationSupplier instance;
@@ -74,27 +76,70 @@ public class DestinationSupplier implements Updatable {
         return goal;
     }
 
-    public static boolean isSafeToRaise(Pose2d robotPose, boolean rightReef) {
-        Pose2d tag = getNearestTag(robotPose);
+    public static boolean isSafeToRaise(Pose2d robotPose, boolean rightReef, double ControllerX, double ControllerY) {
+        Pose2d tag = getNearestTag(robotPose, ControllerX, ControllerY);
         Pose2d goal = getFinalDriveTarget(tag, rightReef);
         return goal.getTranslation().getDistance(robotPose.getTranslation()) < RobotConstants.ReefAimConstants.RAISE_LIMIT_METERS.get();
     }
 
-    public static Pose2d getNearestTag(Pose2d robotPose) {
+    public static Pose2d getNearestTag(Pose2d robotPose, double ControllerX, double ControllerY) {
         double minDistance = Double.MAX_VALUE;
+        double secondMinDistance = Double.MAX_VALUE;
         int ReefTagMin = AllianceFlipUtil.shouldFlip() ? 6 : 17;
         int ReefTagMax = AllianceFlipUtil.shouldFlip() ? 11 : 22;
         int minDistanceID = ReefTagMin;
+        int secondMinDistanceID = ReefTagMin;
         for (int i = ReefTagMin; i <= ReefTagMax; i++) {
-            if (minDistance > FieldConstants.officialAprilTagType.getLayout().getTagPose(i).get().
-                    toPose2d().getTranslation().getDistance(robotPose.getTranslation())) {
-                minDistanceID = i;
-                minDistance = FieldConstants.officialAprilTagType.getLayout().getTagPose(i).get().
-                        toPose2d().getTranslation().getDistance(robotPose.getTranslation());
+            double distance =FieldConstants.officialAprilTagType.getLayout().getTagPose(i).get().
+                    toPose2d().getTranslation().getDistance(robotPose.getTranslation());
+            if (distance < secondMinDistance){
+                secondMinDistanceID = i;
+                secondMinDistance = distance;
             }
+            if (distance < minDistance) {
+                secondMinDistanceID = minDistanceID;
+                secondMinDistance = minDistance;
+                minDistanceID = i;
+                minDistance = distance;
+            }
+        }
+        Logger.recordOutput("DeltaDistance",secondMinDistance - minDistance);
+        if ((secondMinDistance - minDistance) < RobotConstants.ReefAimConstants.Edge_Case_Max_Delta.get()){
+            Logger.recordOutput("IsEdgeCase",true);
+            if (correctTagPair(secondMinDistanceID, minDistanceID, 6,11)){
+                minDistanceID = ControllerY>0?11:6;
+            }
+            else if (correctTagPair(secondMinDistanceID, minDistanceID, 8,9)){
+                minDistanceID = ControllerY>0?9:8;
+            }
+            else if (correctTagPair(secondMinDistanceID, minDistanceID, 6,7)){
+                minDistanceID = ControllerX>0?7:6;
+            }
+            else if (correctTagPair(secondMinDistanceID, minDistanceID, 7,8)){
+                minDistanceID = ControllerX>0?8:7;
+            }
+            else if (correctTagPair(secondMinDistanceID, minDistanceID, 9,10)){
+                minDistanceID = ControllerX>0?9:10;
+            }
+            else if (correctTagPair(secondMinDistanceID, minDistanceID, 10,11)){
+                minDistanceID = ControllerX>0?10:11;
+            }
+        }
+        else{
+            Logger.recordOutput("IsEdgeCase",false);
         }
         Pose2d goal = FieldConstants.officialAprilTagType.getLayout().getTagPose(minDistanceID).get().toPose2d();
         return goal;
+    }
+
+    private static boolean correctTagPair(double tag1, double tag2, double wantedTag1, double wantedTag2) {
+        if(tag1 == wantedTag1 && tag2 == wantedTag2){
+            return true;
+        }
+        else if(tag1 == wantedTag2 && tag2 == wantedTag1){
+            return true;
+        }
+        return false;
     }
 
     public void updateElevatorSetpoint(elevatorSetpoint setpoint) {
