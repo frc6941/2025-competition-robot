@@ -74,13 +74,16 @@ public class DestinationSupplier implements Updatable {
         return goal;
     }
 
-    public static boolean isSafeToRaise(Pose2d robotPose, boolean rightReef, double ControllerX, double ControllerY) {
-        Pose2d tag = getNearestTag(robotPose, ControllerX, ControllerY);
+    public static boolean isSafeToRaise(Pose2d robotPose, boolean rightReef) {
+        Pose2d tag = getNearestTag(robotPose);
         Pose2d goal = getFinalDriveTarget(tag, rightReef);
         return goal.getTranslation().getDistance(robotPose.getTranslation()) < RobotConstants.ReefAimConstants.RAISE_LIMIT_METERS.get();
     }
 
-    public static Pose2d getNearestTag(Pose2d robotPose, double ControllerX, double ControllerY) {
+    public static Pose2d getNearestTag(Pose2d robotPose) {
+        XboxController driverController = new XboxController(0);
+        double ControllerX = driverController.getLeftX();
+        double ControllerY = driverController.getLeftY();
         double minDistance = Double.MAX_VALUE;
         double secondMinDistance = Double.MAX_VALUE;
         int ReefTagMin = AllianceFlipUtil.shouldFlip() ? 6 : 17;
@@ -107,10 +110,10 @@ public class DestinationSupplier implements Updatable {
         if ((secondMinDistance - minDistance) < RobotConstants.ReefAimConstants.Edge_Case_Max_Delta.get() && ControllerX!=0 && ControllerY!=0){
             Logger.recordOutput("EdgeCase/IsEdgeCase",true);
             if (correctTagPair(secondMinDistanceID, minDistanceID, 6,11)){
-                minDistanceID = ControllerY>0?11:6;
+                minDistanceID = ControllerY>0?6:11;
             }
             else if (correctTagPair(secondMinDistanceID, minDistanceID, 8,9)){
-                minDistanceID = ControllerY>0?9:8;
+                minDistanceID = ControllerY>0?8:9;
             }
             else if (correctTagPair(secondMinDistanceID, minDistanceID, 6,7)){
                 minDistanceID = ControllerX>0?7:6;

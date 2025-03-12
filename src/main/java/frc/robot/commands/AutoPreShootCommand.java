@@ -1,7 +1,6 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.drivers.DestinationSupplier;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
@@ -17,16 +16,12 @@ public class AutoPreShootCommand extends Command {
     private final IndicatorSubsystem indicatorSubsystem;
     Timer timer = new Timer();
     private boolean safeToRaise = false;
-    private double ControllerX;
-    private double ControllerY;
 
-    public AutoPreShootCommand(IndicatorSubsystem indicatorSubsystem, EndEffectorSubsystem endEffectorSubsystem, IntakeSubsystem intakeSubsystem, ElevatorSubsystem elevatorSubsystem, double ControllerX, double ControllerY) {
+    public AutoPreShootCommand(IndicatorSubsystem indicatorSubsystem, EndEffectorSubsystem endEffectorSubsystem, IntakeSubsystem intakeSubsystem, ElevatorSubsystem elevatorSubsystem) {
         this.endEffectorSubsystem = endEffectorSubsystem;
         this.intakeSubsystem = intakeSubsystem;
         this.elevatorSubsystem = elevatorSubsystem;
         this.indicatorSubsystem = indicatorSubsystem;
-        this.ControllerX = ControllerX;
-        this.ControllerY = ControllerY;
     }
 
     @Override
@@ -37,7 +32,7 @@ public class AutoPreShootCommand extends Command {
 
     @Override
     public void execute() {
-        safeToRaise = DestinationSupplier.isSafeToRaise(Swerve.getInstance().getLocalizer().getCoarseFieldPose(Timer.getFPGATimestamp()), DestinationSupplier.getInstance().getCurrentBranch(), ControllerX, ControllerY);
+        safeToRaise = DestinationSupplier.isSafeToRaise(Swerve.getInstance().getLocalizer().getCoarseFieldPose(Timer.getFPGATimestamp()), DestinationSupplier.getInstance().getCurrentBranch());
         if (safeToRaise) {
             intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.HOME);
             elevatorSubsystem.setElevatorPosition(DestinationSupplier.getInstance().getElevatorSetpoint(true));

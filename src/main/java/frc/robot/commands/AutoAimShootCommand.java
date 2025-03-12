@@ -14,16 +14,15 @@ import java.util.function.BooleanSupplier;
 
 public class AutoAimShootCommand extends ParallelCommandGroup {
     public AutoAimShootCommand(IndicatorSubsystem indicatorSubsystem, EndEffectorSubsystem endeffectorSubsystem,
-                               ElevatorSubsystem elevatorSubsystem, IntakeSubsystem intakeSubsystem, BooleanSupplier stop, CommandXboxController driverController,
-                               double ControllerX, double ControllerY) {
+                               ElevatorSubsystem elevatorSubsystem, IntakeSubsystem intakeSubsystem, BooleanSupplier stop, CommandXboxController driverController) {
         addRequirements(endeffectorSubsystem, elevatorSubsystem, intakeSubsystem);
         addCommands(
                 Commands.race(
                         new WaitUntilCommand(stop),
                         Commands.sequence(
                                 Commands.parallel(
-                                        new ReefAimCommand(stop, elevatorSubsystem, driverController, indicatorSubsystem, ControllerX, ControllerY),
-                                        new AutoPreShootCommand(indicatorSubsystem, endeffectorSubsystem, intakeSubsystem, elevatorSubsystem, ControllerX, ControllerY)
+                                        new ReefAimCommand(stop, elevatorSubsystem, driverController, indicatorSubsystem),
+                                        new AutoPreShootCommand(indicatorSubsystem, endeffectorSubsystem, intakeSubsystem, elevatorSubsystem)
                                 ),
                                 new ShootCommand(indicatorSubsystem, endeffectorSubsystem)
                         ),

@@ -177,6 +177,7 @@ public class RobotContainer {
         driverController.a().whileTrue(new PokeCommand(endEffectorSubsystem, intakeSubsystem, elevatorSubsystem));
         driverController.b().toggleOnTrue(new GroundOuttakeCommand(intakeSubsystem, endEffectorSubsystem, elevatorSubsystem));
         driverController.x().onTrue(Commands.runOnce(intakeSubsystem::lowerAngle));
+        driverController.y().whileTrue(new ClimbCommand(climberSubsystem, elevatorSubsystem, intakeSubsystem, endEffectorSubsystem));
         driverController.back().whileTrue(switchAimingModeCommand());
         driverController.leftStick().onTrue(Commands.runOnce(() -> destinationSupplier.updateBranch(false)).ignoringDisable(true));
         driverController.rightStick().onTrue(Commands.runOnce(() -> destinationSupplier.updateBranch(true)).ignoringDisable(true));
@@ -235,9 +236,9 @@ public class RobotContainer {
                 // AUTO
                 new AutoAimShootCommand(
                         indicatorSubsystem, endEffectorSubsystem, elevatorSubsystem, intakeSubsystem,
-                        () -> false, driverController, driverController.getLeftX(), driverController.getLeftY()),
+                        () -> false, driverController),
                 // MANUAL
-                new ReefAimCommand(() -> false, elevatorSubsystem, driverController, indicatorSubsystem, driverController.getLeftX(), driverController.getLeftY()),
+                new ReefAimCommand(() -> false, elevatorSubsystem, driverController, indicatorSubsystem),
                 () -> destinationSupplier.getCurrentControlMode() == DestinationSupplier.controlMode.AUTO);
     }
 

@@ -15,7 +15,7 @@ public class AutoPutCoralCommand extends ParallelCommandGroup {
         addRequirements(endeffectorSubsystem, elevatorSubsystem, intakeSubsystem);
         addCommands(
                 Commands.deadline(
-                        new AutoPreShootCommand(indicatorSubsystem, endeffectorSubsystem, intakeSubsystem, elevatorSubsystem, ControllerX, ControllerY),
+                        new AutoPreShootCommand(indicatorSubsystem, endeffectorSubsystem, intakeSubsystem, elevatorSubsystem),
                         Commands.sequence(
                                 new WaitUntilCommand(() -> (
                                         driverController.rightTrigger().getAsBoolean() &&

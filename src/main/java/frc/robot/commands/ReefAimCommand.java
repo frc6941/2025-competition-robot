@@ -47,18 +47,15 @@ public class ReefAimCommand extends Command {
     private boolean omegaFinished = false;
     private Pose2d robotPose, tagPose, destinationPose, finalDestinationPose;
     private Translation2d translationalVelocity, controllerVelocity;
-    private double ControllerX;
-    private double ControllerY;
+
 
     public ReefAimCommand(BooleanSupplier stop, ElevatorSubsystem elevatorSubsystem,
-                          CommandXboxController driverController, IndicatorSubsystem indicatorSubsystem, double ControllerX, double ControllerY) {
+                          CommandXboxController driverController, IndicatorSubsystem indicatorSubsystem) {
         addRequirements(swerve);
         this.stop = stop;
         this.elevatorSubsystem = elevatorSubsystem;
         this.driverController = driverController;
         this.indicatorSubsystem = indicatorSubsystem;
-        this.ControllerX = ControllerX;
-        this.ControllerY = ControllerY;
     }
 
     @Override
@@ -66,7 +63,7 @@ public class ReefAimCommand extends Command {
         // Calculate destination
         robotPose = swerve.getLocalizer().getCoarseFieldPose(Timer.getFPGATimestamp());
         DestinationSupplier.getInstance();
-        tagPose = DestinationSupplier.getNearestTag(robotPose, ControllerX, ControllerY);
+        tagPose = DestinationSupplier.getNearestTag(robotPose);
         // PID init
         xPID.reset(robotPose.getX(), swerve.getLocalizer().getMeasuredVelocity().getX());
         yPID.reset(robotPose.getY(), swerve.getLocalizer().getMeasuredVelocity().getY());
