@@ -3,7 +3,9 @@ package frc.robot.auto.basics;
 import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.subsystems.endeffector.EndEffectorSubsystem;
 import org.json.simple.parser.ParseException;
 
 import java.io.File;
@@ -65,17 +67,15 @@ public class AutoFile {
         return new SequentialCommandGroup(
                 autoActions.ReverseEndEffector(),
                 autoActions.AutoAimShoot(L4, 'I'),
-                autoActions.disableVision(),
                 autoActions.followPath(getAutoPath("IJ-L1"), true, true, false),
-                autoActions.enableVision(),
+                autoActions.waitFor(0.5).until(()->{
+                    boolean intakeDone = autoActions.getEESystemState() == EndEffectorSubsystem.SystemState.PRE_SHOOTING;
+                    return intakeDone;
+                }),
                 autoActions.AutoAimShoot(L4, 'L'),
-                autoActions.disableVision(),
                 autoActions.followPath(getAutoPath("L-I2"), true, true, false),
-                autoActions.enableVision(),
                 autoActions.AutoAimShoot(L4, 'B'),
-                autoActions.disableVision(),
                 autoActions.followPath(getAutoPath("B-I3"), true, true, false),
-                autoActions.enableVision(),
                 autoActions.AutoAimShoot(L4, 'C')
         );
     }
@@ -85,11 +85,14 @@ public class AutoFile {
                 autoActions.ReverseEndEffector(),
                 autoActions.AutoAimShoot(L4, 'F'),
                 autoActions.followPath(getAutoPath("EF-I3"), true, true, false),
+                autoActions.waitFor(0.5).until(()->{
+                    boolean intakeDone = autoActions.getEESystemState() == EndEffectorSubsystem.SystemState.PRE_SHOOTING;
+                    return intakeDone;
+                }),
                 autoActions.AutoAimShoot(L4, 'C'),
                 autoActions.followPath(getAutoPath("C-I2"), true, true, false),
                 autoActions.AutoAimShoot(L4, 'A'),
-                autoActions.followPath(getAutoPath("A-I1"), true, true, false),
-                autoActions.AutoAimShoot(L4, 'L')
+                autoActions.followPath(getAutoPath("A-I1"), true, true, false)
         );
     }
 

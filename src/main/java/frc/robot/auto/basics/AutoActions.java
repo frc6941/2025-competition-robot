@@ -92,7 +92,7 @@ public class AutoActions {
     }
 
     public Command deployIntake() {
-        return new GroundIntakeCommand(indicatorSubsystem, intakeSubsystem, endEffectorSubsystem, elevatorSubsystem);
+        return new AutoGroundIntakeCommand(indicatorSubsystem, intakeSubsystem, endEffectorSubsystem, elevatorSubsystem);
     }
 
     public Command preShoot() {
@@ -139,5 +139,11 @@ public class AutoActions {
 
     public Command funnelIntake() {
         return new FunnelIntakeCommand(indicatorSubsystem, elevatorSubsystem, endEffectorSubsystem, intakeSubsystem);
+    }
+    public boolean intakerHasCoral(){
+        return intakeSubsystem.hasCoralBB();
+    }
+    public EndEffectorSubsystem.SystemState getEESystemState() {
+        return endEffectorSubsystem.getSystemState();
     }
 }
