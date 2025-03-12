@@ -47,18 +47,15 @@ public class ReefAimCommand extends Command {
     private boolean omegaFinished = false;
     private Pose2d robotPose, tagPose, destinationPose, finalDestinationPose;
     private Translation2d translationalVelocity, controllerVelocity;
-    private double ControllerX;
-    private double ControllerY;
+
 
     public ReefAimCommand(BooleanSupplier stop, ElevatorSubsystem elevatorSubsystem,
-                          CommandXboxController driverController, IndicatorSubsystem indicatorSubsystem, double ControllerX, double ControllerY) {
+                          CommandXboxController driverController, IndicatorSubsystem indicatorSubsystem) {
         addRequirements(swerve);
         this.stop = stop;
         this.elevatorSubsystem = elevatorSubsystem;
         this.driverController = driverController;
         this.indicatorSubsystem = indicatorSubsystem;
-        this.ControllerX = ControllerX;
-        this.ControllerY = ControllerY;
     }
 
     @Override
@@ -66,7 +63,7 @@ public class ReefAimCommand extends Command {
         // Calculate destination
         robotPose = swerve.getLocalizer().getCoarseFieldPose(Timer.getFPGATimestamp());
         DestinationSupplier.getInstance();
-        tagPose = DestinationSupplier.getNearestTag(robotPose, ControllerX, ControllerY);
+        tagPose = DestinationSupplier.getNearestTag(robotPose);
         // PID init
         xPID.reset(robotPose.getX(), swerve.getLocalizer().getMeasuredVelocity().getX());
         yPID.reset(robotPose.getY(), swerve.getLocalizer().getMeasuredVelocity().getY());
@@ -111,7 +108,7 @@ public class ReefAimCommand extends Command {
                         0 : -driverController.getLeftY() * RobotConstants.SwerveConstants.maxSpeed.magnitude(),
                 Math.abs(driverController.getLeftX()) < RobotConstants.SwerveConstants.deadband ?
                         0 : -driverController.getLeftX() * RobotConstants.SwerveConstants.maxSpeed.magnitude());
-        swerve.drive(translationalVelocity.plus(controllerVelocity), 0.0, true, false);
+        swerve.drive(translationalVelocity, 0.0, true, false);
         Display.getInstance().setAimingTarget(destinationPose);
         Logger.recordOutput("ReefAimCommand/tagPose", tagPose);
         Logger.recordOutput("ReefAimCommand/destinationPose", destinationPose);
