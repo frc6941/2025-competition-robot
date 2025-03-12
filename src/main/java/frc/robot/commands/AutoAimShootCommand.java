@@ -21,8 +21,8 @@ public class AutoAimShootCommand extends ParallelCommandGroup {
                         new WaitUntilCommand(stop),
                         Commands.sequence(
                                 Commands.parallel(
-                                        new ReefAimCommand(stop, elevatorSubsystem, driverController, indicatorSubsystem),
-                                        new AutoPreShootCommand(indicatorSubsystem, endeffectorSubsystem, intakeSubsystem, elevatorSubsystem)
+                                        new ReefAimCommand(stop, elevatorSubsystem, driverController, indicatorSubsystem, driverController.getLeftX(), driverController.getLeftY()),
+                                        new AutoPreShootCommand(indicatorSubsystem, endeffectorSubsystem, intakeSubsystem, elevatorSubsystem, driverController.getLeftX(), driverController.getLeftY())
                                 ),
                                 new ShootCommand(indicatorSubsystem, endeffectorSubsystem)
                         ),
