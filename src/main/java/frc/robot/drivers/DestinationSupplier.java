@@ -101,9 +101,11 @@ public class DestinationSupplier implements Updatable {
                 minDistance = distance;
             }
         }
-        Logger.recordOutput("DeltaDistance",secondMinDistance - minDistance);
-        if ((secondMinDistance - minDistance) < RobotConstants.ReefAimConstants.Edge_Case_Max_Delta.get()){
-            Logger.recordOutput("IsEdgeCase",true);
+        Logger.recordOutput("EdgeCase/DeltaDistance",secondMinDistance - minDistance);
+        Logger.recordOutput("EdgeCase/ControllerX", ControllerX);
+        Logger.recordOutput("EdgeCase/ControllerY", ControllerY);
+        if ((secondMinDistance - minDistance) < RobotConstants.ReefAimConstants.Edge_Case_Max_Delta.get() && ControllerX!=0 && ControllerY!=0){
+            Logger.recordOutput("EdgeCase/IsEdgeCase",true);
             if (correctTagPair(secondMinDistanceID, minDistanceID, 6,11)){
                 minDistanceID = ControllerY>0?11:6;
             }
@@ -124,8 +126,9 @@ public class DestinationSupplier implements Updatable {
             }
         }
         else{
-            Logger.recordOutput("IsEdgeCase",false);
+            Logger.recordOutput("EdgeCase/IsEdgeCase",false);
         }
+        Logger.recordOutput("EdgeCase/ChangedTarget", minDistanceID == secondMinDistanceID);
         Pose2d goal = FieldConstants.officialAprilTagType.getLayout().getTagPose(minDistanceID).get().toPose2d();
         return goal;
     }

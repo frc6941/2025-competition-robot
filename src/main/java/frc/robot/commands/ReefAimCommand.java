@@ -111,7 +111,7 @@ public class ReefAimCommand extends Command {
                         0 : -driverController.getLeftY() * RobotConstants.SwerveConstants.maxSpeed.magnitude(),
                 Math.abs(driverController.getLeftX()) < RobotConstants.SwerveConstants.deadband ?
                         0 : -driverController.getLeftX() * RobotConstants.SwerveConstants.maxSpeed.magnitude());
-        swerve.drive(translationalVelocity.plus(controllerVelocity), 0.0, true, false);
+        swerve.drive(translationalVelocity, 0.0, true, false);
         Display.getInstance().setAimingTarget(destinationPose);
         Logger.recordOutput("ReefAimCommand/tagPose", tagPose);
         Logger.recordOutput("ReefAimCommand/destinationPose", destinationPose);

@@ -9,6 +9,7 @@ import frc.robot.LimelightHelpers;
 import frc.robot.LimelightHelpers.PoseEstimate;
 import frc.robot.RobotConstants;
 import frc.robot.subsystems.swerve.Swerve;
+import lombok.extern.java.Log;
 import org.littletonrobotics.junction.Logger;
 
 import java.util.Optional;
@@ -26,6 +27,8 @@ public class Limelight extends SubsystemBase {
     Pose2d leftPose = new Pose2d();
 
     private boolean useMegaTag2 = false;
+
+    private boolean rejectEstimate = false;
 
     public Limelight() {
     }
@@ -51,26 +54,28 @@ public class Limelight extends SubsystemBase {
     public boolean rejectUpdate(PoseEstimate poseEstimate, AngularVelocity gyroRate) {
         // Angular velocity is too high to have accurate vision
         if (gyroRate.compareTo(RobotConstants.SwerveConstants.maxAngularRate) > 0) {
-            Logger.recordOutput("Limelight/UpdateRejected", true);
+            rejectEstimate = true;
             return true;
         }
+        //TODO: verify this condition whether usable
 
         // No tags :<
         if (poseEstimate.tagCount == 0) {
-            Logger.recordOutput("Limelight/UpdateRejected", true);
+            rejectEstimate = true;
             return true;
         }
 
         // 1 Tag with a large area
         if (poseEstimate.tagCount == 1 && poseEstimate.avgTagArea > AREA_THRESHOLD) {
-            Logger.recordOutput("Limelight/UpdateRejected", false);
+            rejectEstimate = false;
             return false;
             // 2 tags or more
         } else if (poseEstimate.tagCount > 1) {
-            Logger.recordOutput("Limelight/UpdateRejected", false);
+            rejectEstimate = false;
             return false;
         }
-        Logger.recordOutput("Limelight/UpdateRejected", true);
+
+        rejectEstimate = true;
         return true;
     }
 
@@ -158,21 +163,29 @@ public class Limelight extends SubsystemBase {
                 } else {
                     Swerve.getInstance().getLocalizer().addMeasurement(estimatedPose.get()[0].timestampSeconds, estimatedPose.get()[0].pose, VecBuilder.fill(.5, .5, 9999999));
                 }
+                Logger.recordOutput("LimelightL/estimatedPose",estimatedPose.get()[0].pose);
             }
+            Logger.recordOutput("LimelightL/hasEstimate", estimatedPose.get()[0]!=null);
             if(estimatedPose.get()[1] != null){
                 if (useMegaTag2) {
                     Swerve.getInstance().getLocalizer().addMeasurement(estimatedPose.get()[1].timestampSeconds, estimatedPose.get()[1].pose, VecBuilder.fill(.7, .7, 9999999));
                 } else {
                     Swerve.getInstance().getLocalizer().addMeasurement(estimatedPose.get()[1].timestampSeconds, estimatedPose.get()[1].pose, VecBuilder.fill(.5, .5, 9999999));
                 }
+                Logger.recordOutput("LimelightR/estimatedPose",estimatedPose.get()[1].pose);
             }
+            Logger.recordOutput("LimelightR/hasEstimate", estimatedPose.get()[1]!=null);
 
+        } else {
+            Logger.recordOutput("LimelightL/hasEstimate",false);
+            Logger.recordOutput("LimelightR/hasEstimate",false);
         }
     }
 
     @Override
     public void periodic() {
         addVisionMeasurement();
+        Logger.recordOutput("Limelight/rejectEstimate", rejectEstimate);
     }
 }
 
