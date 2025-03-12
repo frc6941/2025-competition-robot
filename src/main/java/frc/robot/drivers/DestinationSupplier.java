@@ -95,6 +95,7 @@ public class DestinationSupplier implements Updatable {
         return goal;
     }
 
+
     public void updateElevatorSetpoint(elevatorSetpoint setpoint) {
         switch (setpoint) {
             case L1, L2, L3, L4:
