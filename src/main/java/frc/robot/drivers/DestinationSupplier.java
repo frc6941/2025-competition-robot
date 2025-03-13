@@ -111,23 +111,45 @@ public class DestinationSupplier implements Updatable {
         Logger.recordOutput("EdgeCase/ControllerY", ControllerY);
         if ((secondMinDistance - minDistance) < RobotConstants.ReefAimConstants.Edge_Case_Max_Delta.get() && ControllerX!=0 && ControllerY!=0){
             Logger.recordOutput("EdgeCase/IsEdgeCase",true);
-            if (correctTagPair(secondMinDistanceID, minDistanceID, 6,11)){
-                minDistanceID = ControllerY>0?6:11;
+            if(AllianceFlipUtil.shouldFlip()){
+                if (correctTagPair(secondMinDistanceID, minDistanceID, 6,11)){
+                    minDistanceID = ControllerY>0?6:11;
+                }
+                else if (correctTagPair(secondMinDistanceID, minDistanceID, 8,9)){
+                    minDistanceID = ControllerY>0?8:9;
+                }
+                else if (correctTagPair(secondMinDistanceID, minDistanceID, 6,7)){
+                    minDistanceID = ControllerX>0?7:6;
+                }
+                else if (correctTagPair(secondMinDistanceID, minDistanceID, 7,8)){
+                    minDistanceID = ControllerX>0?8:7;
+                }
+                else if (correctTagPair(secondMinDistanceID, minDistanceID, 9,10)){
+                    minDistanceID = ControllerX>0?9:10;
+                }
+                else if (correctTagPair(secondMinDistanceID, minDistanceID, 10,11)){
+                    minDistanceID = ControllerX>0?10:11;
+                }
             }
-            else if (correctTagPair(secondMinDistanceID, minDistanceID, 8,9)){
-                minDistanceID = ControllerY>0?8:9;
-            }
-            else if (correctTagPair(secondMinDistanceID, minDistanceID, 6,7)){
-                minDistanceID = ControllerX>0?7:6;
-            }
-            else if (correctTagPair(secondMinDistanceID, minDistanceID, 7,8)){
-                minDistanceID = ControllerX>0?8:7;
-            }
-            else if (correctTagPair(secondMinDistanceID, minDistanceID, 9,10)){
-                minDistanceID = ControllerX>0?9:10;
-            }
-            else if (correctTagPair(secondMinDistanceID, minDistanceID, 10,11)){
-                minDistanceID = ControllerX>0?10:11;
+            else {
+                if (correctTagPair(secondMinDistanceID, minDistanceID, 20,19)){
+                    minDistanceID = ControllerY>0?19:20;
+                }
+                else if (correctTagPair(secondMinDistanceID, minDistanceID, 17,22)){
+                    minDistanceID = ControllerY>0?17:22;
+                }
+                else if (correctTagPair(secondMinDistanceID, minDistanceID, 17,18)){
+                    minDistanceID = ControllerX>0?17:18;
+                }
+                else if (correctTagPair(secondMinDistanceID, minDistanceID, 18,19)){
+                    minDistanceID = ControllerX>0?18:19;
+                }
+                else if (correctTagPair(secondMinDistanceID, minDistanceID, 21,22)){
+                    minDistanceID = ControllerX>0?22:21;
+                }
+                else if (correctTagPair(secondMinDistanceID, minDistanceID, 20,21)){
+                    minDistanceID = ControllerX>0?21:20;
+                }
             }
         }
         else{

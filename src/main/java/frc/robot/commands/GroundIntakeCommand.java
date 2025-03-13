@@ -62,6 +62,6 @@ public class GroundIntakeCommand extends Command {
 
     @Override
     public InterruptionBehavior getInterruptionBehavior() {
-        return InterruptionBehavior.kCancelSelf;
+        return InterruptionBehavior.kCancelIncoming;
     }
 }

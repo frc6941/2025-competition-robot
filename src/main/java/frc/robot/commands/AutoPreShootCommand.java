@@ -33,8 +33,8 @@ public class AutoPreShootCommand extends Command {
     @Override
     public void execute() {
         safeToRaise = DestinationSupplier.isSafeToRaise(Swerve.getInstance().getLocalizer().getCoarseFieldPose(Timer.getFPGATimestamp()), DestinationSupplier.getInstance().getCurrentBranch());
+        intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.HOME);
         if (safeToRaise) {
-            intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.HOME);
             elevatorSubsystem.setElevatorPosition(DestinationSupplier.getInstance().getElevatorSetpoint(true));
             endEffectorSubsystem.setWantedState(EndEffectorSubsystem.WantedState.PRE_SHOOT);
         }

@@ -88,7 +88,7 @@ public class AutoActions {
                         intakeSubsystem.getSystemState() == IntakeSubsystem.SystemState.AVOIDING)),
 //                new WaitUntilCommand(() -> elevatorSubsystem.hasReachedNearZero && intakeSubsystem.hasHomed),
 //                new WaitUntilCommand(() -> !elevatorSubsystem.hasReachedNearZero && !intakeSubsystem.hasHomed),
-                new GroundIntakeCommand(indicatorSubsystem, intakeSubsystem, endEffectorSubsystem, elevatorSubsystem));
+                new AutoGroundIntakeCommand(indicatorSubsystem, intakeSubsystem, endEffectorSubsystem, elevatorSubsystem));
     }
 
     public Command deployIntake() {
@@ -137,6 +137,11 @@ public class AutoActions {
         return Commands.runOnce(() -> destinationSupplier.setUseVision(true));
     }
 
+    public Command homeEverything() {
+        return Commands.parallel(Commands.runOnce(() -> intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.HOME)),
+                Commands.runOnce(() ->elevatorSubsystem.setElevatorState(ElevatorSubsystem.WantedState.IDLE)));
+    }
+
     public Command funnelIntake() {
         return new FunnelIntakeCommand(indicatorSubsystem, elevatorSubsystem, endEffectorSubsystem, intakeSubsystem);
     }
@@ -145,5 +150,9 @@ public class AutoActions {
     }
     public EndEffectorSubsystem.SystemState getEESystemState() {
         return endEffectorSubsystem.getSystemState();
+    }
+
+    public boolean isIntakeFinished() {
+        return endEffectorSubsystem.isIntakeFinished();
     }
 }
