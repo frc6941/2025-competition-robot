@@ -5,7 +5,6 @@ import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.subsystems.endeffector.EndEffectorSubsystem;
 import org.json.simple.parser.ParseException;
 
 import java.io.File;
@@ -59,8 +58,9 @@ public class AutoFile {
         //return autoActions.zeroAndIntake();
         //return autoActions.AutoAimShoot(L4, 'C');
         return new SequentialCommandGroup(
-                autoActions.disableVision(),
-                autoActions.followPath(getAutoPath("Test"), true, true, true));
+                autoActions.ReverseEndEffector());
+                //autoActions.disableVision(),5
+                //autoActions.followPath(getAutoPath("Test"), true, true, true));
     }
 
     private Command build4CoralLeft() {
