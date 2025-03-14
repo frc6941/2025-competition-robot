@@ -45,6 +45,7 @@ public class AutoFile {
         return switch (autoName) {
             case "4CoralLeft" -> build4CoralLeft();
             case "4CoralRight" -> build4CoralRight();
+            case "1CoralMiddle" -> build1CoralMiddle();
             case "FunnelRight" -> buildFunnelRight();
             case "FunnelLeft" -> buildFunnelLeft();
             case "Test" -> buildTest();
@@ -96,6 +97,13 @@ public class AutoFile {
                 autoActions.followPath(getAutoPath("A-I1"), true, true, false),
                 autoActions.enableVision(),
                 autoActions.AutoAimShoot(L4, 'L')
+        );
+    }
+
+    private Command build1CoralMiddle() {
+        return new SequentialCommandGroup(
+                autoActions.ReverseEndEffector(),
+                autoActions.AutoAimShoot(L4, 'H')
         );
     }
 
