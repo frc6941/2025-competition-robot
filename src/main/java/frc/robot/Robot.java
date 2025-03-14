@@ -25,7 +25,8 @@ public class Robot extends LoggedRobot {
     @Override
     public void robotInit() {
         // logger initialization
-        if (Robot.isSimulation()) Logger.addDataReceiver(new NT4Publisher());
+        //if (Robot.isSimulation())
+        Logger.addDataReceiver(new NT4Publisher());
         Logger.addDataReceiver(new WPILOGWriter());
         Logger.recordMetadata("GitSHA", BuildConstants.GIT_SHA);
         Logger.start();
