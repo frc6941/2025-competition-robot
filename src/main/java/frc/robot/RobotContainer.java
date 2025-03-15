@@ -125,6 +125,7 @@ public class RobotContainer {
         autoChooser.addOption("4CoralRight", "4CoralRight");
         autoChooser.addOption("FunnelRight", "FunnelRight");
         autoChooser.addOption("FunnelLeft", "FunnelLeft");
+        autoChooser.addOption("1CoralMiddle", "1CoralMiddle");
         autoChooser.addOption("Test", "Test");
         autoChooser.addOption("None", "None");
     }
