@@ -3,25 +3,41 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.5591814159292032,
-        "y": 5.312776548672566
+        "x": 3.68,
+        "y": 5.09
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.685564159288847,
-        "y": 4.730365044245699
+        "x": 3.3784071885440863,
+        "y": 5.6123740726391835
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.2295353982300885,
-        "y": 4.018528761061947
+        "x": 2.4327577821011674,
+        "y": 5.838898346303502
       },
       "prevControl": {
-        "x": 2.0837389380499087,
-        "y": 4.426216814157204
+        "x": 2.6706999122550266,
+        "y": 5.915602601060614
+      },
+      "nextControl": {
+        "x": 2.1948156519473083,
+        "y": 5.762194091546389
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.1438229571984435,
+        "y": 3.8585481517509725
+      },
+      "prevControl": {
+        "x": 2.1337546411136783,
+        "y": 5.852601121804451
       },
       "nextControl": null,
       "isLocked": false,
@@ -33,29 +49,23 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "ZEROELEVATOR",
-      "waypointRelativePos": 0.11307625398667173,
-      "endWaypointRelativePos": null,
-      "command": null
-    },
-    {
       "name": "DEPLOY-INTAKE",
-      "waypointRelativePos": 0.3577848651783216,
+      "waypointRelativePos": 0.2,
       "endWaypointRelativePos": null,
       "command": null
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 3.5,
+    "maxVelocity": 2.0,
     "maxAcceleration": 3.0,
-    "maxAngularVelocity": 540.0,
+    "maxAngularVelocity": 360.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": -115.74711169535918
   },
   "reversed": false,
   "folder": null,

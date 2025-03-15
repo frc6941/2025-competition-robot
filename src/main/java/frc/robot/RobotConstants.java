@@ -192,7 +192,7 @@ public final class RobotConstants {
         private static final int FRONT_RIGHT_DRIVE_MOTOR_ID = 6;
         private static final int FRONT_RIGHT_STEER_MOTOR_ID = 5;
         private static final int FRONT_RIGHT_ENCODER_ID = 11;
-        private static final double FRONT_RIGHT_ENCODER_OFFSET = is10541 ? -0.3104965938 : -0.420166;
+        private static final double FRONT_RIGHT_ENCODER_OFFSET = is10541 ? -0.3078105938 : -0.420166;
         private static final Measure<DistanceUnit> frontRightXPos = Meters.of(0.29);
         private static final Measure<DistanceUnit> frontRightYPos = Meters.of(-0.29);
         public static final LegacySwerveModuleConstants FrontRight = ConstantCreator.createModuleConstants(
@@ -203,7 +203,7 @@ public final class RobotConstants {
         private static final int BACK_LEFT_DRIVE_MOTOR_ID = 2;
         private static final int BACK_LEFT_STEER_MOTOR_ID = 1;
         private static final int BACK_LEFT_ENCODER_ID = 0;
-        private static final double BACK_LEFT_ENCODER_OFFSET = is10541 ? -0.1180423438 : -0.354248046875;
+        private static final double BACK_LEFT_ENCODER_OFFSET = is10541 ? -0.1082763438 : -0.354248046875;
         private static final Measure<DistanceUnit> backLeftXPos = Meters.of(-0.29);
         private static final Measure<DistanceUnit> backLeftYPos = Meters.of(0.29);
         public static final LegacySwerveModuleConstants BackLeft = ConstantCreator.createModuleConstants(
@@ -288,10 +288,10 @@ public final class RobotConstants {
     public static final class ReefAimConstants {
         public static final TunableNumber MAX_DISTANCE_REEF_LINEUP = new TunableNumber("AIM/maxLineupDistance", 1.5);
         public static final Measure<DistanceUnit> PIPE_TO_TAG = Meters.of(0.164308503);
-        public static final TunableNumber ROBOT_TO_PIPE_METERS = new TunableNumber("AIM/ROBOT_TO_PIPE_METERS", 0.515);
-        public static final TunableNumber X_TOLERANCE_METERS = new TunableNumber("AIM/X_TOLERANCE_METERS", 0.02);
-        public static final TunableNumber Y_TOLERANCE_METERS = new TunableNumber("AIM/Y_TOLERANCE_METERS", 0.02);
-        public static final TunableNumber RAISE_LIMIT_METERS = new TunableNumber("AIM/RAISE_LIMIT_METERS", 0.5);
+        public static final TunableNumber ROBOT_TO_PIPE_METERS = new TunableNumber("AIM/ROBOT_TO_PIPE_METERS", 0.5);
+        public static final TunableNumber X_TOLERANCE_METERS = new TunableNumber("AIM/X_TOLERANCE_METERS", 0.015);
+        public static final TunableNumber Y_TOLERANCE_METERS = new TunableNumber("AIM/Y_TOLERANCE_METERS", 0.015);
+        public static final TunableNumber RAISE_LIMIT_METERS = new TunableNumber("AIM/RAISE_LIMIT_METERS", 1);
         public static final TunableNumber OMEGA_TOLERANCE_DEGREES = new TunableNumber("AIM/OMEGA_TOLERANCE_DEGREES", 1);
         public static final Measure<LinearVelocityUnit> MAX_AIMING_SPEED = MetersPerSecond.of(4.5);
         public static final Measure<LinearAccelerationUnit> MAX_AIMING_ACCELERATION = MetersPerSecondPerSecond.of(9);
@@ -303,6 +303,7 @@ public final class RobotConstants {
     public static class BeamBreakConstants {
         public static final int ENDEFFECTOR_MIDDLE_BEAMBREAK_ID = 2;
         public static final int ENDEFFECTOR_EDGE_BEAMBREAK_ID = 0;
+        public static final int INTAKE_BEAMBREAK_ID = 3;
     }
 
     /**
@@ -360,30 +361,34 @@ public final class RobotConstants {
         public static final double INTAKE_DANGER_ZONE = 90;
         public static final TunableNumber ROLLER_AMPS_HAS_CORAL = new TunableNumber("INTAKE_ROLLER/rollerAmpsHasCoral", 55);
         //Motion constants for intake pivot
-        public static final TunableNumber INTAKE_PIVOT_CRUISE_VELOCITY = new TunableNumber("INTAKE_PIVOT/cruiseVelocity", 100);
-        public static final TunableNumber INTAKE_PIVOT_ACCELERATION = new TunableNumber("INTAKE_PIVOT/acceleration", 500);
+        public static final TunableNumber INTAKE_PIVOT_CRUISE_VELOCITY = new TunableNumber("INTAKE_PIVOT/cruiseVelocity", 250);
+        public static final TunableNumber INTAKE_PIVOT_ACCELERATION = new TunableNumber("INTAKE_PIVOT/acceleration", 250);
         public static final TunableNumber INTAKE_PIVOT_JERK = new TunableNumber("INTAKE_PIVOT/jerk", 0);
-        public static final TunableNumber DEPLOY_ANGLE = new TunableNumber("INTAKE_PIVOT/deployAngle", 112);
+        public static final TunableNumber DEPLOY_ANGLE = new TunableNumber("INTAKE_PIVOT/deployAngle", 113.5);
         public static final TunableNumber OUTTAKE_ANGLE = new TunableNumber("INTAKE_PIVOT/outtakeAngle", 105);
         public static final TunableNumber HOME_ANGLE = new TunableNumber("INTAKE_PIVOT/homeAngle", 5);
         public static final TunableNumber AVOID_ANGLE = new TunableNumber("INTAKE_PIVOT/avoidAngle", 90);
         public static final TunableNumber FUNNEL_AVOID_ANGLE = new TunableNumber("INTAKE_PIVOT/funnelAvoidAngle", 51);
+        public static final TunableNumber SHOOT_ANGLE = new TunableNumber("INTAKE_PIVOT/shootAngle", 45);
         //Motion constants for intake roller
         public static final TunableNumber INTAKE_VOLTAGE = new TunableNumber("INTAKE_ROLLER/intakeVoltage", 15.0);
         public static final TunableNumber OUTTAKE_VOLTAGE = new TunableNumber("INTAKE_ROLLER/outtakeVoltage", -6.0);
+        public static final TunableNumber SHOOT_VOLTAGE = new TunableNumber("INTAKE_ROLLER/shootVoltage", -2.5);
+        public static final TunableNumber INTAKE_HOLD_VOLTAGE = new TunableNumber("INTAKE_ROLLER/intakeHoldVoltage", 5.0);
+        public static final TunableNumber OUT_TAKE_HOLD = new TunableNumber("INTAKE_ROLLER/outtakeHoldVoltage", -1.0);
 
         public static final TunableNumber OUTTAKE_TIME = new TunableNumber("INTAKE_ROLLER/outtake time", 0.4);
         public static final TunableNumber INTAKE_TIME = new TunableNumber("INTAKE_ROLLER/intake time", 0.55);
         // public static final TunableNumber INTAKE_VOLTAGE = new TunableNumber("INTAKE_ROLLER/intake time",10);
 
         //Constants for intake pivot
-        public static double PIVOT_RATIO = (double) (36 * 50) / 11;
+        public static double PIVOT_RATIO = (double) (12 * 50) / 11;
 
         /**
          * Constants for the intake pivot motor gains in the intake subsystem.
          */
         public static class IntakePivotGainsClass {
-            public static final TunableNumber INTAKE_PIVOT_KP = new TunableNumber("INTAKE_PIVOT PID/kp", 5);
+            public static final TunableNumber INTAKE_PIVOT_KP = new TunableNumber("INTAKE_PIVOT PID/kp", 2.5);
             public static final TunableNumber INTAKE_PIVOT_KI = new TunableNumber("INTAKE_PIVOT PID/ki", 0);
             public static final TunableNumber INTAKE_PIVOT_KD = new TunableNumber("INTAKE_PIVOT PID/kd", 0);
         }
@@ -438,10 +443,12 @@ public final class RobotConstants {
                 0.7);
         public static final TunableNumber HOME_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/HOME",
                 0.01);
+        public static final TunableNumber HOLD_INTAKE_METERS = new TunableNumber("ELEVATOR SETPOINTS/HOLD INTAKE",
+                0.12);
         public static final TunableNumber L1_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/L1",
                 0.45);
         public static final TunableNumber L2_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/L2",
-                0.6);
+                0.62);
         public static final TunableNumber L3_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/L3",
                 1.01);
         public static final TunableNumber L4_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/L4",
@@ -450,11 +457,12 @@ public final class RobotConstants {
                 0.50);
         public static final TunableNumber P2_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/P2",
                 0.70);
-        public static final TunableNumber FUNNEL_INTAKE_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/FunnnelIntake",
-                0.37);
+        public static final TunableNumber FUNNEL_INTAKE_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/FunnelIntake",
+                0.34);
         public static final TunableNumber ELEVATOR_ZEROING_CURRENT = new TunableNumber("Elevator zeroing current",
                 40);
         public static final TunableNumber ELEVATOR_MIN_SAFE_HEIGHT = new TunableNumber("Elevator min safe height", 0.47);
+        public static final TunableNumber ELEVATOR_MIN_SAFE_HEIGHT_HOLDING = new TunableNumber("Elevator min safe height holding", 0.55);
 
     }
 

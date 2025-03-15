@@ -5,7 +5,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.drivers.DestinationSupplier;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.endeffector.EndEffectorSubsystem;
-import frc.robot.subsystems.indicator.IndicatorIO;
 import frc.robot.subsystems.indicator.IndicatorSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.swerve.Swerve;
@@ -28,12 +27,12 @@ public class AutoPreShootCommand extends Command {
     @Override
     public void initialize() {
         timer.start();
-        indicatorSubsystem.setPattern(IndicatorIO.Patterns.PRE_SHOOT);
+//        indicatorSubsystem.setPattern(IndicatorIO.Patterns.PRE_SHOOT);
     }
 
     @Override
     public void execute() {
-        safeToRaise = DestinationSupplier.isSafeToRaise(Swerve.getInstance().getLocalizer().getCoarseFieldPose(0), DestinationSupplier.getInstance().getCurrentBranch());
+        safeToRaise = DestinationSupplier.isSafeToRaise(Swerve.getInstance().getLocalizer().getCoarseFieldPose(Timer.getFPGATimestamp()), DestinationSupplier.getInstance().getCurrentBranch());
         if (safeToRaise) {
             intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.HOME);
             elevatorSubsystem.setElevatorPosition(DestinationSupplier.getInstance().getElevatorSetpoint(true));

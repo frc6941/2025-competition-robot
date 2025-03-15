@@ -30,7 +30,7 @@ public class FieldConstants {
     public static final double startingLineX =
             Units.inchesToMeters(299.438); // Measured from the inside of starting line
     public static final double aprilTagWidth = Units.inchesToMeters(6.5);
-    public static final AprilTagLayoutType defaultAprilTagType = AprilTagLayoutType.CUSTOM;
+    public static final AprilTagLayoutType defaultAprilTagType = AprilTagLayoutType.ANDYMARK;
     public static final AprilTagLayoutType officialAprilTagType = AprilTagLayoutType.ANDYMARK;
 
     @Getter

@@ -181,19 +181,6 @@
             }
           },
           {
-            "title": "Auto Selector",
-            "x": 512.0,
-            "y": 384.0,
-            "width": 256.0,
-            "height": 128.0,
-            "type": "ComboBox Chooser",
-            "properties": {
-              "topic": "/Shuffleboard/Operator/Auto Selector",
-              "period": 0.06,
-              "sort_options": false
-            }
-          },
-          {
             "title": "DriverMotor 0",
             "x": 768.0,
             "y": 384.0,
@@ -247,6 +234,19 @@
               "period": 0.06,
               "data_type": "double",
               "show_submit_button": false
+            }
+          },
+          {
+            "title": "Chooser",
+            "x": 512.0,
+            "y": 384.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "ComboBox Chooser",
+            "properties": {
+              "topic": "/SmartDashboard/Chooser",
+              "period": 0.06,
+              "sort_options": false
             }
           }
         ]
@@ -384,19 +384,6 @@
         ],
         "containers": [
           {
-            "title": "Auto Selector",
-            "x": 0.0,
-            "y": 0.0,
-            "width": 256.0,
-            "height": 128.0,
-            "type": "ComboBox Chooser",
-            "properties": {
-              "topic": "/Shuffleboard/Operator/Auto Selector",
-              "period": 0.06,
-              "sort_options": false
-            }
-          },
-          {
             "title": "Field",
             "x": 640.0,
             "y": 0.0,
@@ -463,19 +450,6 @@
             }
           },
           {
-            "title": "currentElevSetpointCoral",
-            "x": 0.0,
-            "y": 128.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Large Text Display",
-            "properties": {
-              "topic": "/AdvantageKit/RealOutputs/DestinationSupplier/currentElevSetpointCoral",
-              "period": 0.06,
-              "data_type": "string"
-            }
-          },
-          {
             "title": "currentElevSetpointPoke",
             "x": 128.0,
             "y": 128.0,
@@ -483,9 +457,8 @@
             "height": 128.0,
             "type": "Large Text Display",
             "properties": {
-              "topic": "/AdvantageKit/RealOutputs/DestinationSupplier/currentElevSetpointPoke",
-              "period": 0.06,
-              "data_type": "string"
+              "topic": "/SmartDashboard/DestinationSupplier/currentElevSetpointPoke",
+              "period": 0.06
             }
           },
           {
@@ -496,7 +469,7 @@
             "height": 128.0,
             "type": "Large Text Display",
             "properties": {
-              "topic": "/AdvantageKit/RealOutputs/DestinationSupplier/CurrentControlMode",
+              "topic": "/SmartDashboard/DestinationSupplier/CurrentControlMode",
               "period": 0.06,
               "data_type": "string"
             }
@@ -509,7 +482,72 @@
             "height": 128.0,
             "type": "Large Text Display",
             "properties": {
-              "topic": "/AdvantageKit/RealOutputs/DestinationSupplier/Pipe",
+              "topic": "/SmartDashboard/DestinationSupplier/DestinationSupplier/Pipe",
+              "period": 0.06
+            }
+          },
+          {
+            "title": "Chooser",
+            "x": 0.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "ComboBox Chooser",
+            "properties": {
+              "topic": "/SmartDashboard/Chooser",
+              "period": 0.06,
+              "sort_options": false
+            }
+          },
+          {
+            "title": "currentElevSetpointCoral",
+            "x": 0.0,
+            "y": 128.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Large Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/DestinationSupplier/currentElevSetpointCoral",
+              "period": 0.06,
+              "data_type": "string"
+            }
+          },
+          {
+            "title": "climbAngle",
+            "x": 384.0,
+            "y": 256.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/TunableNumbers/CLIMBER/climbAngle",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "CurrentL1Mode",
+            "x": 256.0,
+            "y": 128.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Large Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/DestinationSupplier/CurrentL1Mode",
+              "period": 0.06,
+              "data_type": "string"
+            }
+          },
+          {
+            "title": "CurrentIntakeMode",
+            "x": 256.0,
+            "y": 256.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Large Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/DestinationSupplier/CurrentIntakeMode",
               "period": 0.06,
               "data_type": "string"
             }

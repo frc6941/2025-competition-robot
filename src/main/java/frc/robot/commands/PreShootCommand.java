@@ -4,7 +4,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.drivers.DestinationSupplier;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.endeffector.EndEffectorSubsystem;
-import frc.robot.subsystems.indicator.IndicatorIO;
 import frc.robot.subsystems.indicator.IndicatorSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import org.littletonrobotics.junction.Logger;
@@ -27,7 +26,7 @@ public class PreShootCommand extends Command {
     @Override
     public void initialize() {
         Logger.recordOutput("Commands/Preshoot", "initialize");
-        indicatorSubsystem.setPattern(IndicatorIO.Patterns.PRE_SHOOT);
+//        indicatorSubsystem.setPattern(IndicatorIO.Patterns.PRE_SHOOT);
         endEffectorSubsystem.setWantedState(EndEffectorSubsystem.WantedState.PRE_SHOOT);
     }
 

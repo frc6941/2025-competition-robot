@@ -223,7 +223,10 @@ public class Swerve implements Updatable, Subsystem {
         setpoint = generator.generateSetpoint(
                 kinematicLimits, previousSetpoint, desiredChassisSpeed, dt);
         previousSetpoint = setpoint;
-        Logger.recordOutput("swerve/Kinematics/DesiredSpeedy", desiredChassisSpeed.vyMetersPerSecond);
+        
+        Logger.recordOutput("swerve/Kinematics/DesiredSpeed", new Pose2d(
+                desiredChassisSpeed.vxMetersPerSecond, desiredChassisSpeed.vyMetersPerSecond,
+                new Rotation2d(desiredChassisSpeed.omegaRadiansPerSecond)));
 
         for (SwerveModuleBase mod : swerveMods) {
             mod.setDesiredState(setpoint.mModuleStates[mod.getModuleNumber()], driveSignal.isOpenLoop(), false);

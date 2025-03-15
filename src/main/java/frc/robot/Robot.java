@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.drivers.DestinationSupplier;
 import frc.robot.subsystems.swerve.Swerve;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
@@ -24,7 +25,8 @@ public class Robot extends LoggedRobot {
     @Override
     public void robotInit() {
         // logger initialization
-        Logger.addDataReceiver(new NT4Publisher());
+        if (Robot.isSimulation())
+            Logger.addDataReceiver(new NT4Publisher());
         Logger.addDataReceiver(new WPILOGWriter());
         Logger.recordMetadata("GitSHA", BuildConstants.GIT_SHA);
         Logger.start();
@@ -98,12 +100,14 @@ public class Robot extends LoggedRobot {
         robotContainer.getUpdateManager().invokeStop();
         swerve.normal();
         swerve.cancelFollow();
+        DestinationSupplier.getInstance().setUseVision(true);
     }
 
     @Override
     public void teleopInit() {
         swerve.normal();
         robotContainer.getUpdateManager().invokeStart();
+        DestinationSupplier.getInstance().setUseVision(true);
     }
 
     @Override
@@ -123,7 +127,36 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void testPeriodic() {
-
+//        Pose3d cam1Pose = new Pose3d(
+//                0.20556,
+//                0.33419,
+//                0.31560,
+//                new Rotation3d(0.0, 0.0, Units.degreesToRadians(-21)));
+//        Transform3d cam1TransR = new Transform3d(
+//                0, 0, 0,
+//                new Rotation3d(0.0, 0.0, Units.degreesToRadians(21)));
+//        Transform3d cam1TransT = new Transform3d(
+//                -0.20556,
+//                -0.33419,
+//                -0.31560,
+//                new Rotation3d(0.0, 0.0, Units.degreesToRadians(0)));
+//        Transform3d cam1Trans111 = new Transform3d(0.20556,
+//                0.33419,
+//                0.31560,
+//                new Rotation3d(0.0, 0.0, Units.degreesToRadians(-21))).inverse();
+//        Pose3d cam1PoseE = cam1Pose.transformBy(cam1TransR);
+//        Pose3d cam1PoseF = cam1PoseE.transformBy(cam1TransT);
+//
+//        Transform3d cam2TransR = new Transform3d(0, 0, 0,
+//                new Rotation3d(-0.0064, -0.7093, 0.0239));
+//        Transform3d cam2TransT = new Transform3d(0.211601527157513, -0.582579438752884, 0.00456979252483178, new Rotation3d(0.0, 0.0, Units.degreesToRadians(0)));
+//        Pose3d cam2PoseE = cam1PoseF.transformBy(cam2TransT);
+//        Pose3d cam2PoseF = cam2PoseE.transformBy(cam2TransR);
+//        Pose3d cam2PoseFF = cam2PoseF.transformBy(cam1TransT.inverse());
+//        Pose3d cam2PoseFFF = cam2PoseFF.transformBy(cam1TransR.inverse());
+//        Pose3d cam2PoseTest = cam2PoseF.transformBy(cam1Trans111);
+//        System.out.println(cam2PoseFFF.getTranslation());
+//        System.out.println(cam2PoseFFF.getRotation().toString());
     }
 
     @Override
