@@ -91,11 +91,11 @@ public class AutoFile {
                                 autoActions.AutoAimShoot(L4,'B'),
                                 autoActions.followPath(getAutoPath("B-I3"),true,true,false)
                         ),
-                        autoActions.waitFor(3),
-                        //autoActions.followPath(getAutoPath("I2-I3"),true,true,false),
+                        //autoActions.waitFor(3),
+                        autoActions.followPath(getAutoPath("I2-I3"),true,true,false),
                         autoActions::isIntakeFinished
-                )
-                //autoActions.AutoAimShoot(L4, 'B')
+                ),
+                autoActions.AutoAimShoot(L4, 'D')
         );
     }
 
@@ -127,10 +127,11 @@ public class AutoFile {
                                 autoActions.AutoAimShoot(L4,'A'),
                                 autoActions.followPath(getAutoPath("A-I1"),true,true,false)
                         ),
-                        autoActions.waitFor(3),
-                        //autoActions.followPath(getAutoPath("I2-I1"),true,true,false),
+                        //autoActions.waitFor(3),
+                        autoActions.followPath(getAutoPath("I2-I1"),true,true,false),
                         autoActions::isIntakeFinished
-                )
+                ),
+                autoActions.AutoAimShoot(L4,'K')
         );
 //                autoActions.AutoAimShoot(L4, 'C'),
 //                autoActions.followPath(getAutoPath("C-I2"), true, true, false),
