@@ -1,6 +1,7 @@
 package frc.robot;
 
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.net.WebServer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
@@ -30,6 +31,9 @@ public class Robot extends LoggedRobot {
         Logger.recordMetadata("GitSHA", BuildConstants.GIT_SHA);
         Logger.start();
         WebServer.start(5800, Filesystem.getDeployDirectory().getPath());
+        //TODO: test required
+        PortForwarder.add(5801, "photonvision-1.local", 5801);
+        PortForwarder.add(5802, "photonvision-2.local", 5802);
 
         // early-stage initialization
         DriverStation.silenceJoystickConnectionWarning(true);

@@ -22,7 +22,7 @@ import frc.robot.commands.*;
 import frc.robot.display.Display;
 import frc.robot.drivers.DestinationSupplier;
 import frc.robot.subsystems.apriltagvision.AprilTagVision;
-import frc.robot.subsystems.apriltagvision.AprilTagVisionIONorthstar;
+import frc.robot.subsystems.apriltagvision.AprilTagVisionIOPhotonVision;
 import frc.robot.subsystems.beambreak.BeambreakIOReal;
 import frc.robot.subsystems.beambreak.BeambreakIOSim;
 import frc.robot.subsystems.climber.ClimberIOReal;
@@ -69,11 +69,8 @@ public class RobotContainer {
     private final UpdateManager updateManager;
     // Subsystems
     private final AprilTagVision aprilTagVision = new AprilTagVision(
-            this::getAprilTagLayoutType,
-            new AprilTagVisionIONorthstar(this::getAprilTagLayoutType, 0),
-            new AprilTagVisionIONorthstar(this::getAprilTagLayoutType, 1),
-            new AprilTagVisionIONorthstar(this::getAprilTagLayoutType, 2),
-            new AprilTagVisionIONorthstar(this::getAprilTagLayoutType, 3));
+            FieldConstants.defaultAprilTagType,
+            new AprilTagVisionIOPhotonVision(FieldConstants.defaultAprilTagType, "camera1"));
     private final Swerve swerve = Swerve.getInstance();
     private final Display display = Display.getInstance();
     private final DestinationSupplier destinationSupplier = DestinationSupplier.getInstance();

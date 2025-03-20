@@ -33,7 +33,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     public void periodic() {
         io.updateInputs(inputs);
         Logger.processInputs("Elevator", inputs);
-        Logger.recordOutput("ElevatorPosition", io.getElevatorHeight());
+        Logger.recordOutput("Elevator/Position", io.getElevatorHeight());
         Logger.recordOutput("Elevator/isNear", io.isNearExtension(wantedPosition));
         Logger.recordOutput("Elevator/isNearZero", io.isNearZeroExtension());
         Logger.recordOutput("Elevator/setPoint", wantedPosition);

@@ -339,7 +339,7 @@ public final class RobotConstants {
                     0.0037512677);
             public static final TunableNumber ENDEFFECTOR_KV = new TunableNumber("ENDEFFECTOR PID/kv",
                     0.113);// 0.107853495
-            public static final TunableNumber ENDEFFECTOR_KS = new TunableNumber("ENDEFFECTOR PID/ks",
+            public static final TunabfleNumber ENDEFFECTOR_KS = new TunableNumber("ENDEFFECTOR PID/ks",
                     0.28475008);
         }
     }
