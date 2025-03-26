@@ -302,8 +302,8 @@ public final class RobotConstants {
      * Constants related to the beambreak subsystem.
      */
     public static class BeamBreakConstants {
-        public static final int ENDEFFECTOR_MIDDLE_BEAMBREAK_ID = 2;
-        public static final int ENDEFFECTOR_EDGE_BEAMBREAK_ID = 0;
+        public static final int ENDEFFECTOR_ALGAE_BEAMBREAK_ID = 2;
+        public static final int ENDEFFECTOR_CORAL_BEAMBREAK_ID = 0;
         public static final int INTAKE_BEAMBREAK_ID = 3;
     }
 
@@ -317,16 +317,14 @@ public final class RobotConstants {
         public static final int SUPPLY_CURRENT_LIMIT_AMPS = 20;
         public static final boolean IS_BRAKE = true;
         public static final boolean IS_INVERT = false;
-        public static final double REDUCTION = 1;
 
-        public static final TunableNumber INTAKE_RPS = new TunableNumber("ENDEFFECTOR/indexRPS", -100);
-        public static final TunableNumber HOLD_RPS = new TunableNumber("ENDEFFECTOR/holdRPS", 0.0);
-        public static final TunableNumber PRE_SHOOT_RPS = new TunableNumber("ENDEFFECTOR/preShootRPS", -15);
-        //TODO may decrease shootRPS
-        public static final TunableNumber SHOOT_RPS = new TunableNumber("ENDEFFECTOR/shootRPS", -60);
-        public static final TunableNumber L1_RPS = new TunableNumber("ENDEFFECTOR/l1RPS", -40);
-        public static final TunableNumber IDLE_RPS = new TunableNumber("ENDEFFECTOR/idleRPS", -0);
-        public static final TunableNumber REVERSE_RPS = new TunableNumber("ENDEFFECTOR/reverseRPS", 40);
+        public static final TunableNumber SHOOT_CORAL_RPS = new TunableNumber("ENDEFFECTOR/shootCoralRPS", -60);
+        public static final TunableNumber SHOOT_ALGAE_RPS = new TunableNumber("ENDEFFECTOR/shootAlgaeRPS",-60);
+        public static final TunableNumber INTAKE_CORAL_RPS = new TunableNumber("ENDEFFECTOR/intakeCoralRPS",40);
+        public static final TunableNumber INTAKE_CORAL_FINAL_RPS = new TunableNumber("ENDEFFECTOR/intakeCoralFinalRPS",20);
+        public static final TunableNumber INTAKE_ALGAE_RPS = new TunableNumber("ENDEFFECTOR/intakeAlgaeRPS",40);
+        public static final TunableNumber INTAKE_ALGAE_FINAL_RPS = new TunableNumber("ENDEFFECTOR/intakeAlgaeFinalRPS",20);
+        public static final TunableNumber IDLE_RPS = new TunableNumber("ENDEFFECTOR/idleRPS", 0.0);
 
         /**
          * Constants for the endeffector motor gains.
