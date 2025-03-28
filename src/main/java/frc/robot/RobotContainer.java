@@ -213,11 +213,13 @@ public class RobotContainer {
     public void configureTesterBindings() {
         testerController.a().onTrue(Commands.runOnce(() -> endEffectorArmSubsystem.setWantedState(WantedState.CORAL_INTAKE)));
         testerController.b().onTrue(Commands.runOnce(() -> endEffectorArmSubsystem.setWantedState(WantedState.HOME)));
-        testerController.x().onTrue(Commands.runOnce(() -> endEffectorArmSubsystem.setWantedState(WantedState.ALGAE_INTAKE)));
+        
+        testerController.x().whileTrue(new AlgaeIntakeCommand(indicatorSubsystem, intakeSubsystem, endEffectorArmSubsystem, elevatorSubsystem));
+        testerController.leftBumper().whileTrue(new AlgaePreShootCommand(indicatorSubsystem, intakeSubsystem, endEffectorArmSubsystem, elevatorSubsystem));
+        
         testerController.y().onTrue(Commands.runOnce(() -> endEffectorArmSubsystem.setWantedState(WantedState.CORAL_PRESHOOT)));
-        testerController.leftBumper().onTrue(Commands.runOnce(() -> endEffectorArmSubsystem.setWantedState(WantedState.ALGAE_PRESHOOT)));
 
-
+        
         testerController.povUp().onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.P2)).ignoringDisable(true));
         testerController.povDown().onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.P1)).ignoringDisable(true));
     }
