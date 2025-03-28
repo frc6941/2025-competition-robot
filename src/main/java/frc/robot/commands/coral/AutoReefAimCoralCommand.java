@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.coral;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -21,7 +21,7 @@ import java.util.function.BooleanSupplier;
 
 import static frc.robot.RobotConstants.ReefAimConstants;
 
-public class ReefAimCommand extends Command {
+public class AutoReefAimCoralCommand extends Command {
     private final Swerve swerve = Swerve.getInstance();
     private final ProfiledPIDController xPID = new ProfiledPIDController(
             RobotConstants.SwerveConstants.AimGainsClass.AIM_KP.get(),
@@ -49,7 +49,7 @@ public class ReefAimCommand extends Command {
     private Translation2d translationalVelocity, controllerVelocity;
 
 
-    public ReefAimCommand(BooleanSupplier stop, ElevatorSubsystem elevatorSubsystem,
+    public AutoReefAimCoralCommand(BooleanSupplier stop, ElevatorSubsystem elevatorSubsystem,
                           CommandXboxController driverController, IndicatorSubsystem indicatorSubsystem) {
         addRequirements(swerve);
         this.stop = stop;

@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.climb;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.climber.ClimberSubsystem;
@@ -9,12 +9,12 @@ import frc.robot.subsystems.intake.IntakeSubsystem;
 
 import static frc.robot.RobotConstants.ElevatorConstants.IDLE_EXTENSION_METERS;
 
-public class PreClimbCommand extends Command{
+public class ClimbCommand extends Command{
     private final ClimberSubsystem climberSubsystem;
     private final ElevatorSubsystem elevatorSubsystem;
     private final IntakeSubsystem intakeSubsystem;
     private final EndEffectorSubsystem endEffectorSubsystem;
-    public PreClimbCommand(ClimberSubsystem climberSubsystem,ElevatorSubsystem elevatorSubsystem,
+    public ClimbCommand(ClimberSubsystem climberSubsystem,ElevatorSubsystem elevatorSubsystem,
                         IntakeSubsystem intakeSubsystem,EndEffectorSubsystem endEffectorSubsystem){
         this.climberSubsystem = climberSubsystem;
         this.elevatorSubsystem = elevatorSubsystem;
@@ -24,15 +24,16 @@ public class PreClimbCommand extends Command{
     }
 
     @Override
-    public void initialize() {
+    public void execute() {
         elevatorSubsystem.setElevatorPosition(IDLE_EXTENSION_METERS.get());
-        climberSubsystem.setWantedState(WantedState.DEPLOY);
+        climberSubsystem.setWantedState(WantedState.CLIMB);
         intakeSubsystem.setWantedState(frc.robot.subsystems.intake.IntakeSubsystem.WantedState.HOME);
         endEffectorSubsystem.setWantedState(frc.robot.subsystems.endeffector.EndEffectorSubsystem.WantedState.IDLE);
     }
 
     @Override
     public void end(boolean interrupted) {
+        climberSubsystem.setWantedState(WantedState.DEPLOY);
     }
 
     @Override

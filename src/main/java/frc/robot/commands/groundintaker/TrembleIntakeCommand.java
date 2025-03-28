@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.groundintaker;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotConstants;
@@ -11,13 +11,13 @@ import frc.robot.subsystems.intake.IntakeSubsystem;
 import static frc.robot.RobotConstants.ElevatorConstants.HOME_EXTENSION_METERS;
 import static frc.robot.RobotConstants.ElevatorConstants.IDLE_EXTENSION_METERS;
 
-public class GroundIntakeCommand extends Command {
+public class TrembleIntakeCommand extends Command {
     private final IntakeSubsystem intakeSubsystem;
     private final EndEffectorSubsystem endEffectorSubsystem;
     private final ElevatorSubsystem elevatorSubsystem;
     private final IndicatorSubsystem indicatorSubsystem;
 
-    public GroundIntakeCommand(IndicatorSubsystem indicatorSubsystem, IntakeSubsystem intakeSubsystem, EndEffectorSubsystem endEffectorSubsystem, ElevatorSubsystem elevatorSubsystem) {
+    public TrembleIntakeCommand(IndicatorSubsystem indicatorSubsystem, IntakeSubsystem intakeSubsystem, EndEffectorSubsystem endEffectorSubsystem, ElevatorSubsystem elevatorSubsystem) {
         this.intakeSubsystem = intakeSubsystem;
         this.endEffectorSubsystem = endEffectorSubsystem;
         this.elevatorSubsystem = elevatorSubsystem;
@@ -32,11 +32,8 @@ public class GroundIntakeCommand extends Command {
 
     @Override
     public void execute() {
-        if (endEffectorSubsystem.containsCoral()) {
-            return;
-        }
         if (elevatorSubsystem.getIo().isNearExtension(RobotConstants.ElevatorConstants.HOME_EXTENSION_METERS.get())) {
-            intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.DEPLOY_INTAKE);
+            intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.TREMBLE_INTAKE);
         } else {
             intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.DEPLOY_WITHOUT_ROLL);
         }
@@ -61,6 +58,6 @@ public class GroundIntakeCommand extends Command {
 
     @Override
     public InterruptionBehavior getInterruptionBehavior() {
-        return InterruptionBehavior.kCancelIncoming;
+        return InterruptionBehavior.kCancelSelf;
     }
 }

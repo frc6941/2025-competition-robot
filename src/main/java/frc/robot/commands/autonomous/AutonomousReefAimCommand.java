@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.autonomous;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -17,7 +17,7 @@ import org.littletonrobotics.junction.Logger;
 
 import static frc.robot.RobotConstants.ReefAimConstants;
 
-public class ReefAimAutoCommand extends Command {
+public class AutonomousReefAimCommand extends Command {
     private static final int[] FLIP_TAG_NUMBERS = {7, 8, 9, 10, 11, 6};
     private static final int[] NON_FLIP_TAG_NUMBERS = {18, 17, 22, 21, 20, 19};
     private final Swerve swerve = Swerve.getInstance();
@@ -44,7 +44,7 @@ public class ReefAimAutoCommand extends Command {
     private Translation2d translationalVelocity;
     private Pose2d robotPose, tagPose, destinationPose, finalDestinationPose;
 
-    public ReefAimAutoCommand(ElevatorSubsystem elevatorSubsystem, char tagChar) {
+    public AutonomousReefAimCommand(ElevatorSubsystem elevatorSubsystem, char tagChar) {
         addRequirements(swerve);
         this.elevatorSubsystem = elevatorSubsystem;
         rightReef = (tagChar % 2) == 0;

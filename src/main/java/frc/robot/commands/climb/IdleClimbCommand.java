@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.climb;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.climber.ClimberSubsystem;
@@ -9,13 +9,13 @@ import frc.robot.subsystems.intake.IntakeSubsystem;
 
 import static frc.robot.RobotConstants.ElevatorConstants.IDLE_EXTENSION_METERS;
 
-public class ClimbCommand extends Command{
+public class IdleClimbCommand extends Command{
     private final ClimberSubsystem climberSubsystem;
     private final ElevatorSubsystem elevatorSubsystem;
     private final IntakeSubsystem intakeSubsystem;
     private final EndEffectorSubsystem endEffectorSubsystem;
-    public ClimbCommand(ClimberSubsystem climberSubsystem,ElevatorSubsystem elevatorSubsystem,
-    IntakeSubsystem intakeSubsystem,EndEffectorSubsystem endEffectorSubsystem){
+    public IdleClimbCommand(ClimberSubsystem climberSubsystem, ElevatorSubsystem elevatorSubsystem,
+                            IntakeSubsystem intakeSubsystem, EndEffectorSubsystem endEffectorSubsystem){
         this.climberSubsystem = climberSubsystem;
         this.elevatorSubsystem = elevatorSubsystem;
         this.endEffectorSubsystem = endEffectorSubsystem;
@@ -24,16 +24,15 @@ public class ClimbCommand extends Command{
     }
 
     @Override
-    public void execute() {
+    public void initialize() {
         elevatorSubsystem.setElevatorPosition(IDLE_EXTENSION_METERS.get());
-        climberSubsystem.setWantedState(WantedState.CLIMB);
-        intakeSubsystem.setWantedState(frc.robot.subsystems.intake.IntakeSubsystem.WantedState.HOME);
-        endEffectorSubsystem.setWantedState(frc.robot.subsystems.endeffector.EndEffectorSubsystem.WantedState.IDLE);
+        climberSubsystem.setWantedState(WantedState.IDLE);
+        intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.HOME);
+        endEffectorSubsystem.setWantedState(EndEffectorSubsystem.WantedState.IDLE);
     }
 
     @Override
     public void end(boolean interrupted) {
-        climberSubsystem.setWantedState(WantedState.DEPLOY);
     }
 
     @Override

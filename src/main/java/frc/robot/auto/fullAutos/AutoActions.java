@@ -8,6 +8,11 @@ import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.RobotConstants;
 import frc.robot.auto.basics.FollowPath;
 import frc.robot.commands.*;
+import frc.robot.commands.autonomous.*;
+import frc.robot.commands.coral.AutoPreShootCoralCommand;
+import frc.robot.commands.coral.AutoReefAimCoralCommand;
+import frc.robot.commands.coral.ManualPreShootCoralCommand;
+import frc.robot.commands.coral.ShootCoralCommand;
 import frc.robot.drivers.DestinationSupplier;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.endeffector.EndEffectorSubsystem;
@@ -34,7 +39,7 @@ public class AutoActions {
     }
 
     public Command shootCoralAtSetpoint() {
-        return new AutoShootCoralCommand(elevatorSubsystem, endEffectorSubsystem);
+        return new AutonomousShootCoralCommand(elevatorSubsystem, endEffectorSubsystem);
     }
 
     // invoke event marker
@@ -74,22 +79,22 @@ public class AutoActions {
 
     public Command zeroAndIntake() {
         return Commands.sequence(
-                new ZeroCommand(elevatorSubsystem, intakeSubsystem, endEffectorSubsystem),
+                new ZeroElevatorCommand(elevatorSubsystem, intakeSubsystem, endEffectorSubsystem),
                 new WaitUntilCommand(() -> (elevatorSubsystem.getSystemState() != ElevatorSubsystem.SystemState.ZEROING &&
                         intakeSubsystem.getSystemState() == IntakeSubsystem.SystemState.AVOIDING)),
-                new AutoGroundIntakeCommand(indicatorSubsystem, intakeSubsystem, endEffectorSubsystem, elevatorSubsystem));
+                new AutonomousGroundIntakeCommand(indicatorSubsystem, intakeSubsystem, endEffectorSubsystem, elevatorSubsystem));
     }
 
     public Command deployIntake() {
-        return new AutoGroundIntakeCommand(indicatorSubsystem, intakeSubsystem, endEffectorSubsystem, elevatorSubsystem);
+        return new AutonomousGroundIntakeCommand(indicatorSubsystem, intakeSubsystem, endEffectorSubsystem, elevatorSubsystem);
     }
 
     public Command preShoot() {
-        return new PreShootCommand(indicatorSubsystem, endEffectorSubsystem, intakeSubsystem, elevatorSubsystem);
+        return new ManualPreShootCoralCommand(indicatorSubsystem, endEffectorSubsystem, intakeSubsystem, elevatorSubsystem);
     }
 
     public Command shootCoral() {
-        return new ShootCommand(indicatorSubsystem, endEffectorSubsystem);
+        return new ShootCoralCommand(indicatorSubsystem, endEffectorSubsystem);
     }
 
     public Command putCoral() {
@@ -104,19 +109,19 @@ public class AutoActions {
         return Commands.sequence(
                 Commands.parallel(
                         setLevel(setpoint),
-                        new ReefAimAutoCommand(elevatorSubsystem, tagChar),
-                        new AutoPreShootCommand(indicatorSubsystem, endEffectorSubsystem, intakeSubsystem, elevatorSubsystem)
+                        new AutonomousReefAimCommand(elevatorSubsystem, tagChar),
+                        new AutoPreShootCoralCommand(indicatorSubsystem, endEffectorSubsystem, intakeSubsystem, elevatorSubsystem)
                 ),
                 new WaitCommand(0.05),
-                new ShootCommand(indicatorSubsystem, endEffectorSubsystem),
+                new ShootCoralCommand(indicatorSubsystem, endEffectorSubsystem),
                 new WaitCommand(0.05),
                 Commands.runOnce(() -> elevatorSubsystem.setElevatorPosition(
                         RobotConstants.ElevatorConstants.IDLE_EXTENSION_METERS.get())));
     }
 
-    public Command ReverseEndEffector() {
-        return new ReverseEndEffectorCommand(endEffectorSubsystem);
-    }
+//    public Command ReverseEndEffector() {
+//        return new ReverseEndEffectorCommand(endEffectorSubsystem);
+//    }
 
     public Command homeEverything() {
         return Commands.parallel(Commands.runOnce(() -> intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.HOME)),

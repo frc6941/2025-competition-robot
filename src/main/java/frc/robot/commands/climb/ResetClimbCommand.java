@@ -4,15 +4,15 @@
 //It should be used to release climber after endgame
 //and to reset position according to mark on climber rope before game
 
-package frc.robot.commands;
+package frc.robot.commands.climb;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.climber.ClimberSubsystem;
 
-public class ClimbResetCommand extends Command {
+public class ResetClimbCommand extends Command {
     private final ClimberSubsystem climberSubsystem;
 
-    public ClimbResetCommand(ClimberSubsystem climberSubsystem) {
+    public ResetClimbCommand(ClimberSubsystem climberSubsystem) {
         this.climberSubsystem = climberSubsystem;
     }
 
