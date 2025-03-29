@@ -44,14 +44,15 @@ public class SuperstructureVisualizer {
     private static final Translation3d END_EFFECTOR_PIVOT_END = new Translation3d(
             mmToM(-280), mmToM(-181), mmToM(250));
     private static final Translation3d END_EFFECTOR_CENTER = END_EFFECTOR_PIVOT_START.interpolate(END_EFFECTOR_PIVOT_END, 0.5);
-    private static final double END_EFFECTOR_LENGTH_CORAL = mmToM(450);
-    private static final double END_EFFECTOR_LENGTH_ALGAE = mmToM(300);
-    private static final double END_EFFECTOR_MOUNT_ARM_LENGTH = mmToM(200);
+    private static final double END_EFFECTOR_LENGTH_CORAL = mmToM(170);
+    private static final double END_EFFECTOR_LENGTH_ALGAE = mmToM(325);
+    private static final double END_EFFECTOR_MOUNT_ARM_LENGTH = mmToM(242);
 
     // Visualization components
     private final LoggedMechanism2d elevatorMechanism;
-    private final LoggedMechanismLigament2d elevatorStage1;
+    private final LoggedMechanismLigament2d elevatorHeight;
     private final LoggedMechanismLigament2d endEffectorMountArm;
+    private final LoggedMechanismLigament2d elevatorStage3;
     private final LoggedMechanismLigament2d endEffectorArmCoral;
     private final LoggedMechanismLigament2d endEffectorArmAlgae;
 
@@ -82,11 +83,18 @@ public class SuperstructureVisualizer {
                 -0.2,
                 ELEVATOR_CENTER.getZ());
 
-        elevatorStage1 = new LoggedMechanismLigament2d(
+        elevatorHeight = new LoggedMechanismLigament2d(
                 "stage1",
                 STAGE1_RETRACT_LENGTH,
                 90,
                 10,
+                new Color8Bit(Color.kBlue));
+
+        elevatorStage3 = new LoggedMechanismLigament2d(
+                "elevatorStage3",
+                mmToM(314.29),
+                0,
+                8,
                 new Color8Bit(Color.kBlue));
 
         endEffectorMountArm = new LoggedMechanismLigament2d(
@@ -99,19 +107,20 @@ public class SuperstructureVisualizer {
         endEffectorArmCoral = new LoggedMechanismLigament2d(
                 "endEffectorArmCoral",
                 END_EFFECTOR_LENGTH_CORAL,
-                270,
+                90,
                 8,
                 new Color8Bit(Color.kGreen));
 
         endEffectorArmAlgae = new LoggedMechanismLigament2d(
                 "endEffectorArmAlgae",
                 END_EFFECTOR_LENGTH_ALGAE,
-                90,
+                270,
                 8,
                 new Color8Bit(Color.kYellow));
 
-        elevatorRoot.append(elevatorStage1);
-        elevatorStage1.append(endEffectorMountArm);
+        elevatorRoot.append(elevatorHeight);
+        elevatorHeight.append(elevatorStage3);
+        elevatorStage3.append(endEffectorMountArm);
         endEffectorMountArm.append(endEffectorArmCoral);
         endEffectorMountArm.append(endEffectorArmAlgae);
 
@@ -164,7 +173,7 @@ public class SuperstructureVisualizer {
 
     private void updateVisuals() {
         // Update elevator components
-        elevatorStage1.setLength(currentElevatorHeight); // Stage 1 extends
+        elevatorHeight.setLength(currentElevatorHeight); // Stage 1 extends
 
         // Update intake components
         intakeArm.setAngle(Rotation2d.fromRadians(Math.toRadians(-currentIntakeAngleDeg+90)));

@@ -1,12 +1,11 @@
-package frc.robot.subsystems.intake;
+package frc.robot.subsystems.endeffectorarm;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
-import com.ctre.phoenix6.configs.CANcoderConfiguration;
-import com.ctre.phoenix6.configs.MotionMagicConfigs;
-import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.configs.*;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.PositionDutyCycle;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -18,14 +17,12 @@ import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.*;
 import frc.robot.RobotConstants;
 
-import static frc.robot.RobotConstants.EndEffectorArmConstants.END_EFFECTOR_ARM_ENCODER_ID;
-import static frc.robot.RobotConstants.EndEffectorArmConstants.END_EFFECTOR_ARM_ENCODER_OFFSET;
-import static frc.robot.RobotConstants.IntakeConstants.*;
+import static frc.robot.RobotConstants.EndEffectorArmConstants.*;
 
-public class IntakePivotIOReal implements IntakePivotIO {
-    private final TalonFX motor = new TalonFX(RobotConstants.IntakeConstants.INTAKE_PIVOT_MOTOR_ID,
+public class EndEffectorArmPivotIOReal implements EndEffectorArmPivotIO {
+    private final TalonFX motor = new TalonFX(RobotConstants.EndEffectorArmConstants.END_EFFECTOR_ARM_PIVOT_MOTOR_ID,
             RobotConstants.CANIVORE_CAN_BUS_NAME);
-
+    private final CANcoder caNcoder = new CANcoder(END_EFFECTOR_ARM_ENCODER_ID,RobotConstants.CANIVORE_CAN_BUS_NAME);
     private final StatusSignal<AngularVelocity> velocityRotPerSec = motor.getVelocity();
     private final StatusSignal<Voltage> appliedVolts = motor.getSupplyVoltage();
     private final StatusSignal<Voltage> motorVolts = motor.getMotorVoltage();
@@ -34,43 +31,42 @@ public class IntakePivotIOReal implements IntakePivotIO {
     private final StatusSignal<Temperature> tempCelsius = motor.getDeviceTemp();
     private final StatusSignal<Angle> currentPositionRot = motor.getPosition();
 
-    private final CANcoder caNcoder = new CANcoder(INTAKE_PIVOT_ENCODER_ID,RobotConstants.CANIVORE_CAN_BUS_NAME);
-
 
     private final VoltageOut voltageOut = new VoltageOut(0.0).withEnableFOC(false);
     private final MotionMagicVoltage motionMagic = new MotionMagicVoltage(0.0).withEnableFOC(true);
-    private final MotionMagicConfigs motionMagicConfigs;
 
     double targetAngleDeg = 0.0;
 
-    public IntakePivotIOReal() {
+    public EndEffectorArmPivotIOReal() {
         var config = new TalonFXConfiguration();
         config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-        config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+        config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;//TODO: set to the right direction
         config.Slot0.GravityType = GravityTypeValue.Arm_Cosine;
-        config.CurrentLimits.SupplyCurrentLimit = 40.0;
+        config.CurrentLimits.SupplyCurrentLimit = 100.0;
         config.CurrentLimits.SupplyCurrentLimitEnable = true;
-        config.CurrentLimits.StatorCurrentLimit = 40.0;
+        config.CurrentLimits.StatorCurrentLimit = 100.0;
         config.CurrentLimits.StatorCurrentLimitEnable = true;
 
         //initialize CANcoder
         CANcoderConfiguration CANconfig = new CANcoderConfiguration();
-        CANconfig.MagnetSensor.MagnetOffset =INTAKE_PIVOT_ENCODER_OFFSET;
+        CANconfig.MagnetSensor.MagnetOffset = END_EFFECTOR_ARM_ENCODER_OFFSET;
         caNcoder.getConfigurator().apply(CANconfig);
         config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
-        config.Feedback.FeedbackRemoteSensorID = INTAKE_PIVOT_ENCODER_ID;
-        config.Feedback.RotorToSensorRatio = INTAKE_PIVOT_ROTOR_ENCODER_RATIO;
+        config.Feedback.FeedbackRemoteSensorID = END_EFFECTOR_ARM_ENCODER_ID;
+        config.Feedback.RotorToSensorRatio = ROTOR_SENSOR_RATO;
+
+
 
         config.withSlot0(new Slot0Configs()
-                .withKP(IntakePivotGainsClass.INTAKE_PIVOT_KP.get())
-                .withKI(IntakePivotGainsClass.INTAKE_PIVOT_KI.get())
-                .withKD(IntakePivotGainsClass.INTAKE_PIVOT_KD.get()));
+                .withKP(RobotConstants.EndEffectorArmConstants.EndEffectorArmPivotGainsClass.END_EFFECTOR_ARM_PIVOT_KP.get())
+                .withKI(RobotConstants.EndEffectorArmConstants.EndEffectorArmPivotGainsClass.END_EFFECTOR_ARM_PIVOT_KI.get())
+                .withKD(RobotConstants.EndEffectorArmConstants.EndEffectorArmPivotGainsClass.END_EFFECTOR_ARM_PIVOT_KD.get())
+                .withKA(RobotConstants.EndEffectorArmConstants.EndEffectorArmPivotGainsClass.END_EFFECTOR_ARM_PIVOT_KA.get())
+                .withKV(RobotConstants.EndEffectorArmConstants.EndEffectorArmPivotGainsClass.END_EFFECTOR_ARM_PIVOT_KV.get())
+                .withKS(RobotConstants.EndEffectorArmConstants.EndEffectorArmPivotGainsClass.END_EFFECTOR_ARM_PIVOT_KS.get())
+                .withKG(RobotConstants.EndEffectorArmConstants.EndEffectorArmPivotGainsClass.END_EFFECTOR_ARM_PIVOT_KG.get())
+        );
 
-        motionMagicConfigs = new MotionMagicConfigs();
-        motionMagicConfigs.MotionMagicCruiseVelocity = INTAKE_PIVOT_CRUISE_VELOCITY.get();
-        motionMagicConfigs.MotionMagicAcceleration = INTAKE_PIVOT_ACCELERATION.get();
-        motionMagicConfigs.MotionMagicJerk = INTAKE_PIVOT_JERK.get();
-        config.withMotionMagic(motionMagicConfigs);
 
         motor.getConfigurator().apply(config);
 
@@ -90,7 +86,7 @@ public class IntakePivotIOReal implements IntakePivotIO {
     }
 
     @Override
-    public void updateInputs(IntakePivotIOInputs inputs) {
+    public void updateInputs(EndEffectorArmPivotIOInputs inputs) {
         BaseStatusSignal.refreshAll(
                 velocityRotPerSec,
                 tempCelsius,
@@ -108,22 +104,31 @@ public class IntakePivotIOReal implements IntakePivotIO {
         inputs.statorCurrentAmps = statorCurrentAmps.getValueAsDouble();
         inputs.currentAngleDeg = talonPosToAngle(currentPositionRot.getValueAsDouble());
         inputs.targetAngleDeg = targetAngleDeg;
-        inputs.motorVolts = motorVolts.getValueAsDouble();
 
         if (RobotConstants.TUNING) {
-            inputs.intakePivotKP = IntakePivotGainsClass.INTAKE_PIVOT_KP.get();
-            inputs.intakePivotKI = IntakePivotGainsClass.INTAKE_PIVOT_KI.get();
-            inputs.intakePivotKD = IntakePivotGainsClass.INTAKE_PIVOT_KD.get();
+            inputs.endEffectorArmPivotKP = EndEffectorArmPivotGainsClass.END_EFFECTOR_ARM_PIVOT_KP.get();
+            inputs.endEffectorArmPivotKI = EndEffectorArmPivotGainsClass.END_EFFECTOR_ARM_PIVOT_KI.get();
+            inputs.endEffectorArmPivotKD = EndEffectorArmPivotGainsClass.END_EFFECTOR_ARM_PIVOT_KD.get();
+            inputs.endEffectorArmPivotKA = EndEffectorArmPivotGainsClass.END_EFFECTOR_ARM_PIVOT_KA.get();
+            inputs.endEffectorArmPivotKV = EndEffectorArmPivotGainsClass.END_EFFECTOR_ARM_PIVOT_KV.get();
+            inputs.endEffectorArmPivotKS = EndEffectorArmPivotGainsClass.END_EFFECTOR_ARM_PIVOT_KS.get();
+            inputs.endEffectorArmPivotKG = EndEffectorArmPivotGainsClass.END_EFFECTOR_ARM_PIVOT_KG.get();
 
-            motor.getConfigurator().apply(new Slot0Configs()
-                    .withKP(inputs.intakePivotKP)
-                    .withKI(inputs.intakePivotKI)
-                    .withKD(inputs.intakePivotKD));
-            motionMagicConfigs.MotionMagicCruiseVelocity = INTAKE_PIVOT_CRUISE_VELOCITY.get();
-            motionMagicConfigs.MotionMagicAcceleration = INTAKE_PIVOT_ACCELERATION.get();
-            motionMagicConfigs.MotionMagicJerk = INTAKE_PIVOT_JERK.get();
-            motor.getConfigurator().apply(motionMagicConfigs);
+            updateGains(inputs.endEffectorArmPivotKP, inputs.endEffectorArmPivotKI, inputs.endEffectorArmPivotKD, inputs.endEffectorArmPivotKA, inputs.endEffectorArmPivotKV, inputs.endEffectorArmPivotKS, inputs.endEffectorArmPivotKG);
         }
+    }
+
+
+    @Override
+    public void updateGains(double kP, double kI, double kD, double kA, double kV, double kS, double kG) {
+        motor.getConfigurator().apply(new Slot0Configs()
+                .withKP(kP)
+                .withKI(kI)
+                .withKD(kD)
+                .withKA(kA)
+                .withKV(kV)
+                .withKS(kS)
+                .withKG(kG));
     }
 
     @Override
@@ -134,19 +139,14 @@ public class IntakePivotIOReal implements IntakePivotIO {
     @Override
     public void setPivotAngle(double targetAngleDeg) {
         this.targetAngleDeg = targetAngleDeg;
-        motor.setControl(motionMagic.withPosition(angleToTalonPos(targetAngleDeg)));
-    }
-
-    @Override
-    public void resetAngle(double resetAngleDeg) {
-        motor.setPosition(angleToTalonPos(resetAngleDeg));
+        motor.setControl(new PositionDutyCycle(angleToTalonPos(targetAngleDeg)));
     }
 
     private double angleToTalonPos(double angleDeg) {
-        return (angleDeg / 360) * PIVOT_RATIO;
+        return (angleDeg / 360) * END_EFFECTOR_ARM_PIVOT_RATIO;
     }
 
     private double talonPosToAngle(double rotations) {
-        return rotations * 360 / PIVOT_RATIO;
+        return rotations * 360 / END_EFFECTOR_ARM_PIVOT_RATIO;
     }
 }
