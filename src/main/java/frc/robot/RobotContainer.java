@@ -19,6 +19,7 @@ import frc.robot.auto.basics.CustomAutoChooser;
 import frc.robot.auto.fullAutos.AutoActions;
 import frc.robot.auto.fullAutos.AutoFile;
 import frc.robot.commands.*;
+import frc.robot.commands.algaeintake.AutoIntakeAlgaeCommand;
 import frc.robot.commands.climb.*;
 import frc.robot.commands.groundintaker.*;
 import frc.robot.commands.algae.*;
@@ -178,7 +179,8 @@ public class RobotContainer {
         driverController.povLeft().whileTrue(new IdleClimbCommand(climberSubsystem, elevatorSubsystem, intakeSubsystem, endEffectorArmSubsystem));
         driverController.a().whileTrue(new ClimbCommand(climberSubsystem, elevatorSubsystem, intakeSubsystem, endEffectorArmSubsystem));
 
-        driverController.leftTrigger().toggleOnTrue(switchIntakeModeCommand());
+        driverController.leftTrigger().whileTrue(switchIntakeModeCommand());
+        driverController.leftBumper().toggleOnTrue(new CoralPreIntakeCommand(indicatorSubsystem,endEffectorArmSubsystem,elevatorSubsystem));
         driverController.b().toggleOnTrue(new GroundOuttakeCommand(intakeSubsystem, endEffectorSubsystem, elevatorSubsystem));
 
         driverController.povRight().whileTrue(switchAimingModeCommand());
@@ -257,7 +259,7 @@ public class RobotContainer {
 
     public Command switchIntakeModeCommand() {
         return new ConditionalCommand(
-                new GroundIntakeCommand(indicatorSubsystem, intakeSubsystem, endEffectorSubsystem, elevatorSubsystem),
+                new CoralIntakeCommand(intakeSubsystem,indicatorSubsystem,endEffectorArmSubsystem,elevatorSubsystem),
                 new AutoIntakeAlgaeCommand(),
                 () -> destinationSupplier.getCurrentGamePiece() == DestinationSupplier.GamePiece.ALGAE
         );
