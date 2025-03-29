@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.coral;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -9,7 +9,7 @@ import frc.robot.subsystems.indicator.IndicatorSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.swerve.Swerve;
 
-public class AutoPreShootCommand extends Command {
+public class AutoPreShootCoralCommand extends Command {
     private final EndEffectorSubsystem endEffectorSubsystem;
     private final IntakeSubsystem intakeSubsystem;
     private final ElevatorSubsystem elevatorSubsystem;
@@ -17,7 +17,7 @@ public class AutoPreShootCommand extends Command {
     Timer timer = new Timer();
     private boolean safeToRaise = false;
 
-    public AutoPreShootCommand(IndicatorSubsystem indicatorSubsystem, EndEffectorSubsystem endEffectorSubsystem, IntakeSubsystem intakeSubsystem, ElevatorSubsystem elevatorSubsystem) {
+    public AutoPreShootCoralCommand(IndicatorSubsystem indicatorSubsystem, EndEffectorSubsystem endEffectorSubsystem, IntakeSubsystem intakeSubsystem, ElevatorSubsystem elevatorSubsystem) {
         this.endEffectorSubsystem = endEffectorSubsystem;
         this.intakeSubsystem = intakeSubsystem;
         this.elevatorSubsystem = elevatorSubsystem;

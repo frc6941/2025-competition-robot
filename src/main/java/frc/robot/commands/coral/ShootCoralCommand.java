@@ -1,15 +1,15 @@
-package frc.robot.commands;
+package frc.robot.commands.coral;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
 import frc.robot.subsystems.endeffector.EndEffectorSubsystem;
 import frc.robot.subsystems.indicator.IndicatorSubsystem;
 
-public class ShootCommand extends Command {
+public class ShootCoralCommand extends Command {
     private final EndEffectorSubsystem endEffectorSubsystem;
     private final IndicatorSubsystem indicatorSubsystem;
 
-    public ShootCommand(IndicatorSubsystem indicatorSubsystem, EndEffectorSubsystem endEffectorSubsystem) {
+    public ShootCoralCommand(IndicatorSubsystem indicatorSubsystem, EndEffectorSubsystem endEffectorSubsystem) {
         this.endEffectorSubsystem = endEffectorSubsystem;
         this.indicatorSubsystem = indicatorSubsystem;
     }

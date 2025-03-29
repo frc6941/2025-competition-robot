@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.coral;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.drivers.DestinationSupplier;
@@ -10,13 +10,13 @@ import org.littletonrobotics.junction.Logger;
 
 import static frc.robot.RobotConstants.ElevatorConstants.IDLE_EXTENSION_METERS;
 
-public class PreShootCommand extends Command {
+public class ManualPreShootCoralCommand extends Command {
     private final EndEffectorSubsystem endEffectorSubsystem;
     private final IntakeSubsystem intakeSubsystem;
     private final ElevatorSubsystem elevatorSubsystem;
     private final IndicatorSubsystem indicatorSubsystem;
 
-    public PreShootCommand(IndicatorSubsystem indicatorSubsystem, EndEffectorSubsystem endEffectorSubsystem, IntakeSubsystem intakeSubsystem, ElevatorSubsystem elevatorSubsystem) {
+    public ManualPreShootCoralCommand(IndicatorSubsystem indicatorSubsystem, EndEffectorSubsystem endEffectorSubsystem, IntakeSubsystem intakeSubsystem, ElevatorSubsystem elevatorSubsystem) {
         this.endEffectorSubsystem = endEffectorSubsystem;
         this.intakeSubsystem = intakeSubsystem;
         this.indicatorSubsystem = indicatorSubsystem;

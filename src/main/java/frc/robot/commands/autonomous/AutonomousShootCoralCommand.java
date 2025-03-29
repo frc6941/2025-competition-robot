@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.autonomous;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -7,13 +7,13 @@ import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.endeffector.EndEffectorSubsystem;
 import org.littletonrobotics.junction.Logger;
 
-public class AutoShootCoralCommand extends Command {
+public class AutonomousShootCoralCommand extends Command {
     private final ElevatorSubsystem elevatorSubsystem;
     private final EndEffectorSubsystem endEffectorSubsystem;
     private final Timer timer;
     private boolean isShootFinished = false;
 
-    public AutoShootCoralCommand(ElevatorSubsystem elevatorSubsystem, EndEffectorSubsystem endEffectorSubsystem) {
+    public AutonomousShootCoralCommand(ElevatorSubsystem elevatorSubsystem, EndEffectorSubsystem endEffectorSubsystem) {
         this.elevatorSubsystem = elevatorSubsystem;
         this.endEffectorSubsystem = endEffectorSubsystem;
         this.timer = new Timer();
@@ -47,6 +47,6 @@ public class AutoShootCoralCommand extends Command {
     @Override
     public void end(boolean interrupted){
         Logger.recordOutput("Commands/shoot", "end");
-            endEffectorSubsystem.setWantedState(EndEffectorSubsystem.WantedState.IDLE);
+        endEffectorSubsystem.setWantedState(EndEffectorSubsystem.WantedState.IDLE);
     }
 }

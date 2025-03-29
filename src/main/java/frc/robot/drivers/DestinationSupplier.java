@@ -29,6 +29,7 @@ public class DestinationSupplier implements Updatable {
     @Getter
     private controlMode currentControlMode = controlMode.AUTO;
     @Getter
+    private GamePiece currentGamePiece = GamePiece.CORAL;
     @Setter
     private int targetTagID = 0;
     private boolean coralRight = false;
@@ -241,6 +242,11 @@ public class DestinationSupplier implements Updatable {
         SmartDashboard.putString("DestinationSupplier/CurrentControlMode", mode.name());
     }
 
+    public void setCurrentGamePiece(GamePiece gamePiece) {
+        this.currentGamePiece = gamePiece;
+        SmartDashboard.putString("DestinationSupplier/CurrentGamePiece", gamePiece.name());
+    }
+
     public void setCurrentL1Mode(L1Mode mode) {
         this.l1Mode = mode;
         SmartDashboard.putString("DestinationSupplier/CurrentL1Mode", mode.name());
@@ -267,5 +273,10 @@ public class DestinationSupplier implements Updatable {
     public enum IntakeMode {
         TREMBLE,
         NORMAL
+    }
+
+    public enum GamePiece {
+        ALGAE,
+        CORAL
     }
 }

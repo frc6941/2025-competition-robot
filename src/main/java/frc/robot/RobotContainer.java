@@ -19,6 +19,11 @@ import frc.robot.auto.basics.CustomAutoChooser;
 import frc.robot.auto.fullAutos.AutoActions;
 import frc.robot.auto.fullAutos.AutoFile;
 import frc.robot.commands.*;
+import frc.robot.commands.algaeintake.AutoIntakeAlgaeCommand;
+import frc.robot.commands.climb.*;
+import frc.robot.commands.groundintaker.*;
+import frc.robot.commands.algae.*;
+import frc.robot.commands.coral.*;
 import frc.robot.display.Display;
 import frc.robot.drivers.DestinationSupplier;
 import frc.robot.subsystems.beambreak.BeambreakIOReal;
@@ -76,12 +81,15 @@ public class RobotContainer {
     private final Display display = Display.getInstance();
     private final DestinationSupplier destinationSupplier = DestinationSupplier.getInstance();
     private final ElevatorSubsystem elevatorSubsystem;
+
     private final EndEffectorSubsystem endEffectorSubsystem;
+
     private final IntakeSubsystem intakeSubsystem;
     private final ClimberSubsystem climberSubsystem;
     private final IndicatorSubsystem indicatorSubsystem;
     private final Limelight limelight;
     private final EndEffectorArmSubsystem endEffectorArmSubsystem;
+
     @Getter
     private final LoggedDashboardChooser<String> autoChooser;
     private final AutoActions autoActions;
@@ -115,7 +123,7 @@ public class RobotContainer {
         autoActions = new AutoActions(indicatorSubsystem, elevatorSubsystem, endEffectorSubsystem, intakeSubsystem);
         autoFile = new AutoFile(autoActions);
 
-        new Trigger(RobotController::getUserButton).whileTrue(new ClimbResetCommand(climberSubsystem));
+        new Trigger(RobotController::getUserButton).whileTrue(new ResetClimbCommand(climberSubsystem));
 
         configureAutoChooser();
         configureDriverBindings();
@@ -167,21 +175,22 @@ public class RobotContainer {
                     indicatorSubsystem.setPattern(IndicatorIO.Patterns.RESET_ODOM);
                 }).ignoringDisable(true));
 
-        driverController.povUp().whileTrue(new PreClimbCommand(climberSubsystem, elevatorSubsystem, intakeSubsystem, endEffectorSubsystem));
-        driverController.povLeft().whileTrue(new IdleClimbCommand(climberSubsystem, elevatorSubsystem, intakeSubsystem, endEffectorSubsystem));
-        driverController.leftTrigger().toggleOnTrue(switchIntakeModeCommand());
-        driverController.rightBumper().whileTrue(switchPreMoveModeCommand());
-        driverController.povDown().onTrue(new ZeroCommand(elevatorSubsystem, intakeSubsystem, endEffectorSubsystem));
-        driverController.a().whileTrue(new PokeCommand(endEffectorSubsystem, intakeSubsystem, elevatorSubsystem));
+        driverController.povUp().whileTrue(new PreClimbCommand(climberSubsystem, elevatorSubsystem, intakeSubsystem, endEffectorArmSubsystem));
+        driverController.povLeft().whileTrue(new IdleClimbCommand(climberSubsystem, elevatorSubsystem, intakeSubsystem, endEffectorArmSubsystem));
+        driverController.a().whileTrue(new ClimbCommand(climberSubsystem, elevatorSubsystem, intakeSubsystem, endEffectorArmSubsystem));
+
+        driverController.leftTrigger().whileTrue(switchIntakeModeCommand());
+        driverController.leftBumper().toggleOnTrue(new CoralPreIntakeCommand(indicatorSubsystem,endEffectorArmSubsystem,elevatorSubsystem));
         driverController.b().toggleOnTrue(new GroundOuttakeCommand(intakeSubsystem, endEffectorSubsystem, elevatorSubsystem));
-        driverController.x().onTrue(Commands.runOnce(() -> intakeSubsystem.setLowerAngle(true))).onFalse(Commands.runOnce(() -> intakeSubsystem.setLowerAngle(false)));
-        driverController.y().whileTrue(new ClimbCommand(climberSubsystem, elevatorSubsystem, intakeSubsystem, endEffectorSubsystem));
-        driverController.back().whileTrue(switchAimingModeCommand());
-        driverController.leftStick().onTrue(Commands.runOnce(() -> destinationSupplier.updateBranch(false)).ignoringDisable(true));
-        driverController.rightStick().onTrue(Commands.runOnce(() -> destinationSupplier.updateBranch(true)).ignoringDisable(true));
-        if (Robot.isSimulation()) {
-            driverController.rightTrigger().whileTrue(switchAimingModeCommand());
-        }
+
+        driverController.povRight().whileTrue(switchAimingModeCommand());
+        driverController.rightBumper().whileTrue(new ManualPutCoralCommand(driverController, endEffectorSubsystem, elevatorSubsystem, intakeSubsystem, indicatorSubsystem));
+
+        driverController.povDown().onTrue(new ZeroElevatorCommand(elevatorSubsystem, intakeSubsystem, endEffectorSubsystem));
+
+
+        driverController.x().onTrue(Commands.runOnce(() -> destinationSupplier.setCurrentGamePiece(DestinationSupplier.GamePiece.CORAL)));
+        driverController.y().onTrue(Commands.runOnce(() -> destinationSupplier.setCurrentGamePiece(DestinationSupplier.GamePiece.ALGAE)));
     }
 
     private void configureStreamDeckBindings() {
@@ -196,8 +205,6 @@ public class RobotContainer {
         streamDeckController.button(16).onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L4)).ignoringDisable(true));
         streamDeckController.button(18).onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.P1)).ignoringDisable(true));
         streamDeckController.button(19).onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.P2)).ignoringDisable(true));
-        streamDeckController.button(8).whileTrue(Commands.run(() -> destinationSupplier.setCurrentL1Mode(DestinationSupplier.L1Mode.INTAKE))
-                .finallyDo(() -> destinationSupplier.setCurrentL1Mode(DestinationSupplier.L1Mode.ELEVATOR)).ignoringDisable(true));
         streamDeckController.button(10).whileTrue(Commands.run(() -> destinationSupplier.setCurrentIntakeMode(DestinationSupplier.IntakeMode.TREMBLE))
                 .finallyDo(() -> destinationSupplier.setCurrentIntakeMode(DestinationSupplier.IntakeMode.NORMAL)).ignoringDisable(true));
     }
@@ -222,32 +229,57 @@ public class RobotContainer {
         return FieldConstants.defaultAprilTagType;
     }
 
-    public Command switchAimingModeCommand() {
+    public Command switchCoralAimingModeCommand() {
         return new ConditionalCommand(
                 // AUTO
-                new AutoAimShootCommand(
+                new AutoAimShootCoralCommand(
                         indicatorSubsystem, endEffectorSubsystem, elevatorSubsystem, intakeSubsystem,
                         () -> false, driverController),
                 // MANUAL
-                new ReefAimCommand(() -> false, elevatorSubsystem, driverController, indicatorSubsystem),
+                new AutoReefAimCoralCommand(() -> false, elevatorSubsystem, driverController, indicatorSubsystem),
                 () -> destinationSupplier.getCurrentControlMode() == DestinationSupplier.controlMode.AUTO);
+
+    }
+
+//    public Command switchAlgaeAimingModeCommand() {
+//        return new ConditionalCommand(
+//
+//        )
+//    }
+
+    public Command switchAimingModeCommand() {
+        return new ConditionalCommand(
+                //Coral
+                switchCoralAimingModeCommand(),
+                //Algae
+                new AutoAimShootAlgaeCommand(),
+                () -> destinationSupplier.getCurrentGamePiece() == DestinationSupplier.GamePiece.ALGAE
+        );
     }
 
     public Command switchIntakeModeCommand() {
         return new ConditionalCommand(
-                new GroundIntakeCommand(indicatorSubsystem, intakeSubsystem, endEffectorSubsystem, elevatorSubsystem),
-                new HoldIntakeCommand(indicatorSubsystem, intakeSubsystem, elevatorSubsystem),
-                () -> destinationSupplier.getL1Mode() == DestinationSupplier.L1Mode.ELEVATOR);
+                new CoralIntakeCommand(intakeSubsystem,indicatorSubsystem,endEffectorArmSubsystem,elevatorSubsystem),
+                new AutoIntakeAlgaeCommand(),
+                () -> destinationSupplier.getCurrentGamePiece() == DestinationSupplier.GamePiece.ALGAE
+        );
     }
 
-    public Command switchPreMoveModeCommand() {
-        return new ConditionalCommand(
-                // Intake L1
-                new ShootHoldCommand(intakeSubsystem, () -> driverController.rightTrigger().getAsBoolean()),
-                // Elevator
-                new PutCoralCommand(driverController, endEffectorSubsystem, elevatorSubsystem, intakeSubsystem, indicatorSubsystem),
-                () -> destinationSupplier.getL1Mode() == DestinationSupplier.L1Mode.INTAKE);
-    }
+//    public Command switchIntakeModeCommand() {
+//        return new ConditionalCommand(
+//                new GroundIntakeCommand(indicatorSubsystem, intakeSubsystem, endEffectorSubsystem, elevatorSubsystem),
+//                new HoldIntakeCommand(indicatorSubsystem, intakeSubsystem, elevatorSubsystem),
+//                () -> destinationSupplier.getL1Mode() == DestinationSupplier.L1Mode.ELEVATOR);
+//    }
+
+//    public Command switchPreMoveModeCommand() {
+//        return new ConditionalCommand(
+//                // Intake L1
+//                new ShootHoldCommand(intakeSubsystem, () -> driverController.rightTrigger().getAsBoolean()),
+//                // Elevator
+//                new PutCoralCommand(driverController, endEffectorSubsystem, elevatorSubsystem, intakeSubsystem, indicatorSubsystem),
+//                () -> destinationSupplier.getL1Mode() == DestinationSupplier.L1Mode.INTAKE);
+//    }
 
     public void setMegaTag2(boolean setMegaTag2) {
         limelight.setMegaTag2(setMegaTag2);

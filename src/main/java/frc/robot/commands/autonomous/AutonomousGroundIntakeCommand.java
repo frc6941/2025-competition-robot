@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.autonomous;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotConstants;
@@ -9,15 +9,14 @@ import frc.robot.subsystems.indicator.IndicatorSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 
 import static frc.robot.RobotConstants.ElevatorConstants.HOME_EXTENSION_METERS;
-import static frc.robot.RobotConstants.ElevatorConstants.IDLE_EXTENSION_METERS;
 
-public class GroundIntakeCommand extends Command {
+public class AutonomousGroundIntakeCommand extends Command {
     private final IntakeSubsystem intakeSubsystem;
     private final EndEffectorSubsystem endEffectorSubsystem;
     private final ElevatorSubsystem elevatorSubsystem;
     private final IndicatorSubsystem indicatorSubsystem;
 
-    public GroundIntakeCommand(IndicatorSubsystem indicatorSubsystem, IntakeSubsystem intakeSubsystem, EndEffectorSubsystem endEffectorSubsystem, ElevatorSubsystem elevatorSubsystem) {
+    public AutonomousGroundIntakeCommand(IndicatorSubsystem indicatorSubsystem, IntakeSubsystem intakeSubsystem, EndEffectorSubsystem endEffectorSubsystem, ElevatorSubsystem elevatorSubsystem) {
         this.intakeSubsystem = intakeSubsystem;
         this.endEffectorSubsystem = endEffectorSubsystem;
         this.elevatorSubsystem = elevatorSubsystem;
@@ -46,12 +45,7 @@ public class GroundIntakeCommand extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.HOME);
-        elevatorSubsystem.setElevatorPosition(IDLE_EXTENSION_METERS.get());
-        if (interrupted) {
-            endEffectorSubsystem.setWantedState(EndEffectorSubsystem.WantedState.IDLE);
-        }
-        indicatorSubsystem.setPattern(IndicatorIO.Patterns.AFTER_INTAKE);
+
     }
 
     @Override
@@ -61,6 +55,6 @@ public class GroundIntakeCommand extends Command {
 
     @Override
     public InterruptionBehavior getInterruptionBehavior() {
-        return InterruptionBehavior.kCancelIncoming;
+        return InterruptionBehavior.kCancelSelf;
     }
 }
