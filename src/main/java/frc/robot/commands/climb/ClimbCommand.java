@@ -4,31 +4,32 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.climber.ClimberSubsystem;
 import frc.robot.subsystems.climber.ClimberSubsystem.WantedState;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
-import frc.robot.subsystems.endeffector.EndEffectorSubsystem;
+import frc.robot.subsystems.endeffectorarm.EndEffectorArmSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 
-import static frc.robot.RobotConstants.ElevatorConstants.IDLE_EXTENSION_METERS;
+
+import static frc.robot.RobotConstants.ElevatorConstants.HOME_EXTENSION_METERS;
 
 public class ClimbCommand extends Command{
     private final ClimberSubsystem climberSubsystem;
     private final ElevatorSubsystem elevatorSubsystem;
     private final IntakeSubsystem intakeSubsystem;
-    private final EndEffectorSubsystem endEffectorSubsystem;
+    private final EndEffectorArmSubsystem endEffectorArmSubsystem;
     public ClimbCommand(ClimberSubsystem climberSubsystem,ElevatorSubsystem elevatorSubsystem,
-                        IntakeSubsystem intakeSubsystem,EndEffectorSubsystem endEffectorSubsystem){
+                        IntakeSubsystem intakeSubsystem,EndEffectorArmSubsystem endEffectorArmSubsystem){
         this.climberSubsystem = climberSubsystem;
         this.elevatorSubsystem = elevatorSubsystem;
-        this.endEffectorSubsystem = endEffectorSubsystem;
+        this.endEffectorArmSubsystem = endEffectorArmSubsystem;
         this.intakeSubsystem = intakeSubsystem;
-        addRequirements(climberSubsystem, elevatorSubsystem, endEffectorSubsystem, intakeSubsystem);
+        addRequirements(climberSubsystem, elevatorSubsystem, endEffectorArmSubsystem, intakeSubsystem);
     }
 
     @Override
     public void execute() {
-        elevatorSubsystem.setElevatorPosition(IDLE_EXTENSION_METERS.get());
+        elevatorSubsystem.setElevatorPosition(HOME_EXTENSION_METERS.get());
         climberSubsystem.setWantedState(WantedState.CLIMB);
         intakeSubsystem.setWantedState(frc.robot.subsystems.intake.IntakeSubsystem.WantedState.HOME);
-        endEffectorSubsystem.setWantedState(frc.robot.subsystems.endeffector.EndEffectorSubsystem.WantedState.IDLE);
+        endEffectorArmSubsystem.setWantedState(EndEffectorArmSubsystem.WantedState.HOME);
     }
 
     @Override
