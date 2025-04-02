@@ -2,6 +2,7 @@ package frc.robot.subsystems.endeffectorarm;
 
 import edu.wpi.first.math.MathUtil;
 import frc.robot.RobotConstants;
+import frc.robot.RobotContainer;
 import frc.robot.display.SuperstructureVisualizer;
 import frc.robot.subsystems.beambreak.BeambreakIO;
 import frc.robot.subsystems.beambreak.BeambreakIOInputsAutoLogged;
@@ -158,6 +159,9 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
      * @return The new system state
      */
     private SystemState handleStateTransition() {
+        if (RobotContainer.elevatorIsDangerToArm) {
+            return SystemState.CORAL_INTAKING;
+        }
         return switch (wantedState) {
             case CORAL_INTAKE -> {
                 if (hasCoral()) {

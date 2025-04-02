@@ -430,6 +430,7 @@ public final class RobotConstants {
         public static final double ELEVATOR_SPOOL_DIAMETER = 0.04 + 0.003; //0.04m for spool diameter, 0.003 for rope diameter
         public static final double ELEVATOR_GEAR_RATIO = 3.0;
         public static final double ELEVATOR_DANGER_ZONE = 0.4180619200456253;
+        public static final TunableNumber ELEVATOR_MIN_HEIGHT_FOR_SAFE_ARM = new TunableNumber("Elevator/MinSafeHeightForArm", 0.5);
         public static final double ELEVATOR_DEFAULT_POSITION_WHEN_DISABLED = 0.40;//TODO: fixme
 
         public static final TunableNumber motionAcceleration = new TunableNumber("Elevator/MotionAcceleration",

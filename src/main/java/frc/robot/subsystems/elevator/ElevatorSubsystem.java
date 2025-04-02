@@ -50,6 +50,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         Logger.recordOutput("Elevator/SystemState", systemState.toString());
 
         elevatorIsDanger = elevatorIsDanger();
+        RobotContainer.elevatorIsDangerToArm = (io.getElevatorHeight() < ELEVATOR_MIN_HEIGHT_FOR_SAFE_ARM.get());
 
         Logger.recordOutput("Flags/elevatorIsDanger", elevatorIsDanger());
 
