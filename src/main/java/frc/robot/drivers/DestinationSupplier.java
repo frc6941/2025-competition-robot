@@ -23,13 +23,11 @@ public class DestinationSupplier implements Updatable {
     private static DestinationSupplier instance;
     Swerve swerve;
     @Getter
-    private GamePiece gamePiece = GamePiece.CORAL;
-    @Getter
     private L1Mode l1Mode = L1Mode.ELEVATOR;
     @Getter
     private IntakeMode intakeMode = IntakeMode.NORMAL;
     @Getter
-    private controlMode currentControlMode = controlMode.AUTO;
+    private controlMode currentControlMode = controlMode.MANUAL;
     @Getter
     @Setter
     private int targetTagID = 0;
