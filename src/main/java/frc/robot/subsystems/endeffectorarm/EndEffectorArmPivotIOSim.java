@@ -62,11 +62,6 @@ public class EndEffectorArmPivotIOSim implements EndEffectorArmPivotIO {
     }
 
     @Override
-    public void setMotorVoltage(double voltage) {
-        // Typically not used in sim but implemented for interface consistency
-    }
-
-    @Override
     public void setPivotAngle(double targetAngleDeg) {
         this.setpointDegrees = targetAngleDeg;
         controller.setSetpoint(Math.toRadians(targetAngleDeg));

@@ -93,8 +93,10 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
             // Force CORAL_INTAKING or CORAL_OUTTAKING while elevator is in danger
             if (systemState == SystemState.CORAL_OUTTAKING) {
                 newState = SystemState.CORAL_OUTTAKING;
-            } else {
+            } else if (systemState == SystemState.CORAL_INTAKING) {
                 newState = SystemState.CORAL_INTAKING;
+            } else {
+                newState = SystemState.NEUTRAL;
             }
         } else {
             // Normal state transitions when elevator is safe
@@ -108,6 +110,8 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
 
         // Log the system state
         Logger.recordOutput("EndEffectorArm/SystemState", systemState.toString());
+
+        Logger.recordOutput("Flags/eeIsDanger", !isNearAngle(coralIntakeAngle));
 
         SuperstructureVisualizer.getInstance().updateEndEffector(armPivotIOInputs.currentAngleDeg);
 
@@ -142,14 +146,21 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
                 break;
 
             case HOMING:
-                armPivotIO.setPivotAngle(homeAngle);
                 if (hasAlgae()) {
                     armRollerIO.setVoltage(algaeHoldVoltage);
+                    armPivotIO.setPivotAngle(algaeIntakeAngle);
                 } else if (hasCoral()) {
+                    armPivotIO.setPivotAngle(homeAngle);
                     armRollerIO.setVoltage(coralHoldVoltage);
                 } else {
-                    armRollerIO.stop();
+                    setWantedState(WantedState.NEUTRAL);
+                    systemState = SystemState.NEUTRAL;
                 }
+                break;
+
+            case NEUTRAL:
+                armRollerIO.stop();
+                armPivotIO.setPivotAngle(coralIntakeAngle);
                 break;
 
             case CORAL_SHOOTING:
@@ -207,7 +218,13 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
                 yield SystemState.ALGAE_INTAKING;
             }
             case ALGAE_PRESHOOT -> SystemState.ALGAE_PRESHOOTING;
-            case HOME -> SystemState.HOMING;
+            case HOME -> {
+                if (!hasAlgae() && !hasCoral()) {
+                    yield SystemState.NEUTRAL;
+                }
+                yield SystemState.HOMING;
+            }
+            case NEUTRAL -> SystemState.NEUTRAL;
             case CORAL_SHOOT -> {
                 if (isShootFinished()) {
                     setWantedState(WantedState.HOME);
@@ -232,7 +249,8 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
      * @return True if the arm is within 1 degree of the target
      */
     public boolean isNearAngle(double targetAngleDeg) {
-        return MathUtil.isNear(targetAngleDeg, armPivotIOInputs.currentAngleDeg, 1);
+        return MathUtil.isNear(targetAngleDeg, armPivotIOInputs.currentAngleDeg, 5);
+        //TODO：isNear angle value
     }
 
     /**
@@ -268,7 +286,7 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
      * @return True if both angle is near the preshoot angle and contains a coral
      */
     public boolean isShootReady(){
-        return hasCoral() && isNearAngle(coralPreShootAngle);
+        return isNearAngle(coralPreShootAngle);
     }
 
     /**
@@ -282,7 +300,8 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
         ALGAE_INTAKE,
         ALGAE_PRESHOOT,
         ALGAE_SHOOT,
-        HOME
+        HOME,
+        NEUTRAL
     }
 
     /**
@@ -296,6 +315,7 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
         ALGAE_INTAKING,
         ALGAE_PRESHOOTING,
         ALGAE_SHOOTING,
-        HOMING
+        HOMING,
+        NEUTRAL
     }
 } 

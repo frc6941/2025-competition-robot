@@ -28,7 +28,7 @@ public class PreClimbCommand extends Command{
         elevatorSubsystem.setElevatorPosition(IDLE_EXTENSION_METERS.get());
         climberSubsystem.setWantedState(WantedState.DEPLOY);
         intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.HOME);
-        endEffectorArmSubsystem.setWantedState(EndEffectorArmSubsystem.WantedState.CORAL_OUTTAKE);
+        endEffectorArmSubsystem.setWantedState(EndEffectorArmSubsystem.WantedState.NEUTRAL);
     }
 
     @Override

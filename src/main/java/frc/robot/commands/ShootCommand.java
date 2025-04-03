@@ -26,7 +26,7 @@ public class ShootCommand extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        endEffectorArmSubsystem.setWantedState(EndEffectorArmSubsystem.WantedState.HOME);
+//        endEffectorArmSubsystem.setWantedState(EndEffectorArmSubsystem.WantedState.HOME);
 //        indicatorSubsystem.setPattern(IndicatorIO.Patterns.SHOOT);
     }
 }

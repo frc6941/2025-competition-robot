@@ -28,7 +28,7 @@ public class ClimbCommand extends Command{
         elevatorSubsystem.setElevatorPosition(IDLE_EXTENSION_METERS.get());
         climberSubsystem.setWantedState(WantedState.CLIMB);
         intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.HOME);
-        endEffectorArmSubsystem.setWantedState(EndEffectorArmSubsystem.WantedState.CORAL_OUTTAKE);
+        endEffectorArmSubsystem.setWantedState(EndEffectorArmSubsystem.WantedState.NEUTRAL);
     }
 
     @Override

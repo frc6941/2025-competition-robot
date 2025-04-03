@@ -28,7 +28,7 @@ public class IdleClimbCommand extends Command{
         elevatorSubsystem.setElevatorPosition(IDLE_EXTENSION_METERS.get());
         climberSubsystem.setWantedState(WantedState.IDLE);
         intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.HOME);
-        endEffectorArmSubsystem.setWantedState(EndEffectorArmSubsystem.WantedState.ALGAE_INTAKE);
+        endEffectorArmSubsystem.setWantedState(EndEffectorArmSubsystem.WantedState.NEUTRAL);
     }
 
     @Override

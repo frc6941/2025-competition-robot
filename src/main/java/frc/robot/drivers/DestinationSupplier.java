@@ -37,6 +37,8 @@ public class DestinationSupplier implements Updatable {
     private boolean useCoral = false;
     private elevatorSetpoint currentElevSetpointCoral = elevatorSetpoint.L2;
     private elevatorSetpoint currentElevSetpointPoke = elevatorSetpoint.P1;
+    @Getter
+    private GamePiece currentGamePiece = GamePiece.CORAL_SCORING;
 
     private DestinationSupplier() {
         swerve = Swerve.getInstance();
@@ -87,6 +89,21 @@ public class DestinationSupplier implements Updatable {
                 new Translation2d(
                         RobotConstants.ReefAimConstants.ROBOT_TO_PIPE_METERS.get(),
                         RobotConstants.ReefAimConstants.PIPE_TO_TAG.magnitude() * (rightReef ? 1 : -1)),
+                new Rotation2d()));
+        return goal;
+    }
+
+    /**
+     * Calculates the final target position for algae scoring based on the tag pose
+     * 
+     * @param goal The initial goal pose
+     * @return Modified goal pose to tag pose accounting for algae scoring position
+     */
+    public static Pose2d getFinalAlgaeTarget(Pose2d goal) {
+        goal = goal.transformBy(new Transform2d(
+                new Translation2d(
+                        RobotConstants.ReefAimConstants.ROBOT_TO_ALGAE_METERS.get(),
+                        RobotConstants.ReefAimConstants.ALGAE_TO_TAG_METERS.get()),
                 new Rotation2d()));
         return goal;
     }
@@ -149,6 +166,16 @@ public class DestinationSupplier implements Updatable {
      * @return Pose2d of the nearest AprilTag, accounting for edge cases and controller input
      */
     public static Pose2d getNearestTag(Pose2d robotPose) {
+        return FieldConstants.officialAprilTagType.getLayout().getTagPose(getNearestTagID(robotPose)).get().toPose2d();
+    }
+
+    /**
+     * Gets the ID of the nearest AprilTag to the robot's current position
+     * 
+     * @param robotPose Current pose of the robot
+     * @return ID of the nearest AprilTag, accounting for edge cases and controller input
+     */
+    public static int getNearestTagID(Pose2d robotPose) {
         XboxController driverController = new XboxController(0);
         double ControllerX = driverController.getLeftX();
         double ControllerY = driverController.getLeftY();
@@ -175,7 +202,7 @@ public class DestinationSupplier implements Updatable {
         if ((secondMinDistance - minDistance) < RobotConstants.ReefAimConstants.Edge_Case_Max_Delta.get() && ControllerX != 0 && ControllerY != 0) {
             minDistanceID = solveEdgeCase(ControllerX, ControllerY, minDistanceID, secondMinDistanceID);
         }
-        return FieldConstants.officialAprilTagType.getLayout().getTagPose(minDistanceID).get().toPose2d();
+        return minDistanceID;
     }
 
     private static int solveEdgeCase(double controllerX, double controllerY, int minDistanceID, int secondMinDistanceID) {
@@ -311,9 +338,28 @@ public class DestinationSupplier implements Updatable {
         SmartDashboard.putString("DestinationSupplier/CurrentIntakeMode", mode.name());
     }
 
-    public void setCurrentGamePiece(GamePiece piece) {
-        this.gamePiece = piece;
-        SmartDashboard.putString("DestinationSupplier/CurrentGamePiece", piece.name());
+    public void updatePokeSetpointByTag(int tagNumber) {
+        switch (tagNumber) {
+            case 6, 8, 10, 17, 19, 21:
+                updateElevatorSetpoint(elevatorSetpoint.P1);
+                break;
+            case 7, 9, 11, 18, 20, 22:
+                updateElevatorSetpoint(elevatorSetpoint.P2);
+                break;
+            default:
+                System.out.println("Tag number does not correspond to a valid elevator setpoint.");
+        }
+    }
+
+    /**
+     * Sets the current game piece type
+     * 
+     * @param gamePiece The desired game piece (CORAL_SCORING or ALGAE_INTAKING)
+     */
+    public void setCurrentGamePiece(GamePiece gamePiece) {
+        this.currentGamePiece = gamePiece;
+        SmartDashboard.putString("DestinationSupplier/CurrentGamePiece", gamePiece.name());
+
     }
 
     public enum elevatorSetpoint {
@@ -334,8 +380,8 @@ public class DestinationSupplier implements Updatable {
         NORMAL
     }
 
-    public enum GamePiece{
-        CORAL,
-        ALGAE
+    public enum GamePiece {
+        CORAL_SCORING,
+        ALGAE_INTAKING
     }
 }
