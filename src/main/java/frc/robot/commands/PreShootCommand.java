@@ -40,6 +40,7 @@ public class PreShootCommand extends Command {
     @Override
     public void end(boolean interrupted) {
         Logger.recordOutput("Commands/Preshoot", "end");
+        endEffectorArmSubsystem.setWantedState(EndEffectorArmSubsystem.WantedState.HOME);
         elevatorSubsystem.setElevatorPosition(IDLE_EXTENSION_METERS.get());
     }
 

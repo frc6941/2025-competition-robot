@@ -163,9 +163,8 @@ public class RobotContainer {
 
         driverController.povUp().whileTrue(new PreClimbCommand(climberSubsystem, elevatorSubsystem, intakeSubsystem, endEffectorArmSubsystem));
         driverController.povLeft().whileTrue(new IdleClimbCommand(climberSubsystem, elevatorSubsystem, intakeSubsystem, endEffectorArmSubsystem));
-        driverController.leftTrigger().toggleOnTrue(switchIntakeModeCommand());
-//        driverController.leftTrigger().toggleOnTrue(new AlgaeIntakeCommand(indicatorSubsystem,endEffectorArmSubsystem,elevatorSubsystem));
-        driverController.leftBumper().toggleOnTrue(Commands.runOnce(() -> endEffectorArmSubsystem.setWantedState(EndEffectorArmSubsystem.WantedState.ALGAE_INTAKE)));
+        driverController.leftTrigger().toggleOnTrue(switchIntakeAutoModeCommand());
+        driverController.leftBumper().toggleOnTrue(new AlgaeIntakeCommand(indicatorSubsystem,endEffectorArmSubsystem,elevatorSubsystem));
         driverController.rightBumper().whileTrue(switchPreMoveModeCommand());
         driverController.povDown().onTrue(new ZeroCommand(elevatorSubsystem, intakeSubsystem, endEffectorArmSubsystem));
         driverController.b().toggleOnTrue(new GroundOuttakeCommand(intakeSubsystem, endEffectorArmSubsystem, elevatorSubsystem));
@@ -246,16 +245,16 @@ public class RobotContainer {
 
     public Command switchIntakeAutoModeCommand() {
         return new ConditionalCommand(
-                new GroundIntakeCommand(indicatorSubsystem, intakeSubsystem, endEffectorArmSubsystem, elevatorSubsystem),
                 new HoldIntakeCommand(indicatorSubsystem, intakeSubsystem, elevatorSubsystem),
+                new GroundIntakeCommand(indicatorSubsystem, intakeSubsystem, endEffectorArmSubsystem, elevatorSubsystem),
                 () -> destinationSupplier.getL1Mode() == DestinationSupplier.L1Mode.ELEVATOR || endEffectorArmSubsystem.hasAlgae());
     }
 
     public Command switchIntakeManualModeCommand() {
         return new ConditionalCommand(
-                switchIntakeAutoModeCommand(),
 //                new AlgaeIntakeCommand(indicatorSubsystem,endEffectorArmSubsystem,elevatorSubsystem),
                 Commands.runOnce(() -> endEffectorArmSubsystem.setWantedState(EndEffectorArmSubsystem.WantedState.ALGAE_INTAKE)),
+                switchIntakeAutoModeCommand(),
                 () -> destinationSupplier.getCurrentGamePiece() == DestinationSupplier.GamePiece.ALGAE_INTAKING
         );
     }
@@ -266,7 +265,7 @@ public class RobotContainer {
                 switchIntakeAutoModeCommand(),
                 //MANUAL
                 switchIntakeManualModeCommand(),
-                () -> destinationSupplier.getCurrentControlMode() == DestinationSupplier.controlMode.MANUAL
+                () -> destinationSupplier.getCurrentControlMode() == DestinationSupplier.controlMode.AUTO
         );
     }
 
