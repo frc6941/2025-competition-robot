@@ -473,6 +473,10 @@ public final class RobotConstants {
         public static final boolean IS_INVERT = false;
 
         // Pivot motor configuration
+        public static final TunableNumber END_EFFECTOR_ARM_PIVOT_CRUISE_VELOCITY = new TunableNumber("END_EFFECTOR_ARM_PIVOT/cruiseVelocity", 50);
+        public static final TunableNumber END_EFFECTOR_ARM_PIVOT_ACCELERATION = new TunableNumber("END_EFFECTOR_ARM_PIVOT/acceleration", 50);
+        public static final TunableNumber END_EFFECTOR_ARM_PIVOT_JERK = new TunableNumber("END_EFFECTOR_ARM_PIVOT/jerk", 0);
+
         public static final double ROTOR_SENSOR_RATIO = 1.0 / 8 * 64 / 18 * 60;
         public static final double END_EFFECTOR_ARM_ENCODER_OFFSET = -0.368408;
 

@@ -164,6 +164,7 @@ public class RobotContainer {
         driverController.povUp().whileTrue(new PreClimbCommand(climberSubsystem, elevatorSubsystem, intakeSubsystem, endEffectorArmSubsystem));
         driverController.povLeft().whileTrue(new IdleClimbCommand(climberSubsystem, elevatorSubsystem, intakeSubsystem, endEffectorArmSubsystem));
         driverController.leftTrigger().toggleOnTrue(switchIntakeModeCommand());
+//        driverController.leftTrigger().toggleOnTrue(new AlgaeIntakeCommand(indicatorSubsystem,endEffectorArmSubsystem,elevatorSubsystem));
         driverController.leftBumper().toggleOnTrue(Commands.runOnce(() -> endEffectorArmSubsystem.setWantedState(EndEffectorArmSubsystem.WantedState.ALGAE_INTAKE)));
         driverController.rightBumper().whileTrue(switchPreMoveModeCommand());
         driverController.povDown().onTrue(new ZeroCommand(elevatorSubsystem, intakeSubsystem, endEffectorArmSubsystem));
