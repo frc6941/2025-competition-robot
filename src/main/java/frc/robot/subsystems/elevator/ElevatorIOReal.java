@@ -149,7 +149,7 @@ public class ElevatorIOReal implements ElevatorIO {
     @Override
     public void setElevatorTarget(double meters) {
         setpointMeters = meters;
-        leader.setControl(motionRequest.withPosition(heightToTalonPos(meters)));
+        leader.setControl(motionRequest.withPosition(heightToTalonPos(Math.max(meters, MAX_EXTENSION_METERS.get()))));
     }
 
     @Override
