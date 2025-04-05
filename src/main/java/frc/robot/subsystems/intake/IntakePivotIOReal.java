@@ -55,7 +55,7 @@ public class IntakePivotIOReal implements IntakePivotIO {
         config.CurrentLimits.StatorCurrentLimit = 40.0;
         config.CurrentLimits.StatorCurrentLimitEnable = true;
 
-        // //initialize CANcoder 
+        // //initialize CANcoder
         // CANcoderConfiguration CANconfig = new CANcoderConfiguration();
         // CANconfig.MagnetSensor.MagnetOffset =INTAKE_PIVOT_ENCODER_OFFSET;
         // CANconfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
@@ -138,7 +138,7 @@ public class IntakePivotIOReal implements IntakePivotIO {
     @Override
     public void setPivotAngle(double targetAngleDeg) {
         this.targetAngleDeg = targetAngleDeg;
-        motor.setControl(motionMagic.withPosition(angleToTalonPos(targetAngleDeg)));
+        motor.setControl(motionMagic.withPosition(angleToTalonPos(targetAngleDeg)).withEnableFOC(true));
     }
 
     @Override
