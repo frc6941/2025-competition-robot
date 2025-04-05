@@ -334,7 +334,7 @@ public final class RobotConstants {
         public static final TunableNumber INTAKE_PIVOT_JERK = new TunableNumber("INTAKE_PIVOT/jerk", 0);
         public static final TunableNumber DEPLOY_ANGLE = new TunableNumber("INTAKE_PIVOT/deployAngle", 113.5);
         public static final TunableNumber OUTTAKE_ANGLE = new TunableNumber("INTAKE_PIVOT/outtakeAngle", 105);
-        public static final TunableNumber HOME_ANGLE = new TunableNumber("INTAKE_PIVOT/homeAngle", 5);
+        public static final TunableNumber HOME_ANGLE = new TunableNumber("INTAKE_PIVOT/homeAngle", 40);
         public static final TunableNumber AVOID_ANGLE = new TunableNumber("INTAKE_PIVOT/avoidAngle", 90);
         public static final TunableNumber FUNNEL_AVOID_ANGLE = new TunableNumber("INTAKE_PIVOT/funnelAvoidAngle", 51);
         public static final TunableNumber SHOOT_ANGLE = new TunableNumber("INTAKE_PIVOT/shootAngle", 45);
@@ -407,31 +407,31 @@ public final class RobotConstants {
         public static final TunableNumber motionJerk = new TunableNumber("Elevator/MotionJerk",
                 0.0);
         public static final TunableNumber MAX_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/max",
-                1.63);
+                1.4);
         public static final TunableNumber HOLD_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/idle",
-                0.7);
+                0.5);
         public static final TunableNumber HOME_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/HOME",
-                0.01);
+                0.08);
         public static final TunableNumber HOLD_INTAKE_METERS = new TunableNumber("ELEVATOR SETPOINTS/HOLD INTAKE",
                 0.12);
         public static final TunableNumber ALGAE_SCORE_EXTENSION_METER = new TunableNumber("ELEVATOR SETPOINTS/ALGAE_SCORE",
-                1.625);
+                1.4);
         public static final TunableNumber L1_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/L1",
                 0.45);
         public static final TunableNumber L2_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/L2",
-                0.6);
+                0.45);
         public static final TunableNumber L3_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/L3",
-                1.01);
+                0.75);
         public static final TunableNumber L4_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/L4",
-                1.625);
+                1.4);
         public static final TunableNumber P1_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/P1",
-                0.50);
+                0.45);
         public static final TunableNumber P2_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/P2",
-                0.70);
+                0.88);
 
         public static final TunableNumber ELEVATOR_ZEROING_CURRENT = new TunableNumber("Elevator zeroing current",
                 40);
-        public static final TunableNumber ELEVATOR_MIN_SAFE_HEIGHT = new TunableNumber("Elevator min safe height", 0.47);
+        public static final TunableNumber ELEVATOR_MIN_SAFE_HEIGHT = new TunableNumber("Elevator min safe height", 0.45);
         
     }
 
@@ -478,8 +478,8 @@ public final class RobotConstants {
         public static final TunableNumber CORAL_INTAKE_ANGLE = new TunableNumber("END_EFFECTOR_ARM_PIVOT/coralIntakeAngle", 0);
         public static final TunableNumber CORAL_OUTTAKE_ANGLE = new TunableNumber("END_EFFECTOR_ARM_PIVOT/coralOuttakeAngle", 0);
         public static final TunableNumber CORAL_PRESHOOT_ANGLE = new TunableNumber("END_EFFECTOR_ARM_PIVOT/coralPreShootAngle", 220);
-        public static final TunableNumber ALGAE_INTAKE_ANGLE = new TunableNumber("END_EFFECTOR_ARM_PIVOT/algaeIntakeAngle", -30);
-        public static final TunableNumber ALGAE_PRESHOOT_ANGLE = new TunableNumber("END_EFFECTOR_ARM_PIVOT/algaePreShootAngle", 240.0);
+        public static final TunableNumber ALGAE_INTAKE_ANGLE = new TunableNumber("END_EFFECTOR_ARM_PIVOT/algaeIntakeAngle", -10);
+        public static final TunableNumber ALGAE_PRESHOOT_ANGLE = new TunableNumber("END_EFFECTOR_ARM_PIVOT/algaePreShootAngle", 220.0);
 
         // Roller voltages for different operations
         public static final TunableNumber CORAL_INTAKE_VOLTAGE = new TunableNumber("END_EFFECTOR_ARM_ROLLER/coralIntakeVoltage", 12.0);
@@ -498,7 +498,7 @@ public final class RobotConstants {
         public static class EndEffectorArmPivotGainsClass {
             public static final TunableNumber END_EFFECTOR_ARM_PIVOT_KP = new TunableNumber("END_EFFECTOR_ARM_PIVOT_PID/kp", 2.5);
             public static final TunableNumber END_EFFECTOR_ARM_PIVOT_KI = new TunableNumber("END_EFFECTOR_ARM_PIVOT_PID/ki", 0);
-            public static final TunableNumber END_EFFECTOR_ARM_PIVOT_KD = new TunableNumber("END_EFFECTOR_ARM_PIVOT_PID/kd", 0);
+            public static final TunableNumber END_EFFECTOR_ARM_PIVOT_KD = new TunableNumber("END_EFFECTOR_ARM_PIVOT_PID/kd", 0.01);
             public static final TunableNumber END_EFFECTOR_ARM_PIVOT_KA = new TunableNumber("END_EFFECTOR_ARM_PIVOT_PID/ka", 0);
             public static final TunableNumber END_EFFECTOR_ARM_PIVOT_KV = new TunableNumber("END_EFFECTOR_ARM_PIVOT_PID/kv", 0);
             public static final TunableNumber END_EFFECTOR_ARM_PIVOT_KS = new TunableNumber("END_EFFECTOR_ARM_PIVOT_PID/ks", 0.015);
