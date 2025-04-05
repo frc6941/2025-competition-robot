@@ -59,6 +59,9 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
     @Getter
     private SystemState systemState = SystemState.HOLDING;
 
+    Timer timer = new Timer();
+    boolean timerStarted = false;
+
     /**
      * Creates a new EndEffectorArmSubsystem
      *
@@ -201,7 +204,15 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
                 if(hasAlgae()){
                     armRollerIO.setVoltage(algaeShootVoltage);
                 }else{
-                    setWantedState(WantedState.NEUTRAL);
+                    if(!timerStarted){
+                       timer.start();
+                       timerStarted = true;
+                    } else if (timer.hasElapsed(0.5)) {
+                        setWantedState(WantedState.NEUTRAL);
+                        timer.stop();
+                        timer.reset();
+                        timerStarted = false;
+                    }
                 }
                 break;
         }
