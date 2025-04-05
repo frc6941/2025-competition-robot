@@ -183,19 +183,24 @@ public class RobotContainer {
                 } else {
                     elevatorSubsystem.setElevatorPosition(RobotConstants.ElevatorConstants.HOLD_EXTENSION_METERS.get());
                 }
+                endEffectorArmSubsystem.setWantedState(EndEffectorArmSubsystem.WantedState.HOLD);
             }));
-        driverController.back().toggleOnTrue(Commands.deadline(
-            Commands.waitUntil(() -> driverController.rightTrigger().getAsBoolean()),
-            Commands.runOnce(() -> endEffectorArmSubsystem.setWantedState(EndEffectorArmSubsystem.WantedState.ALGAE_PRESHOOT)),
-            Commands.runOnce(() -> elevatorSubsystem.setElevatorPosition(RobotConstants.ElevatorConstants.ALGAE_SCORE_EXTENSION_METER.get()))
-        ).finallyDo(() -> {
-            endEffectorArmSubsystem.setWantedState(EndEffectorArmSubsystem.WantedState.ALGAE_SHOOT);
-            if (!GamepieceTracker.getInstance().isEndeffectorHasCoral() && !GamepieceTracker.getInstance().isEndeffectorHasAlgae()) {
-                elevatorSubsystem.setElevatorPosition(RobotConstants.ElevatorConstants.HOME_EXTENSION_METERS.get());
-            } else {
-                elevatorSubsystem.setElevatorPosition(RobotConstants.ElevatorConstants.HOLD_EXTENSION_METERS.get());
-            }
-        }));
+        driverController.back().whileTrue(Commands.parallel(
+                Commands.runOnce(() -> endEffectorArmSubsystem.setWantedState(EndEffectorArmSubsystem.WantedState.ALGAE_PRESHOOT)),
+                Commands.runOnce(() -> elevatorSubsystem.setElevatorPosition(RobotConstants.ElevatorConstants.ALGAE_SCORE_EXTENSION_METER.get())),
+                Commands.sequence(
+                        Commands.waitUntil(() -> driverController.rightTrigger().getAsBoolean()),
+                        Commands.runOnce(() -> endEffectorArmSubsystem.setWantedState(EndEffectorArmSubsystem.WantedState.ALGAE_SHOOT)),
+                        Commands.waitSeconds(100)
+                        )
+                ).finallyDo(() -> {
+                    if (!GamepieceTracker.getInstance().isEndeffectorHasCoral() && !GamepieceTracker.getInstance().isEndeffectorHasAlgae()) {
+                        elevatorSubsystem.setElevatorPosition(RobotConstants.ElevatorConstants.HOME_EXTENSION_METERS.get());
+                    } else {
+                        elevatorSubsystem.setElevatorPosition(RobotConstants.ElevatorConstants.HOLD_EXTENSION_METERS.get());
+                    }
+                    endEffectorArmSubsystem.setWantedState(EndEffectorArmSubsystem.WantedState.HOLD);
+         }));
         //scoring
         driverController.povRight().whileTrue(switchAimingModeCommand());
         driverController.rightBumper().whileTrue(switchPreMoveModeCommand());
@@ -221,10 +226,10 @@ public class RobotContainer {
     }
 
     public void configureTesterBindings() {
-        testerController.a().onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L4)));
-        testerController.b().onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L3)));
-        testerController.x().onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L2)));
-        testerController.y().onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L1)));
+        testerController.a().onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L1)));
+        testerController.b().onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L2)));
+        testerController.x().onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L3)));
+        testerController.y().onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L4)));
         testerController.leftBumper().onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.P1)));
         testerController.rightBumper().onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.P2)));
     }
