@@ -6,6 +6,7 @@ import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionDutyCycle;
+import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.*;
@@ -58,7 +59,6 @@ public class EndEffectorArmPivotIOReal implements EndEffectorArmPivotIO {
                 .withKS(RobotConstants.EndEffectorArmConstants.EndEffectorArmPivotGainsClass.END_EFFECTOR_ARM_PIVOT_KS.get())
                 .withKG(RobotConstants.EndEffectorArmConstants.EndEffectorArmPivotGainsClass.END_EFFECTOR_ARM_PIVOT_KG.get())
                 .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign)
-                //TODO:KS no effect
         );
 
         motor.getConfigurator().apply(config);
@@ -95,7 +95,7 @@ public class EndEffectorArmPivotIOReal implements EndEffectorArmPivotIO {
         inputs.motorVolts = motorVolts.getValueAsDouble();
         inputs.supplyCurrentAmps = supplyCurrentAmps.getValueAsDouble();
         inputs.statorCurrentAmps = statorCurrentAmps.getValueAsDouble();
-        inputs.currentAngleDeg = talonPosToAngle(currentPositionRot.getValueAsDouble());
+        inputs.currentAngleDeg = talonPosToAngle(currentPositionRot.getValueAsDouble()) - 63;
         inputs.targetAngleDeg = targetAngleDeg;
 
         if (RobotConstants.TUNING) {
@@ -120,13 +120,15 @@ public class EndEffectorArmPivotIOReal implements EndEffectorArmPivotIO {
                 .withKA(kA)
                 .withKV(kV)
                 .withKS(kS)
-                .withKG(kG));
+                .withKG(kG)
+                .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign)
+                .withGravityType(GravityTypeValue.Arm_Cosine));
     }
 
     @Override
     public void setPivotAngle(double targetAngleDeg) {
         this.targetAngleDeg = targetAngleDeg;
-        motor.setControl(new PositionDutyCycle(angleToTalonPos(targetAngleDeg)));
+        motor.setControl(new PositionDutyCycle(angleToTalonPos(targetAngleDeg + 63)).withEnableFOC(true));
     }
 
     private double angleToTalonPos(double angleDeg) {
