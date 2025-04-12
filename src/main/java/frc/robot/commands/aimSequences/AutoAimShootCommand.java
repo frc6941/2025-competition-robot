@@ -67,7 +67,7 @@ public class  AutoAimShootCommand extends SequentialCommandGroup {
                                 new AutoPreShootCommand(indicatorSubsystem, endeffectorArmSubsystem, intakeSubsystem, elevatorSubsystem),
                                 new ReefAimCommand(stop, elevatorSubsystem, driverController, indicatorSubsystem)
                         ),
-                        () -> endeffectorArmSubsystem.hasCoral()
+                        endeffectorArmSubsystem::hasCoral
                 ).finallyDo(() -> {
                     endeffectorArmSubsystem.setWantedState(WantedState.HOLD);
                     if (!GamepieceTracker.getInstance().isEndeffectorHasCoral() && !GamepieceTracker.getInstance().isEndeffectorHasAlgae()) {

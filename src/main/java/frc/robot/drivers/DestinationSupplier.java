@@ -21,6 +21,9 @@ import java.util.List;
 
 public class DestinationSupplier implements Updatable {
     private static DestinationSupplier instance;
+    @Getter
+    @Setter
+    public boolean useSuperCycle = true;
     Swerve swerve;
     @Getter
     private L1Mode l1Mode = L1Mode.ELEVATOR;
@@ -41,9 +44,6 @@ public class DestinationSupplier implements Updatable {
     private AlgaeScoringMode algaeScoringMode = AlgaeScoringMode.NET;
     @Getter
     private GamePiece currentGamePiece = GamePiece.CORAL_SCORING;
-    @Getter
-    @Setter
-    public boolean useSuperCycle = true;
 
     private DestinationSupplier() {
         swerve = Swerve.getInstance();
@@ -155,13 +155,13 @@ public class DestinationSupplier implements Updatable {
         Logger.recordOutput("EdgeCase/ControllerY", ControllerY);
         if ((secondMinDistance - minDistance) < RobotConstants.ReefAimConstants.Edge_Case_Max_Delta.get()) {
             Logger.recordOutput("EdgeCase/IsEdgeCase", true);
-            if (Math.abs(ControllerX) >= 0.05 && Math.abs(ControllerY) >=0.05) {
+            if (Math.abs(ControllerX) >= 0.05 || Math.abs(ControllerY) >= 0.05) {
                 minDistanceID = solveEdgeCase(ControllerX, ControllerY, minDistanceID, secondMinDistanceID);
             }
         } else {
             Logger.recordOutput("EdgeCase/IsEdgeCase", false);
         }
-        Logger.recordOutput("EdgeCase/ChangedTarget", minDistanceID == secondMinDistanceID);
+        Logger.recordOutput("EdgeCase/TargetChanged", minDistanceID == secondMinDistanceID);
     }
 
     /**
@@ -204,7 +204,7 @@ public class DestinationSupplier implements Updatable {
                 minDistance = distance;
             }
         }
-        if ((secondMinDistance - minDistance) < RobotConstants.ReefAimConstants.Edge_Case_Max_Delta.get() && Math.abs(ControllerX) >= 0.05 && Math.abs(ControllerY) >= 0.05) {
+        if ((secondMinDistance - minDistance) < RobotConstants.ReefAimConstants.Edge_Case_Max_Delta.get() && (Math.abs(ControllerX) >= 0.05 || Math.abs(ControllerY) >= 0.05)) {
             minDistanceID = solveEdgeCase(ControllerX, ControllerY, minDistanceID, secondMinDistanceID);
         }
         return minDistanceID;
@@ -373,9 +373,8 @@ public class DestinationSupplier implements Updatable {
 
     /**
      * Switch if using super cycle
-     *
      */
-    public void switchUseSuperCycle(){
+    public void switchUseSuperCycle() {
         useSuperCycle = !useSuperCycle;
         SmartDashboard.putBoolean("DestinationSupplier/UseSuperCycle", useSuperCycle);
     }

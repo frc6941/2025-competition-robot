@@ -71,7 +71,7 @@ public class AutoPreShootCommand extends Command {
     public boolean isFinished() {
         if (DestinationSupplier.getInstance().getCurrentGamePiece() == GamePiece.CORAL_SCORING) {
             return timer.hasElapsed(0.1)
-                    && elevatorSubsystem.elevatorReady(0.005) ///???????
+                    && elevatorSubsystem.elevatorReady(0.007)
                     && endEffectorArmSubsystem.isShootReady()
                     && safeToRaise;
         } else {

@@ -8,49 +8,38 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.3784071885440863,
-        "y": 5.6123740726391835
+        "x": 2.7761615044247794,
+        "y": 5.636338495575221
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.4327577821011674,
-        "y": 5.838898346303502
+        "x": 1.2230641592920353,
+        "y": 4.0249999999999995
       },
       "prevControl": {
-        "x": 2.6706999122550266,
-        "y": 5.915602601060614
-      },
-      "nextControl": {
-        "x": 2.1948156519473083,
-        "y": 5.762194091546389
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 1.1438229571984435,
-        "y": 3.8585481517509725
-      },
-      "prevControl": {
-        "x": 2.1337546411136783,
-        "y": 5.852601121804451
+        "x": 2.232577433628318,
+        "y": 4.762721238938052
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5862068965517219,
+      "rotationDegrees": -147.94724935549357
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [
     {
       "name": "DEPLOY-INTAKE",
-      "waypointRelativePos": 0.2,
+      "waypointRelativePos": 0.1,
       "endWaypointRelativePos": null,
       "command": null
     }
@@ -65,7 +54,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -115.74711169535918
+    "rotation": -148.0419274855291
   },
   "reversed": false,
   "folder": null,

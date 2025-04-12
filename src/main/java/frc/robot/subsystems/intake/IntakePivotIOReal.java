@@ -29,7 +29,7 @@ public class IntakePivotIOReal implements IntakePivotIO {
     private final StatusSignal<Temperature> tempCelsius = motor.getDeviceTemp();
     private final StatusSignal<Angle> currentPositionRot = motor.getPosition();
 
-    private final CANcoder caNcoder = new CANcoder(INTAKE_PIVOT_ENCODER_ID, RobotConstants.CANIVORE_CAN_BUS_NAME);
+    private final CANcoder canCoder = new CANcoder(INTAKE_PIVOT_ENCODER_ID, RobotConstants.CANIVORE_CAN_BUS_NAME);
 
 
     private final VoltageOut voltageOut = new VoltageOut(0.0).withEnableFOC(false);
@@ -52,8 +52,8 @@ public class IntakePivotIOReal implements IntakePivotIO {
         CANcoderConfiguration CANconfig = new CANcoderConfiguration();
         CANconfig.MagnetSensor.MagnetOffset = INTAKE_PIVOT_ENCODER_OFFSET;
         CANconfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
-        caNcoder.getConfigurator().apply(CANconfig);
-        // Try the fused cancoder option, if it doesn't work, use the remote
+        canCoder.getConfigurator().apply(CANconfig);
+        // Try the fused CANcoder option, if it doesn't work, use the remote
         config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
         config.Feedback.FeedbackRemoteSensorID = INTAKE_PIVOT_ENCODER_ID;
         config.Feedback.RotorToSensorRatio = INTAKE_PIVOT_ROTOR_ENCODER_RATIO;
