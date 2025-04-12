@@ -27,7 +27,7 @@ public class FixIntakeCommand extends Command {
     public void execute() {
         elevatorSubsystem.setElevatorPosition(HOLD_EXTENSION_METERS.get());
         intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.DEPLOY_WITHOUT_ROLL);
-        endEffectorArmSubsystem.setWantedState(EndEffectorArmSubsystem.WantedState.NEUTRAL);
+        endEffectorArmSubsystem.setWantedState(EndEffectorArmSubsystem.WantedState.CORAL_OUTTAKE);
     }
 
     @Override
