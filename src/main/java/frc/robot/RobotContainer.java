@@ -131,7 +131,8 @@ public class RobotContainer {
         autoChooser.addOption("4CoralLeft", "4CoralLeft");
         autoChooser.addOption("4CoralRight", "4CoralRight");
         autoChooser.addOption("1Coral1AlgaeMiddle", "1Coral1AlgaeMiddle");
-        autoChooser.addOption("1Coral3AlgaeMiddle", "1Coral3AlgaeMiddle");
+        autoChooser.addOption("1Coral3AlgaeMiddleRightFirst", "1Coral3AlgaeMiddleRightFirst");
+        autoChooser.addOption("1Coral3AlgaeMiddleLeftFirst", "1Coral3AlgaeMiddleLeftFirst");
         autoChooser.addOption("Test", "Test");
         autoChooser.addOption("None", "None");
     }
