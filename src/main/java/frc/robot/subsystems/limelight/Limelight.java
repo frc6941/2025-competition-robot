@@ -16,6 +16,7 @@ import java.util.Optional;
 import static frc.robot.RobotConstants.LimelightConstants.*;
 
 public class Limelight extends SubsystemBase {
+    // TODO: create IO class for Limelight use two different implementations for two limelights and do the processing in subsystem
     private final Localizer swerveLocalizer = Swerve.getInstance().getLocalizer();
     PoseEstimate lastEstimateRight = new PoseEstimate();
     PoseEstimate lastEstimateLeft = new PoseEstimate();
@@ -61,6 +62,7 @@ public class Limelight extends SubsystemBase {
 
         // 1 Tag with a large area
         if (poseEstimate.tagCount == 1 && poseEstimate.avgTagArea > AREA_THRESHOLD) {
+            // TODO: BUG: area threshold is wayyyy to small the tag area is 0-100% of original tag
             rejectEstimate = false;
             return false;
             // 2 tags or more
