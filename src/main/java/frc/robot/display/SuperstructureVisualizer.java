@@ -25,9 +25,9 @@ public class SuperstructureVisualizer {
 
     // Elevator constants
     private static final Translation3d ELEVATOR_START = new Translation3d(
-            mmToM(-200), mmToM(0), mmToM(90));
+            mmToM(-200), mmToM(0), mmToM(300));
     private static final Translation3d ELEVATOR_END = new Translation3d(
-            mmToM(-200), mmToM(0), mmToM(90));
+            mmToM(-200), mmToM(0), mmToM(300));
     private static final Translation3d ELEVATOR_CENTER = ELEVATOR_START.interpolate(ELEVATOR_END, 0.5);
 
     // Stage specifications

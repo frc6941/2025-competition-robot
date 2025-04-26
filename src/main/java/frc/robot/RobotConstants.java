@@ -34,7 +34,7 @@ public final class RobotConstants {
     public static final double LOOPER_DT = 1 / 50.0;
     public static final boolean TUNING = true;
     public static final boolean DriverCamera = true;
-    public static final boolean useReplay = true;
+    public static final boolean useReplay = false;
     // Judge whether the team is 10541
     // During Huston, is10541 should always be TRUE
     public static final String Serial10541 = "0327BA65";
