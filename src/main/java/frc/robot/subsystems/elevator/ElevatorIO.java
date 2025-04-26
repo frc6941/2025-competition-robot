@@ -3,21 +3,29 @@ package frc.robot.subsystems.elevator;
 import org.littletonrobotics.junction.AutoLog;
 
 public interface ElevatorIO {
-    void updateInputs(ElevatorIOInputs inputs);
+    default void updateInputs(ElevatorIOInputs inputs) {
+    }
 
-    void setElevatorVoltage(double volts);
+    default void setElevatorVoltage(double volts) {
+    }
 
-    void setElevatorTarget(double meters);
+    default void setElevatorTarget(double meters) {
+    }
 
-    void resetElevatorPosition();
+    default void resetElevatorPosition() {
+    }
 
-    double getElevatorVelocity();
+    default double getElevatorVelocity() {
+        return 0.0;
+    }
 
-    double getElevatorHeight();
+    default boolean isNearExtension(double expected) {
+        return false;
+    }
 
-    boolean isNearExtension(double expected);
-
-    boolean isNearZeroExtension();
+    default boolean isNearZeroExtension() {
+        return false;
+    }
 
     @AutoLog
     class ElevatorIOInputs {

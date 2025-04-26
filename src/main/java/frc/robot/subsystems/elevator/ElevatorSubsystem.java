@@ -34,7 +34,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     public void periodic() {
         io.updateInputs(inputs);
         Logger.processInputs("Elevator", inputs);
-        Logger.recordOutput("ElevatorPosition", io.getElevatorHeight());
+        Logger.recordOutput("ElevatorPosition", inputs.positionMeters);
         Logger.recordOutput("Elevator/isNear", io.isNearExtension(wantedPosition));
         Logger.recordOutput("Elevator/isNearZero", io.isNearZeroExtension());
         Logger.recordOutput("Elevator/setPoint", wantedPosition);
@@ -54,7 +54,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
         Logger.recordOutput("Flags/elevatorIsDanger", elevatorIsDanger());
 
-        SuperstructureVisualizer.getInstance().updateElevator(io.getElevatorHeight());
+        SuperstructureVisualizer.getInstance().updateElevator(inputs.positionMeters);
 
 
         // set movements based on state
@@ -91,13 +91,17 @@ public class ElevatorSubsystem extends SubsystemBase {
         this.wantedState = wantedState;
     }
 
+    public double getElevatorPosition() {
+        return inputs.positionMeters;
+    }
+
     public void setElevatorPosition(double position) {
         wantedPosition = position;
         setElevatorState(WantedState.POSITION);
     }
 
     public boolean elevatorReady(double offset) {
-        boolean elevatorReady = Math.abs(io.getElevatorHeight() - wantedPosition) < offset;
+        boolean elevatorReady = Math.abs(inputs.positionMeters - wantedPosition) < offset;
         Logger.recordOutput("Elevator/elevatorReady", elevatorReady);
         return elevatorReady;
     }

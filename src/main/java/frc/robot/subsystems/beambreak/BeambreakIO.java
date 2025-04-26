@@ -3,7 +3,8 @@ package frc.robot.subsystems.beambreak;
 import org.littletonrobotics.junction.AutoLog;
 
 public interface BeambreakIO {
-    void updateInputs(BeambreakIOInputs inputs);
+    default void updateInputs(BeambreakIOInputs inputs) {
+    }
 
     @AutoLog
     class BeambreakIOInputs {

@@ -11,14 +11,15 @@ public interface IndicatorIO {
         return switch (DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue)) {
             case Blue -> Color.kBlue;
             case Red -> Color.kRed;
+            default -> Color.kWhite;
         };
     }
 
-    void updateInputs(IndicatorIOInputs inputs);
+    default void updateInputs(IndicatorIOInputs inputs) {}
 
-    void setPattern(Patterns pattern);
+    default void setPattern(Patterns pattern) {}
 
-    void reset();
+    default void reset() {}
 
     enum Patterns {
         NORMAL(null),
@@ -37,6 +38,6 @@ public interface IndicatorIO {
 
     @AutoLog
     class IndicatorIOInputs {
-        public Patterns currentPattern;
+        public Patterns currentPattern = Patterns.NORMAL;
     }
 }

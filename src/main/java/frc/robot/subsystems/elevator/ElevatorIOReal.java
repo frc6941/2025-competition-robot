@@ -113,7 +113,7 @@ public class ElevatorIOReal implements ElevatorIO {
                 tempLeft
         );
 
-        inputs.positionMeters = getElevatorHeight();
+        inputs.positionMeters = talonPosToHeight(leader.getPosition().getValueAsDouble());
         inputs.setpointMeters = setpointMeters;
         inputs.velocityMetersPerSec = getElevatorVelocity();
         inputs.appliedVolts = voltageLeft.getValueAsDouble();
@@ -163,10 +163,6 @@ public class ElevatorIOReal implements ElevatorIO {
         return talonPosToHeight(leader.getVelocity().getValueAsDouble());
     }
 
-    @Override
-    public double getElevatorHeight() {
-        return talonPosToHeight(leader.getPosition().getValueAsDouble());
-    }
 
     @Override
     public boolean isNearZeroExtension() {

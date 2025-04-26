@@ -87,12 +87,12 @@ public class ReefAimCommand extends Command {
     public void execute() {
         xPID.setConstraints(
                 new TrapezoidProfile.Constraints(
-                        ReefAimConstants.MAX_AIMING_SPEED.magnitude() * 0.6 / elevatorSubsystem.getIo().getElevatorHeight(),
-                        ReefAimConstants.MAX_AIMING_ACCELERATION.magnitude() * 0.6 / elevatorSubsystem.getIo().getElevatorHeight()));
+                        ReefAimConstants.MAX_AIMING_SPEED.magnitude() * 0.6 / elevatorSubsystem.getElevatorPosition(),
+                        ReefAimConstants.MAX_AIMING_ACCELERATION.magnitude() * 0.6 / elevatorSubsystem.getElevatorPosition()));
         yPID.setConstraints(
                 new TrapezoidProfile.Constraints(
-                        ReefAimConstants.MAX_AIMING_SPEED.magnitude() * 0.6 / elevatorSubsystem.getIo().getElevatorHeight(),
-                        ReefAimConstants.MAX_AIMING_ACCELERATION.magnitude() * 0.6 / elevatorSubsystem.getIo().getElevatorHeight()));
+                        ReefAimConstants.MAX_AIMING_SPEED.magnitude() * 0.6 / elevatorSubsystem.getElevatorPosition(),
+                        ReefAimConstants.MAX_AIMING_ACCELERATION.magnitude() * 0.6 / elevatorSubsystem.getElevatorPosition()));
         if (RobotConstants.TUNING) {
             xPID.setPID(RobotConstants.SwerveConstants.AimGainsClass.AIM_KP.get(),
                     RobotConstants.SwerveConstants.AimGainsClass.AIM_KI.get(),
