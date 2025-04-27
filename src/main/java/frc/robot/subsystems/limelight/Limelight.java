@@ -17,6 +17,15 @@ import static frc.robot.RobotConstants.LimelightConstants.*;
 
 public class Limelight extends SubsystemBase {
     // TODO: create IO class for Limelight use two different implementations for two limelights and do the processing in subsystem
+    /*
+        tx, ty, ta, conf(confidence), tid
+        botpose = new double[6];
+        botpose_wpired = new double[6];
+        botpose_wpiblue = new double[6];
+        camerapose_robotspace = new double[6];
+            
+        these should be autologed in IO
+        */
     private final Localizer swerveLocalizer = Swerve.getInstance().getLocalizer();
     PoseEstimate lastEstimateRight = new PoseEstimate();
     PoseEstimate lastEstimateLeft = new PoseEstimate();
@@ -30,6 +39,7 @@ public class Limelight extends SubsystemBase {
     public Limelight() {
     }
 
+    //these below should be in subsystem
     public PoseEstimate[] getLastPoseEstimates() {
         return new PoseEstimate[]{lastEstimateRight, lastEstimateLeft};
     }
@@ -37,6 +47,7 @@ public class Limelight extends SubsystemBase {
     public void setMegaTag2(boolean useMegaTag2) {
         this.useMegaTag2 = useMegaTag2;
     }
+
 
     /**
      * Determines if a given pose estimate should be rejected.
