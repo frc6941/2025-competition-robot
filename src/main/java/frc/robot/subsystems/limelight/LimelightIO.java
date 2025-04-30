@@ -6,17 +6,20 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import org.littletonrobotics.junction.AutoLog;
 
 public interface LimelightIO {
-    void setRobotOrientation(double yaw, double yawRate,
-                             double pitch, double pitchRate,
-                             double roll, double rollRate);
+    default void setRobotOrientation(double yaw, double yawRate,
+                                     double pitch, double pitchRate,
+                                     double roll, double rollRate) {
+    }
 
-    default void clearNewEstimate(LimelightIOInputs inputs) {
-        inputs.newEstimate = false;
+    default void setNewEstimate(LimelightIOInputs inputs, boolean state) {
+        inputs.newEstimate = state;
     }
 
     void updateInputs(LimelightIOInputs inputs, AngularVelocity gyroRate);
 
-    void setMegaTag2(boolean useMegaTag2);
+    default void setMegaTag2(boolean useMegaTag2) {
+        System.out.println("setMegaTag2 = " + useMegaTag2);
+    }
 
     @AutoLog
     class LimelightIOInputs {
