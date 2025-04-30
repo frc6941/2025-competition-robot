@@ -4,12 +4,9 @@ import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.*;
 import edu.wpi.first.units.measure.AngularVelocity;
-import frc.robot.RobotConstants;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
-import static frc.robot.RobotConstants.LimelightConstants.AREA_THRESHOLD;
 
 public class LimelightIOReal implements LimelightIO {
     private final String name;
@@ -112,30 +109,6 @@ public class LimelightIOReal implements LimelightIO {
         return toPose3D(poseArray);
     }
 
-    public boolean rejectUpdate(PoseEstimate poseEstimate, AngularVelocity gyroRate) {
-        // Angular velocity is too high to have accurate vision
-        if (gyroRate.compareTo(RobotConstants.SwerveConstants.maxAngularRate) > 0) {
-            return true;
-        }
-        //TODO: verify this condition whether usable
-
-        // No tags :<
-        if (poseEstimate.tagCount() == 0) {
-            return true;
-        }
-
-        // 1 Tag with a large area
-        if (poseEstimate.tagCount() == 1 && poseEstimate.avgTagArea() > AREA_THRESHOLD) {
-            // TODO: BUG: area threshold is wayyyy to small the tag area is 0-100% of original tag
-            return false;
-            // 2 tags or more
-        } else if (poseEstimate.tagCount() > 1) {
-            return false;
-        }
-
-        return true;
-    }
-
     @Override
     public void setRobotOrientation(double yaw, double yawRate,
                                     double pitch, double pitchRate,
@@ -167,18 +140,8 @@ public class LimelightIOReal implements LimelightIO {
             poseBlue = getBotPoseEstimate("botpose_wpiblue", false);
             poseRed = getBotPoseEstimate("botpose_wpired", false);
         }
-        if (poseRed != null && !rejectUpdate(poseRed, gyroRate)) {
-            inputs.poseRed = poseRed;
-            inputs.newEstimate = true;
-        } else {
-            inputs.poseRed = null;
-        }
-        if (poseBlue != null && !rejectUpdate(poseBlue, gyroRate)) {
-            inputs.poseBlue = poseBlue;
-            inputs.newEstimate = true;
-        } else {
-            inputs.poseBlue = null;
-        }
+        inputs.poseRed = poseRed;
+        inputs.poseBlue = poseBlue;
         inputs.cameraPose = getCameraPose();
         inputs.useMegaTag2 = useMegaTag2;
     }

@@ -53,12 +53,19 @@ import frc.robot.subsystems.indicator.IndicatorIOARGB;
 import frc.robot.subsystems.indicator.IndicatorIOSim;
 import frc.robot.subsystems.indicator.IndicatorSubsystem;
 import frc.robot.subsystems.intake.*;
+import frc.robot.subsystems.limelight.LimelightIOReal;
+import frc.robot.subsystems.limelight.LimelightIOReplay;
 import frc.robot.subsystems.limelight.LimelightSubsystem;
 import frc.robot.subsystems.swerve.Swerve;
 import lombok.Getter;
 import org.frcteam6941.looper.UpdateManager;
 import org.littletonrobotics.AllianceFlipUtil;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
+
+import java.util.HashMap;
+
+import static frc.robot.RobotConstants.LimelightConstants.LIMELIGHT_LEFT;
+import static frc.robot.RobotConstants.LimelightConstants.LIMELIGHT_RIGHT;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -89,7 +96,7 @@ public class RobotContainer {
     private final AutoActions autoActions;
     private final AutoFile autoFile;
     // Subsystems
-    private Swerve swerve = Swerve.getInstance();
+    private final Swerve swerve = Swerve.getInstance();
     private ElevatorSubsystem elevatorSubsystem;
     private IntakeSubsystem intakeSubsystem;
     private ClimberSubsystem climberSubsystem;
@@ -117,7 +124,10 @@ public class RobotContainer {
                         new BeambreakIOReal(RobotConstants.BeamBreakConstants.ENDEFFECTORARM_CORAL_BEAMBREAK_ID),
                         new BeambreakIOReal(RobotConstants.BeamBreakConstants.ENDEFFECTORARM_ALGAE_BEAMBREAK_ID)
                 );
-                limelightSubsystem = new LimelightSubsystem();
+                limelightSubsystem = new LimelightSubsystem(new HashMap<>() {{
+                    put(LIMELIGHT_LEFT, new LimelightIOReal(LIMELIGHT_LEFT));
+                    put(LIMELIGHT_RIGHT, new LimelightIOReal(LIMELIGHT_RIGHT));
+                }});
             } else {
                 // Simulation initialization
                 indicatorSubsystem = new IndicatorSubsystem(new IndicatorIOSim());
@@ -128,7 +138,11 @@ public class RobotContainer {
                         new BeambreakIOSim(RobotConstants.BeamBreakConstants.INTAKE_BEAMBREAK_ID)
                 );
                 climberSubsystem = new ClimberSubsystem(new ClimberIOSim());
-                limelightSubsystem = new LimelightSubsystem(); // FIXME: ll simulation?
+                limelightSubsystem = new LimelightSubsystem(new HashMap<>() {{
+                    // FIXME: ll simulation?
+                    put(LIMELIGHT_LEFT, new LimelightIOReal(LIMELIGHT_LEFT));
+                    put(LIMELIGHT_RIGHT, new LimelightIOReal(LIMELIGHT_RIGHT));
+                }});
                 endEffectorArmSubsystem = new EndEffectorArmSubsystem(
                         new EndEffectorArmPivotIOSim(),
                         new EndEffectorArmRollerIOSim(),
@@ -144,7 +158,10 @@ public class RobotContainer {
             });
         }
         if (limelightSubsystem == null) {
-            limelightSubsystem = new LimelightSubsystem(); // FIXME: ll replay?
+            limelightSubsystem = new LimelightSubsystem(new HashMap<>() {{
+                put(LIMELIGHT_LEFT, new LimelightIOReplay("LimelightL"));
+                put(LIMELIGHT_RIGHT, new LimelightIOReplay("LimelightR"));
+            }});
         }
         if (endEffectorArmSubsystem == null) {
             endEffectorArmSubsystem = new EndEffectorArmSubsystem(

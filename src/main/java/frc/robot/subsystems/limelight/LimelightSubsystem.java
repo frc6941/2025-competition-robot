@@ -4,6 +4,7 @@ import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotConstants;
 import frc.robot.subsystems.limelight.LimelightIO.PoseEstimate;
 import frc.robot.subsystems.swerve.Swerve;
 import org.frcteam6941.localization.Localizer;
@@ -11,8 +12,7 @@ import org.littletonrobotics.junction.Logger;
 
 import java.util.*;
 
-import static frc.robot.RobotConstants.LimelightConstants.LIMELIGHT_LEFT;
-import static frc.robot.RobotConstants.LimelightConstants.LIMELIGHT_RIGHT;
+import static frc.robot.RobotConstants.LimelightConstants.*;
 
 public class LimelightSubsystem extends SubsystemBase {
     private final Map<String, LimelightIO> limelightIOs;
@@ -21,18 +21,39 @@ public class LimelightSubsystem extends SubsystemBase {
     private final Localizer swerveLocalizer = Swerve.getInstance().getLocalizer();
     private boolean useMegaTag2 = false;
 
-    public LimelightSubsystem() {
-        limelightIOs = new HashMap<>();
-        limelightIOs.put(LIMELIGHT_LEFT, new LimelightIOReal(LIMELIGHT_LEFT));
-        limelightIOs.put(LIMELIGHT_RIGHT, new LimelightIOReal(LIMELIGHT_RIGHT));
+    public LimelightSubsystem(Map<String, LimelightIO> limelightIOs) {
+        this.limelightIOs = limelightIOs;
 
         limelightInputs = new HashMap<>();
-        limelightInputs.put(LIMELIGHT_LEFT, new LimelightIOInputsAutoLogged());
-        limelightInputs.put(LIMELIGHT_RIGHT, new LimelightIOInputsAutoLogged());
+        this.limelightIOs.forEach((key, value) -> limelightInputs.put(key, new LimelightIOInputsAutoLogged()));
 
         if (limelightInputs.size() != limelightIOs.size()) {
             throw new RuntimeException("limelightInputs.size() != limelightIOs.size()");
         }
+    }
+
+    public static boolean rejectUpdate(PoseEstimate poseEstimate, AngularVelocity gyroRate) {
+        if (poseEstimate == null) {
+            return true;
+        }
+
+        // Angular velocity is too high to have accurate vision
+        if (gyroRate.compareTo(RobotConstants.SwerveConstants.maxAngularRate) > 0) {
+            return true;
+        }
+        //TODO: verify this condition whether usable
+
+        // No tags :<
+        if (poseEstimate.tagCount() == 0) {
+            return true;
+        }
+
+        // 1 Tag with a large area
+        if (poseEstimate.tagCount() == 1 && poseEstimate.avgTagArea() > AREA_THRESHOLD) {
+            // TODO: BUG: area threshold is wayyyy to small the tag area is 0-100% of original tag
+            return false;
+            // 2 tags or more
+        } else return poseEstimate.tagCount() <= 1;
     }
 
     public PoseEstimate[] getLastPoseEstimates() {
@@ -50,7 +71,9 @@ public class LimelightSubsystem extends SubsystemBase {
         });
     }
 
-    public Optional<PoseEstimate[]> determinePoseEstimate() {
+    public Optional<PoseEstimate[]> determinePoseEstimate(AngularVelocity gyroRate) {
+        limelightIOs.forEach((key, io) -> io.setNewEstimate(limelightInputs.get(key), !rejectUpdate(limelightInputs.get(key).poseBlue, gyroRate)));
+
         boolean newRightEstimate = limelightInputs.get(LIMELIGHT_RIGHT).newEstimate;
         boolean newLeftEstimate = limelightInputs.get(LIMELIGHT_LEFT).newEstimate;
         PoseEstimate lastEstimateRight = limelightInputs.get(LIMELIGHT_RIGHT).poseBlue;
@@ -61,18 +84,18 @@ public class LimelightSubsystem extends SubsystemBase {
 
         } else if (newRightEstimate && !newLeftEstimate) {
             // One valid pose estimate (right)
-            limelightIOs.get(LIMELIGHT_RIGHT).clearNewEstimate(limelightInputs.get(LIMELIGHT_RIGHT));
+            limelightIOs.get(LIMELIGHT_RIGHT).setNewEstimate(limelightInputs.get(LIMELIGHT_RIGHT), false);
             return Optional.of(new PoseEstimate[]{lastEstimateRight, null});
 
         } else if (!newRightEstimate) {
             // One valid pose estimate (left)
-            limelightIOs.get(LIMELIGHT_LEFT).clearNewEstimate(limelightInputs.get(LIMELIGHT_LEFT));
+            limelightIOs.get(LIMELIGHT_LEFT).setNewEstimate(limelightInputs.get(LIMELIGHT_LEFT), false);
             return Optional.of(new PoseEstimate[]{lastEstimateLeft, null});
 
         } else {
             // Two valid pose estimates, disgard the one that's further
-            limelightIOs.get(LIMELIGHT_RIGHT).clearNewEstimate(limelightInputs.get(LIMELIGHT_RIGHT));
-            limelightIOs.get(LIMELIGHT_LEFT).clearNewEstimate(limelightInputs.get(LIMELIGHT_LEFT));
+            limelightIOs.get(LIMELIGHT_RIGHT).setNewEstimate(limelightInputs.get(LIMELIGHT_RIGHT), false);
+            limelightIOs.get(LIMELIGHT_LEFT).setNewEstimate(limelightInputs.get(LIMELIGHT_LEFT), false);
             return Optional.of(new PoseEstimate[]{lastEstimateRight, lastEstimateLeft});
         }
     }
@@ -89,7 +112,7 @@ public class LimelightSubsystem extends SubsystemBase {
             Logger.processInputs(name, limelightInputs.get(name));
         });
 
-        Optional<PoseEstimate[]> estimatedPose = determinePoseEstimate();
+        Optional<PoseEstimate[]> estimatedPose = determinePoseEstimate(gyroRate);
 
         if (estimatedPose.isPresent()) {
             if (estimatedPose.get()[0] != null) {
