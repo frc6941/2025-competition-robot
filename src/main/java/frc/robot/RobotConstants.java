@@ -34,7 +34,7 @@ public final class RobotConstants {
     public static final double LOOPER_DT = 1 / 50.0;
     public static final boolean TUNING = true;
     public static final boolean DriverCamera = true;
-    public static final boolean useReplay = false;
+    public static final boolean useReplay = true;
     // Judge whether the team is 10541
     // During Huston, is10541 should always be TRUE
     public static final String Serial10541 = "0327BA65";
@@ -493,6 +493,7 @@ public final class RobotConstants {
         public static final TunableNumber ALGAE_NET_SHOOT_VOLTAGE = new TunableNumber("END_EFFECTOR_ARM_ROLLER/algaeNetShootVoltage", -15.0);
         public static final TunableNumber ALGAE_PROCESSOR_SHOOT_VOLTAGE = new TunableNumber("END_EFFECTOR_ARM_ROLLER/algaeProcessorShootVoltage", -4.0);
         public static final TunableNumber CORAL_SHOOT_DELAY_TIME = new TunableNumber("END_EFFECTOR_ARM_ROLLER/coralShootDelayTime", 0.2);
+
         /**
          * Constants for the EndEffectorArm pivot motor gains.
          */

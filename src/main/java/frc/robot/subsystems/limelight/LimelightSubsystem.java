@@ -26,10 +26,6 @@ public class LimelightSubsystem extends SubsystemBase {
 
         limelightInputs = new HashMap<>();
         this.limelightIOs.forEach((key, value) -> limelightInputs.put(key, new LimelightIOInputsAutoLogged()));
-
-        if (limelightInputs.size() != limelightIOs.size()) {
-            throw new RuntimeException("limelightInputs.size() != limelightIOs.size()");
-        }
     }
 
     public static boolean rejectUpdate(PoseEstimate poseEstimate, AngularVelocity gyroRate) {

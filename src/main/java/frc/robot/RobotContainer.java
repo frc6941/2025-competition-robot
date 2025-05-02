@@ -139,9 +139,6 @@ public class RobotContainer {
                 );
                 climberSubsystem = new ClimberSubsystem(new ClimberIOSim());
                 limelightSubsystem = new LimelightSubsystem(new HashMap<>() {{
-                    // FIXME: ll simulation?
-                    put(LIMELIGHT_LEFT, new LimelightIOReal(LIMELIGHT_LEFT));
-                    put(LIMELIGHT_RIGHT, new LimelightIOReal(LIMELIGHT_RIGHT));
                 }});
                 endEffectorArmSubsystem = new EndEffectorArmSubsystem(
                         new EndEffectorArmPivotIOSim(),
