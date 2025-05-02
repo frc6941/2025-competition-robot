@@ -36,9 +36,9 @@ import frc.robot.commands.manualSequence.PutCoralCommand;
 import frc.robot.display.Display;
 import frc.robot.drivers.DestinationSupplier;
 import frc.robot.drivers.GamepieceTracker;
+import frc.robot.subsystems.beambreak.BeambreakIO;
 import frc.robot.subsystems.beambreak.BeambreakIOReal;
 import frc.robot.subsystems.beambreak.BeambreakIOSim;
-import frc.robot.subsystems.beambreak.BeambreakIO;
 import frc.robot.subsystems.climber.ClimberIO;
 import frc.robot.subsystems.climber.ClimberIOReal;
 import frc.robot.subsystems.climber.ClimberIOSim;
@@ -53,13 +53,19 @@ import frc.robot.subsystems.indicator.IndicatorIOARGB;
 import frc.robot.subsystems.indicator.IndicatorIOSim;
 import frc.robot.subsystems.indicator.IndicatorSubsystem;
 import frc.robot.subsystems.intake.*;
-import frc.robot.subsystems.limelight.Limelight;
-import frc.robot.subsystems.roller.RollerIO;
+import frc.robot.subsystems.limelight.LimelightIOReal;
+import frc.robot.subsystems.limelight.LimelightIOReplay;
+import frc.robot.subsystems.limelight.LimelightSubsystem;
 import frc.robot.subsystems.swerve.Swerve;
 import lombok.Getter;
 import org.frcteam6941.looper.UpdateManager;
 import org.littletonrobotics.AllianceFlipUtil;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
+
+import java.util.HashMap;
+
+import static frc.robot.RobotConstants.LimelightConstants.LIMELIGHT_LEFT;
+import static frc.robot.RobotConstants.LimelightConstants.LIMELIGHT_RIGHT;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -83,20 +89,20 @@ public class RobotContainer {
     // Update Manager
     @Getter
     private final UpdateManager updateManager;
-    // Subsystems
-    private Swerve swerve = Swerve.getInstance();
     private final Display display = Display.getInstance();
     private final DestinationSupplier destinationSupplier = DestinationSupplier.getInstance();
-    private ElevatorSubsystem elevatorSubsystem;
-    private IntakeSubsystem intakeSubsystem;
-    private ClimberSubsystem climberSubsystem;
-    private IndicatorSubsystem indicatorSubsystem;
-    private Limelight limelight;
-    private EndEffectorArmSubsystem endEffectorArmSubsystem;
     @Getter
     private final LoggedDashboardChooser<String> autoChooser;
     private final AutoActions autoActions;
     private final AutoFile autoFile;
+    // Subsystems
+    private final Swerve swerve = Swerve.getInstance();
+    private ElevatorSubsystem elevatorSubsystem;
+    private IntakeSubsystem intakeSubsystem;
+    private ClimberSubsystem climberSubsystem;
+    private IndicatorSubsystem indicatorSubsystem;
+    private LimelightSubsystem limelightSubsystem;
+    private EndEffectorArmSubsystem endEffectorArmSubsystem;
     private double lastResetTime = 0.0;
 
 
@@ -107,65 +113,82 @@ public class RobotContainer {
                 indicatorSubsystem = new IndicatorSubsystem(new IndicatorIOARGB());
                 elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOReal());
                 intakeSubsystem = new IntakeSubsystem(
-                    new IntakePivotIOReal(),
-                    new IntakeRollerIOReal(),
-                    new BeambreakIOReal(RobotConstants.BeamBreakConstants.INTAKE_BEAMBREAK_ID)
+                        new IntakePivotIOReal(),
+                        new IntakeRollerIOReal(),
+                        new BeambreakIOReal(RobotConstants.BeamBreakConstants.INTAKE_BEAMBREAK_ID)
                 );
                 climberSubsystem = new ClimberSubsystem(new ClimberIOReal());
                 endEffectorArmSubsystem = new EndEffectorArmSubsystem(
-                    new EndEffectorArmPivotIOReal(),
-                    new EndEffectorArmRollerIOReal(),
-                    new BeambreakIOReal(RobotConstants.BeamBreakConstants.ENDEFFECTORARM_CORAL_BEAMBREAK_ID),
-                    new BeambreakIOReal(RobotConstants.BeamBreakConstants.ENDEFFECTORARM_ALGAE_BEAMBREAK_ID)
+                        new EndEffectorArmPivotIOReal(),
+                        new EndEffectorArmRollerIOReal(),
+                        new BeambreakIOReal(RobotConstants.BeamBreakConstants.ENDEFFECTORARM_CORAL_BEAMBREAK_ID),
+                        new BeambreakIOReal(RobotConstants.BeamBreakConstants.ENDEFFECTORARM_ALGAE_BEAMBREAK_ID)
                 );
-                limelight = new Limelight();
+                limelightSubsystem = new LimelightSubsystem(new HashMap<>() {{
+                    put(LIMELIGHT_LEFT, new LimelightIOReal(LIMELIGHT_LEFT));
+                    put(LIMELIGHT_RIGHT, new LimelightIOReal(LIMELIGHT_RIGHT));
+                }});
             } else {
                 // Simulation initialization
                 indicatorSubsystem = new IndicatorSubsystem(new IndicatorIOSim());
                 elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOSim());
                 intakeSubsystem = new IntakeSubsystem(
-                    new IntakePivotIOSim(),
-                    new IntakeRollerIOSim(),
-                    new BeambreakIOSim(RobotConstants.BeamBreakConstants.INTAKE_BEAMBREAK_ID)
+                        new IntakePivotIOSim(),
+                        new IntakeRollerIOSim(),
+                        new BeambreakIOSim(RobotConstants.BeamBreakConstants.INTAKE_BEAMBREAK_ID)
                 );
                 climberSubsystem = new ClimberSubsystem(new ClimberIOSim());
-                limelight = new Limelight();
+                limelightSubsystem = new LimelightSubsystem(new HashMap<>() {{
+                }});
                 endEffectorArmSubsystem = new EndEffectorArmSubsystem(
-                    new EndEffectorArmPivotIOSim(),
-                    new EndEffectorArmRollerIOSim(),
-                    new BeambreakIOSim(RobotConstants.BeamBreakConstants.ENDEFFECTORARM_CORAL_BEAMBREAK_ID),
-                    new BeambreakIOSim(RobotConstants.BeamBreakConstants.ENDEFFECTORARM_ALGAE_BEAMBREAK_ID)
+                        new EndEffectorArmPivotIOSim(),
+                        new EndEffectorArmRollerIOSim(),
+                        new BeambreakIOSim(RobotConstants.BeamBreakConstants.ENDEFFECTORARM_CORAL_BEAMBREAK_ID),
+                        new BeambreakIOSim(RobotConstants.BeamBreakConstants.ENDEFFECTORARM_ALGAE_BEAMBREAK_ID)
                 );
             }
         }
 
         // in the case of replay, no implementation is needed
         if (indicatorSubsystem == null) {
-            indicatorSubsystem = new IndicatorSubsystem(new IndicatorIO() {});
+            indicatorSubsystem = new IndicatorSubsystem(new IndicatorIO() {
+            });
         }
-        if (limelight == null) {
-            limelight = new Limelight();
+        if (limelightSubsystem == null) {
+            limelightSubsystem = new LimelightSubsystem(new HashMap<>() {{
+                put(LIMELIGHT_LEFT, new LimelightIOReplay("LimelightL"));
+                put(LIMELIGHT_RIGHT, new LimelightIOReplay("LimelightR"));
+            }});
         }
         if (endEffectorArmSubsystem == null) {
             endEffectorArmSubsystem = new EndEffectorArmSubsystem(
-                new EndEffectorArmPivotIO() {},
-                new EndEffectorArmRollerIO() {},
-                new BeambreakIO() {},
-                new BeambreakIO() {}
+                    new EndEffectorArmPivotIO() {
+                    },
+                    new EndEffectorArmRollerIO() {
+                    },
+                    new BeambreakIO() {
+                    },
+                    new BeambreakIO() {
+                    }
             );
         }
         if (climberSubsystem == null) {
-            climberSubsystem = new ClimberSubsystem(new ClimberIO() {});
+            climberSubsystem = new ClimberSubsystem(new ClimberIO() {
+            });
         }
         if (intakeSubsystem == null) {
             intakeSubsystem = new IntakeSubsystem(
-                new IntakePivotIO() {},
-                new IntakeRollerIO() {},
-                new BeambreakIO() {}
+                    new IntakePivotIO() {
+                    },
+                    new IntakeRollerIO() {
+                    },
+                    new BeambreakIO() {
+                    }
             );
         }
         if (elevatorSubsystem == null) {
-            elevatorSubsystem = new ElevatorSubsystem(new ElevatorIO() {});
+            elevatorSubsystem = new ElevatorSubsystem(new ElevatorIO() {
+            });
         }
 
         // Initialize the update manager
@@ -339,7 +362,7 @@ public class RobotContainer {
     }
 
     public void setMegaTag2(boolean setMegaTag2) {
-        limelight.setMegaTag2(setMegaTag2);
+        limelightSubsystem.setMegaTag2(setMegaTag2);
     }
 
 }
