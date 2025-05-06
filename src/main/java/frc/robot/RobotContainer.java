@@ -56,6 +56,7 @@ import frc.robot.subsystems.intake.*;
 import frc.robot.subsystems.limelight.LimelightIOReal;
 import frc.robot.subsystems.limelight.LimelightIOReplay;
 import frc.robot.subsystems.limelight.LimelightSubsystem;
+import frc.robot.subsystems.superstructure.Superstructure;
 import frc.robot.subsystems.swerve.Swerve;
 import lombok.Getter;
 import org.frcteam6941.looper.UpdateManager;
@@ -103,6 +104,7 @@ public class RobotContainer {
     private IndicatorSubsystem indicatorSubsystem;
     private LimelightSubsystem limelightSubsystem;
     private EndEffectorArmSubsystem endEffectorArmSubsystem;
+    private Superstructure superstructure;
     private double lastResetTime = 0.0;
 
 
@@ -139,6 +141,8 @@ public class RobotContainer {
                 );
                 climberSubsystem = new ClimberSubsystem(new ClimberIOSim());
                 limelightSubsystem = new LimelightSubsystem(new HashMap<>() {{
+                    put(LIMELIGHT_LEFT, new LimelightIOReal(LIMELIGHT_LEFT));
+                    put(LIMELIGHT_RIGHT, new LimelightIOReal(LIMELIGHT_RIGHT));
                 }});
                 endEffectorArmSubsystem = new EndEffectorArmSubsystem(
                         new EndEffectorArmPivotIOSim(),
@@ -190,6 +194,8 @@ public class RobotContainer {
             elevatorSubsystem = new ElevatorSubsystem(new ElevatorIO() {
             });
         }
+
+        superstructure = new Superstructure(elevatorSubsystem, endEffectorArmSubsystem, intakeSubsystem);
 
         // Initialize the update manager
         updateManager = new UpdateManager(swerve,
